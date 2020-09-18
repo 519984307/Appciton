@@ -30,16 +30,13 @@ public:
     explicit WindowManagerPrivate(WindowManager * const q_ptr)
         :q_ptr(q_ptr),
           timer(NULL),
-          demoWidget(NULL),
-          autoCloseWindows(true)
+          demoWidget(NULL)
     {}
 
     WindowManager * const q_ptr;
     QList<QPointer<Dialog> > windowStacks;
     QTimer *timer;              // timer to auto close the windows
     QWidget *demoWidget;
-
-    bool autoCloseWindows;    // Whether to close all windows automatically
 
     /**
      * @brief menuProperPos 菜单显示合适的位置
@@ -331,20 +328,8 @@ QImage WindowManager::captureScreen()
     return pix.toImage();
 }
 
-void WindowManager::setAutoCloseAllWindows(bool isAuto)
-{
-    if (d_ptr->autoCloseWindows != isAuto)
-    {
-        d_ptr->autoCloseWindows = isAuto;
-    }
-}
-
 void WindowManager::closeAllWidows()
 {
-    if (!d_ptr->autoCloseWindows)
-    {
-        return;
-    }
     // close the popup widget
     QWidget *popup = NULL;
     while ((popup = QApplication::activePopupWidget()))
