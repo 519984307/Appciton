@@ -55,7 +55,8 @@ void SoftwareVersionWindow::layoutExec()
     glayout->addWidget(label, 0, 0, 3, 1, Qt::AlignCenter);
     glayout->setColumnStretch(0, 1);
 
-    QString softwareVersion = getSoftwareVersion();
+    QString softwareVersion;
+    machineConfig.getStrValue("SoftwareVersion", softwareVersion);
     QString releaseVersion = softwareVersion.section(".", 0, 0);   // Release Version: DBA1
 
     // Release Version
@@ -82,45 +83,4 @@ void SoftwareVersionWindow::layoutExec()
     setWindowLayout(glayout);
 
     setFixedSize(600, 240);
-}
-
-QString SoftwareVersionWindow::getSoftwareVersion()
-{
-    QString softwareVersion;    // Software Version
-    QString verStr;
-    int isNeoMachine = 0;       // Neonate Machine status
-    machineConfig.getNumValue("NeonateMachine", isNeoMachine);
-    // Get Software Model ID
-    if (isNeoMachine)
-    {
-        machineConfig.getStrValue("SoftwareVersion|NeoSoftwareModel", verStr);     // Version Info: DA
-    }
-    else
-    {
-        machineConfig.getStrValue("SoftwareVersion|SoftwareModel", verStr);        // Version Info: DB
-    }
-    softwareVersion = verStr;                          // SW Version: DB or DA
-
-    // Get Product ID
-    verStr.clear();
-    machineConfig.getStrValue("SoftwareVersion|ProductID", verStr);     // Version Info:A
-    softwareVersion += verStr;                         // SW Version: DBA or DAA
-
-    // Get git Version
-    QString gitVersion = QString(GIT_VERSION);         // git version: V1.0.2.****-DV
-    gitVersion = gitVersion.section(".", 0, 2, QString::SectionIncludeTrailingSep);  // V1.0.2.
-    gitVersion.remove("V");                            // 1.0.2.
-    softwareVersion += gitVersion;                     // SW Version: DBA1.0.2.  or ..
-
-    // Get Software Bulid ID
-    verStr.clear();
-    machineConfig.getStrValue("SoftwareVersion|SoftwareBulidID", verStr);     // A
-    softwareVersion += verStr;                         //  SW Version: DBA1.0.2.A
-
-    // Get Language ID
-    verStr.clear();
-    machineConfig.getStrValue("SoftwareVersion|LanguageID", verStr);     // CN
-    softwareVersion += "." + verStr;                   //  SW Version: DBA1.0.2.A.CN
-
-    return softwareVersion;
 }
