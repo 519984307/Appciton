@@ -262,7 +262,9 @@ void UpgradeWindow::onStartBtnClick()
                 QStringList slist;
                 slist << trs("No") << trs("Ok");
                 MessageBox messageBox(trs("Warn"), trs("SureAllDataErase"), slist, true);
-                if (messageBox.exec())
+                windowManager.showWindow(&messageBox,
+                                         WindowManager::ShowBehaviorNoAutoClose | WindowManager::ShowBehaviorModal);
+                if (messageBox.result())
                 {
                     d_ptr->upgradeModule = module;
                 }
