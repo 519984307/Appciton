@@ -33,6 +33,9 @@
  * 详细软件版本信息查看戴维产品技术要求
  * */
 
+#define DV_SW_VERSION      "DBA1.0.2.A.CN"    // 多参数监护仪软件版本号
+#define DV_SW_VERSION_NEO  "DAA1.0.2.A.CN"    // 新生儿专用机器软件版本号
+
 SoftwareVersionWindow::SoftwareVersionWindow(): Dialog()
 {
     layoutExec();
@@ -56,7 +59,16 @@ void SoftwareVersionWindow::layoutExec()
     glayout->setColumnStretch(0, 1);
 
     QString softwareVersion;
-    machineConfig.getStrValue("SoftwareVersion", softwareVersion);
+    int isNeoMachine = 0;   // Neonate Machine status
+    machineConfig.getNumValue("NeonateMachine", isNeoMachine);
+    if (isNeoMachine)
+    {
+        softwareVersion = DV_SW_VERSION_NEO;   // 新生儿专用机器软件版本号
+    }
+    else
+    {
+        softwareVersion = DV_SW_VERSION;       // 多参数监护仪软件版本号
+    }
     QString releaseVersion = softwareVersion.section(".", 0, 0);   // Release Version: DBA1
 
     // Release Version
