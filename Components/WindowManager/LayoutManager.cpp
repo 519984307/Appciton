@@ -1001,7 +1001,14 @@ void LayoutManagerPrivate::performBigFontLayout()
             QVariantMap node = nodeIter->toMap();
             QString paramName = node["Param"].toMap()["@text"].toString();
             QString waveName = node["Wave"].toMap()["@text"].toString();
-
+            if (paramName == layoutNodeName(LAYOUT_NODE_PARAM_CO2)
+                    && waveName == layoutNodeName(LAYOUT_NODE_WAVE_CO2))
+            {
+                if (!co2Param.isConnected())
+                {
+                    continue;
+                }
+            }
             QWidget *nodeContainer = createContainter();
             gridLayout->addWidget(nodeContainer, row, column);
             gridLayout->setColumnStretch(column, 1);
