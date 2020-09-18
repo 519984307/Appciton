@@ -16,6 +16,22 @@
 #include <QVBoxLayout>
 #include <QGridLayout>
 #include "Framework/Language/LanguageManager.h"
+#include "IConfig.h"
+
+/*
+ * DV SW完整版本号命名规则
+ * DV SW Version: DBA1.0.0.A.CN
+ * D ------------------------ 产品类别识别号。“D”表示监护设备。
+ * B ------------------------ 注册单元识别号。“B”表示产品属于B注册单元；新生儿专用机器为A注册单元。
+ * A ------------------------ 产品识别号。 D6、D7、D8、D6S、D7S、D8S用“A”表示。
+ * 1 ------------------------ 重大增强类软件更新识别号。从“1”开始。
+ * 0 ------------------------ 轻微增强类软件更新识别号。从"0”开始。
+ * 0 ------------------------ 纠正类软件更新识别号。从"0”开始。
+ * A ------------------------ 软件构建识别号。 “A”表示主程序,“B”表示副程序,如有多个副程序,则用“B”、“C”、“D”......分别表示。
+ * CN------------------------ 语种识别号。“CN”表示中文或通用,“EN”表示英文。具体按照公司内部“软件语种识别号规定”执行。
+ *
+ * 详细软件版本信息查看戴维产品技术要求
+ * */
 
 SoftwareVersionWindow::SoftwareVersionWindow(): Dialog()
 {
@@ -39,20 +55,25 @@ void SoftwareVersionWindow::layoutExec()
     glayout->addWidget(label, 0, 0, 3, 1, Qt::AlignCenter);
     glayout->setColumnStretch(0, 1);
 
+    QString softwareVersion;
+    machineConfig.getStrValue("SoftwareVersion", softwareVersion);
+    QString releaseVersion = softwareVersion.section(".", 0, 0);   // Release Version: DBA1
+
+    // Release Version
     label = new QLabel(QString("%1:").arg(trs("ReleaseVersion")));
     glayout->addWidget(label, 0, 1, Qt::AlignLeft | Qt::AlignHCenter);
     label = new QLabel;
-    QString softwaveVersion = QString(GIT_VERSION).left(2);
-    label->setText(softwaveVersion);
+    label->setText(releaseVersion);
     glayout->addWidget(label, 0, 2, Qt::AlignLeft | Qt::AlignHCenter);
 
+    // Software Version
     label = new QLabel(QString("%1:").arg(trs("SoftwareVersion")));
     glayout->addWidget(label, 1, 1, Qt::AlignLeft | Qt::AlignHCenter);
     label = new QLabel;
-    softwaveVersion = QString(GIT_VERSION);
-    label->setText(softwaveVersion);
+    label->setText(softwareVersion);
     glayout->addWidget(label, 1, 2, Qt::AlignLeft | Qt::AlignHCenter);
 
+    // Compile Time
     label = new QLabel(QString("%1:").arg(trs("CompileTime")));
     glayout->addWidget(label, 2, 1, Qt::AlignLeft | Qt::AlignHCenter);
     label = new QLabel;
