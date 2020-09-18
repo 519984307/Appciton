@@ -252,7 +252,6 @@ public:
         , isPlugin(false)
         , inProgramMode(false)
         , spo2BoardFailure(false)
-        , spo2CableException(false)
         , programTimer(NULL)
         , cmdAckNum(0)
     {
@@ -358,12 +357,6 @@ public:
      */
     void addAlarms(unsigned int flag);
 
-    /**
-     * @brief handleCableExceptions  handle spo2 cable exceptions
-     * @param flag  spo2 cable exceptions flag
-     */
-    void handleCableExceptions(unsigned int flag);
-
     static const unsigned char minPacketLen = MIN_PACKET_LEN;
 
     RainbowProvider *q_ptr;
@@ -403,7 +396,6 @@ public:
     bool isPlugin;
     bool inProgramMode;
     bool spo2BoardFailure;   // Whether the spo2 board is faulty
-    bool spo2CableException;  // Whether the spo2 cable has exceptions
     QTimer *programTimer;   /* timer to timeout every second during program */
     short cmdAckNum;    /* command ack num, some command need multi ack, because it send multi commnads */
 };
@@ -959,7 +951,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SPO2_LOW_SIGNAL_IQ, (temp & SPO2_LOW_SIGNAL_IQ), isPlugin);
 
         bool valid = !(temp & SPO2_INVAILD);
-        if (valid == true && !spo2BoardFailure && !spo2CableException)
+        if (valid == true && !spo2BoardFailure)
         {
             temp = (data[0] << 8) + data[1];
             temp = ((temp % 10) < 5) ? (temp / 10) : (temp / 10 + 1);
@@ -980,7 +972,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PR_CONFIDENCE, (temp & PR_LOW_CONFIDENCE), isPlugin);
 
             bool valid = !(temp & PR_INVAILD);
-            if (valid == true && !spo2BoardFailure && !spo2CableException)
+            if (valid == true && !spo2BoardFailure)
             {
                 temp = (data[0] << 8) + data[1];
                 prValue = temp;
@@ -1003,7 +995,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_INVALID_SMOOTH_PI, (temp & PI_INVALID_SMOOTH_PI), isPlugin);
 
             bool valid = !(temp & PI_INVAILD);
-            if (valid == true && !spo2BoardFailure && !spo2CableException)
+            if (valid == true && !spo2BoardFailure)
             {
                 temp = (data[0] << 8) + data[1];
                 float value = temp * 1.0 / 1000 + 0.05;
@@ -1020,7 +1012,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     {
         temp = (data[4] << 8) + data[5];
         bool valid = !(temp & INVAILD_SPCO);
-        if (valid && !spo2BoardFailure && !spo2CableException)
+        if (valid && !spo2BoardFailure)
         {
             temp = (data[0] << 8) + data[1];
             float value = (temp % 10) > 5 ? (temp / 10 + 1) : (temp / 10);
@@ -1039,7 +1031,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PVI_CONFIDENCE, (temp & PVI_LOW_CONFIDENCE), isPlugin);
 
         bool valid = !(temp & PVI_INVAILD);
-        if (valid && !spo2BoardFailure && !spo2CableException)
+        if (valid && !spo2BoardFailure)
         {
             temp = (data[0] << 8) + data[1];
             spo2Param.setPVI(temp);
@@ -1060,7 +1052,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
                                   (temp & SPHB_LOW_PERFUSION_INDEX), isPlugin);
 
         bool valid = !(temp & SPHB_INVAILD);
-        if (valid && !spo2BoardFailure && !spo2CableException)
+        if (valid && !spo2BoardFailure)
         {
             if (spo2Param.getSpHbUnit() == SPHB_UNIT_G_DL)
             {
@@ -1093,7 +1085,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
                                   (temp & SPMET_LOW_PERFUSION_INDEX), isPlugin);
 
         bool valid = !(temp & SPMET_INVAILD);
-        if (valid && !spo2BoardFailure && !spo2CableException)
+        if (valid && !spo2BoardFailure)
         {
             temp = (data[0] << 8) + data[1];
             float value = temp * 1.0 / 10 + 0.5;
@@ -1114,7 +1106,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_SPOC_PERFUSION_INDEX,
                                   (temp & SPOC_LOW_PERFUSION_INDEX), isPlugin);
         bool valid = !(temp & SPOC_INVAILD);
-        if (valid && !spo2BoardFailure && !spo2CableException)
+        if (valid && !spo2BoardFailure)
         {
             temp = (data[0] << 8) + data[1];
             float value = temp * 1.0 / 10 + 0.5;
@@ -1142,8 +1134,6 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
 
         addAlarms(temp);
 
-        handleCableExceptions(temp);
-
         if (isPlugin)
         {
             spo2Param.setNotify(isCableOff, trs("SPO22CheckSensor"), isPlugin);
@@ -1163,8 +1153,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             }
             else
             {
-                // if spo2 cable has no exceptions, spo2 data is valid. Otherwise invalid.
-                spo2Param.setValidStatus(!spo2CableException, isPlugin);
+                spo2Param.setValidStatus(true, isPlugin);
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false, true);
                 spo2Param.setSearchForPulse(isSearching, isPlugin);  // search pulse标志。
                 if (isSearching)
@@ -1187,8 +1176,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             }
             else
             {
-                // if spo2 cable has no exceptions, spo2 data is valid. Otherwise invalid.
-                spo2Param.setValidStatus(!spo2CableException, isPlugin);
+                spo2Param.setValidStatus(true, isPlugin);
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, false);
                 spo2Param.setSearchForPulse(isSearching, isPlugin);  // search pulse标志。
                 if (isSearching)
@@ -2039,27 +2027,5 @@ void RainbowProviderPrivate::addAlarms(unsigned int flag)
         {
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SPO2_ONLY_MODE, false);
         }
-    }
-}
-
-void RainbowProviderPrivate::handleCableExceptions(unsigned int flag)
-{
-    if ((flag & RB_INTERFERENCE_DETECTED) || (flag & RB_SENSOR_EXPIRED)
-            || (flag & RB_NO_ADHESIVE_SENSOR) || (flag & RB_ADHESIVE_SENSOR_EXPIRATION)
-            || (flag & RB_DEFECTIVE_ADHESIVE_SENSOR) || (flag & RB_DEFECTIVE_CABLE)
-            || (flag & RB_DEFECTIVE_SENSOR) || (flag & RB_CHECK_CABLE_AND_SENSOR_FAULT)
-            || (flag & RB_UNRECONGNIZED_CABLE) || (flag & RB_UNRECONGNIZED_SENSOR)
-            || (flag & RB_UNRECONGNIZED_ADHESIVE_SENSOR) || (flag & RB_INCOMPATIBLE_ADHESIVE_SENSOR)
-            || (flag & RB_INCOMPATIBLE_SENSOR) || (flag & RB_INCOMPATIBLE_CABLE)
-            || (flag & RB_CHECK_SENSOR_CONNECTION) || (flag & RB_SENSOR_INITING)
-            || (flag & RB_NO_CABLE_CONNECTED) || (flag & RB_CABLE_EXPIRED)
-            || (flag & RB_NOSENSOR_CONNECTED) || (flag & RB_SENSOR_OFF_PATIENT)
-            )
-    {
-        spo2CableException = true;
-    }
-    else
-    {
-        spo2CableException = false;
     }
 }
