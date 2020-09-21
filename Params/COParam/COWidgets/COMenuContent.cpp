@@ -26,6 +26,10 @@
 #include "AlarmLimitWindow.h"
 #include "WindowManager.h"
 #include "COMeasureWindow.h"
+#include "FloatHandle.h"
+
+#define MIN_TI_VALUE         (0.0)
+#define MAX_TI_VALUE         (27.0)
 
 class COMenuContentPrivate
 {
@@ -39,13 +43,16 @@ public:
         ITEM_BTN_CO_MEASURE,
     };
 
-    COMenuContentPrivate() {}
+    COMenuContentPrivate()
+        : manualTiLabel(NULL)
+    {}
 
     // load settings
     void loadOptions();
 
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, Button *> buttons;
+    QLabel* manualTiLabel;   // manual ti label
 };
 
 void COMenuContentPrivate::loadOptions()
@@ -79,6 +86,12 @@ void COMenuContentPrivate::loadOptions()
     short ti = coParam.getManualTi();
     QString text = QString::number(ti * 1.0 / 10, 'f', 1);
     buttons[ITEM_BTN_MANUAL_TI]->setText(text);
+
+    if (manualTiLabel)
+    {
+        QString unitStr = Unit::getSymbol(coParam.getUnit());
+        manualTiLabel->setText(QString("%1 (%2)").arg(trs("InjectateTemp")).arg(trs(unitStr)));
+    }
 
     buttons[ITEM_BTN_INJECTATE_VOLUME]->setText(QString::number(coParam.getInjectionVolume()));
 }
@@ -137,6 +150,7 @@ void COMenuContent::layoutExec()
 
     // manual TI Temperature
     label = new QLabel(QString("%1 (%2)").arg(trs("InjectateTemp")).arg(trs("celsius")));
+    d_ptr->manualTiLabel = label;
     layout->addWidget(label, count, 0);
     button = new Button("20");
     button ->setButtonStyle(Button::ButtonTextOnly);
@@ -278,23 +292,37 @@ void COMenuContent::onButtonReleased()
 
             if (numberPad.exec())
             {
+                float minTi = MIN_TI_VALUE;
+                float maxTi = MAX_TI_VALUE;
+                UnitType curUnit = coParam.getUnit();
+                UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_CO_TB);
+                if (curUnit != defUnit)
+                {
+                    QString minTiStr = Unit::convert(curUnit, defUnit, minTi);
+                    QString maxTiStr = Unit::convert(curUnit, defUnit, maxTi);
+                    minTi = minTiStr.toFloat();
+                    maxTi = maxTiStr.toFloat();
+                }
                 QString text = numberPad.getStrValue();
                 bool ok = false;
                 float value = text.toFloat(&ok);
-                u_int16_t actualValue = value * 10;
                 if (ok)
                 {
-                    if (actualValue <= 270)
+                    // out of ti valid range
+                    if (isUpper(value, maxTi) || isUpper(minTi, value))
                     {
-                        button->setText(text);
-                        coParam.setTiSource(CO_TI_SOURCE_MANUAL, actualValue);
+                        QString validTiRange = QString::number(minTi, 'f', 1) + "-" +
+                                               QString::number(maxTi, 'f', 1);
+                        MessageBox messageBox(trs("Prompt"),
+                                              trs("InvalidInput") + validTiRange,
+                                              QStringList(trs("EnglishYESChineseSURE")));
+                        messageBox.exec();
                     }
                     else
                     {
-                        MessageBox messageBox(trs("Prompt"),
-                                              trs("InvalidInput") + " 0.0-27.0 ",
-                                              QStringList(trs("EnglishYESChineseSURE")));
-                        messageBox.exec();
+                        button->setText(text);
+                        quint32 actualValue = value * 10;
+                        coParam.setTiSource(CO_TI_SOURCE_MANUAL, actualValue);
                     }
                 }
             }

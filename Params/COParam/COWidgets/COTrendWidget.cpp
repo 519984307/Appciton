@@ -20,7 +20,7 @@
 #include "BaseDefine.h"
 #include "Framework/Utility/Unit.h"
 #include "Framework/TimeDate/TimeDate.h"
-
+#include "COParam.h"
 
 class COTrendWidgetPrivate
 {
@@ -161,7 +161,16 @@ void COTrendWidget::setTb(short tb)
     }
     else
     {
-        pimpl->tbStr = QString::number(tb * 1.0 / 10, 'f', 1);
+        UnitType curUnit = coParam.getUnit();
+        UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_CO_TB);
+        if (curUnit == defUnit)
+        {
+            pimpl->tbStr = QString::number(tb * 1.0 / 10, 'f', 1);
+        }
+        else
+        {
+            pimpl->tbStr = Unit::convert(curUnit, defUnit, tb * 1.0 / 10);
+        }
     }
 
     pimpl->tbValue->setText(pimpl->tbStr);

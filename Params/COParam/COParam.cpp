@@ -18,6 +18,7 @@
 #include "Framework/TimeDate/TimeDate.h"
 #include "TrendCache.h"
 #include <QVector>
+#include "IConfig.h"
 
 /* store 6 measure result at most */
 #define MAX_MEASURE_CACHE   6
@@ -138,7 +139,7 @@ UnitType COParam::getCurrentUnit(SubParamID id)
     }
     else if (id == SUB_PARAM_CO_TB)
     {
-        return UNIT_TC;
+        return getUnit();
     }
     else
     {
@@ -259,6 +260,37 @@ void COParam::notifyLimitAlarm(SubParamID id, bool alarm)
     }
 }
 
+UnitType COParam::getUnit()
+{
+    int type = UNIT_TC;
+    systemConfig.getNumValue("Unit|TemperatureUnit", type);
+    return static_cast<UnitType> (type);
+}
+
+void COParam::setUnit(UnitType unit)
+{
+    switch (unit)
+    {
+    case UNIT_TC:
+        // update ti value
+        pimpl->tiVal = Unit::convert(unit, UNIT_TF, pimpl->tiVal * 1.0 / 10).toDouble() * 10;
+        break;
+    case UNIT_TF:
+        // update ti value
+        pimpl->tiVal = Unit::convert(unit, UNIT_TC, pimpl->tiVal * 1.0 / 10).toDouble() * 10;
+        break;
+    default:
+        break;
+    }
+
+    systemConfig.setNumValue("Unit|TemperatureUnit", static_cast<int>(unit));
+
+    if (pimpl->measureWin)
+    {
+        pimpl->measureWin->setUnit(unit);
+    }
+}
+
 void COParam::setCatheterCoeff(unsigned short coef)
 {
     currentConfig.setNumValue("CO|ComputationConst", (unsigned)coef);
@@ -285,7 +317,24 @@ void COParam::setTiSource(COTiSource source, unsigned short temp)
     currentConfig.setNumValue("CO|TISource", static_cast<int>(source));
     if (source == CO_TI_SOURCE_MANUAL)
     {
-        currentConfig.setNumValue("CO|InjectateTemp", static_cast<int>(temp));
+        int fahrenheitTi = 0;   // fahrenheit unit ti value
+        int celsiusTi = 0;      // celsius unit ti value
+        UnitType curUnit = coParam.getUnit();
+        UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_CO_TB);
+        if (curUnit != defUnit)
+        {
+            // cur unit is fahrenheit
+            fahrenheitTi = static_cast<int>(temp);
+            celsiusTi = Unit::convert(defUnit, curUnit, temp * 1.0 / 10).toDouble() * 10;
+        }
+        else
+        {
+            // cur unit is celsius
+            fahrenheitTi = Unit::convert(UNIT_TF, defUnit, temp * 1.0 / 10).toDouble() * 10;
+            celsiusTi = static_cast<int>(temp);
+        }
+        currentConfig.setNumValue("CO|InjectateTemp|fahrenheit", fahrenheitTi);
+        currentConfig.setNumValue("CO|InjectateTemp|celsius", celsiusTi);
         pimpl->tiVal = temp;
     }
     else
@@ -312,7 +361,8 @@ unsigned short COParam::getTi() const
 unsigned short COParam::getManualTi()
 {
     int temp = 20;
-    currentConfig.getNumValue("CO|InjectateTemp", temp);
+    QString tiPrefix = QString("CO|InjectateTemp|") + Unit::getSymbol(getUnit());
+    currentConfig.getNumValue(tiPrefix, temp);
     return temp;
 }
 
@@ -434,7 +484,18 @@ void COParam::setTi(short ti)
 {
     if (pimpl->tiSrc == CO_TI_SOURCE_AUTO)
     {
-        pimpl->tiVal = ti;
+        UnitType curUnit = getUnit();
+        UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_CO_TB);
+        if (curUnit != defUnit)
+        {
+            // cur unit is fahrenheit
+            pimpl->tiVal = Unit::convert(curUnit, defUnit, ti * 1.0 / 10).toDouble() * 10;
+        }
+        else
+        {
+            // cur unit is celsius
+            pimpl->tiVal = ti;
+        }
     }
 }
 

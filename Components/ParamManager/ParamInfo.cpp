@@ -848,6 +848,7 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id, UnitType *t0, UnitType *t1)
     case SUB_PARAM_CO_CI:
         return UNIT_LPMPSQM;
     case SUB_PARAM_CO_TB:
+        *t0 = UNIT_TF;
         return UNIT_TC;
 
     case SUB_PARAM_T1:

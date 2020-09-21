@@ -336,6 +336,14 @@ void COMeasureWindow::setTb(short tb)
     }
 }
 
+void COMeasureWindow::setUnit(UnitType unit)
+{
+    if (pimpl->measureWidget)
+    {
+        pimpl->measureWidget->setUnit(unit);
+    }
+}
+
 void COMeasureWindow::addMeasureWaveData(short wave)
 {
     pimpl->measureWidget->addMeasureWave(wave);
@@ -410,8 +418,11 @@ void COMeasureWindow::showEvent(QShowEvent *ev)
     {
         /* load tb and ti if the measure data in the measure widget is invalid */
         pimpl->measureWidget->setTb(coParam.getTb());
-        pimpl->measureWidget->setTi(coParam.getTi());
     }
+    // update ti value
+    pimpl->measureWidget->setTi(coParam.getTi());
+    // update unit
+    pimpl->measureWidget->setUnit(coParam.getUnit());
 
     if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
     {

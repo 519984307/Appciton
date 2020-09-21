@@ -12,6 +12,7 @@
 
 #include "Framework/UI/Dialog.h"
 #include <QScopedPointer>
+#include "Framework/Utility/Unit.h"
 
 
 class COMeasureWindowPrivate;
@@ -47,6 +48,12 @@ public:
      * Only set the tb value when  in measurement
      */
     void setTb(short tb);
+
+    /**
+     * @brief setUnit  set unit
+     * @param unit  Unit type
+     */
+    void setUnit(UnitType unit);
 
     /**
      * @brief addMeasureWaveData add measure wave data

@@ -22,6 +22,7 @@
 #include "NIBPParam.h"
 #include "SystemManager.h"
 #include "IBPParam.h"
+#include "COParam.h"
 
 class UnitSetupMenuContentPrivate
 {
@@ -367,6 +368,7 @@ void UnitSetupMenuContent::onComboBoxIndexChanged(int index)
             {
                 index = UNIT_TF;
             }
+            coParam.setUnit(static_cast<UnitType>(index));
             tempParam.setUnit(static_cast<UnitType>(index));
             break;
         case UnitSetupMenuContentPrivate::ITEM_CBO_IBP_UNIT:
