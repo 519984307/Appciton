@@ -22,6 +22,11 @@
 #include "ConfigManager.h"
 #include "KeyInputPanel.h"
 #include "MessageBox.h"
+#include "FloatHandle.h"
+
+// ti valid range (unit ℃)
+#define MIN_TI_VALUE         (0.0)
+#define MAX_TI_VALUE         (27.0)
 
 class ConfigEditCOMenuContentPrivate
 {
@@ -35,20 +40,29 @@ public:
     };
 
     explicit ConfigEditCOMenuContentPrivate(Config *const config)
-          : config(config)
+          : config(config), manualTiLabel(NULL)
     {
     }
 
     // load settings
     void loadOptions();
 
+    /**
+     * @brief saveTiTemp  save ti temp to config
+     * @param temp
+     */
+    void saveTiTemp(int temp);
+
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, Button *> buttons;
     Config * const config;
+    QLabel* manualTiLabel;   // manual ti label
 };
 
 void ConfigEditCOMenuContentPrivate::loadOptions()
 {
+    bool isOnlyToRead = configManager.isReadOnly();
+
     buttons[ITEM_BTN_CO_CONST]->blockSignals(true);
     buttons[ITEM_BTN_MANUAL_TI]->blockSignals(true);
     buttons[ITEM_BTN_INJECTATE_VOLUME]->blockSignals(true);
@@ -61,7 +75,7 @@ void ConfigEditCOMenuContentPrivate::loadOptions()
     config->getNumValue("CO|TISource", number);
     combos[ITEM_CBO_TI_SOURCE]->setCurrentIndex(number);
     number = 0;
-    if (combos[ITEM_CBO_TI_SOURCE]->currentIndex() == CO_TI_SOURCE_AUTO)
+    if (combos[ITEM_CBO_TI_SOURCE]->currentIndex() == CO_TI_SOURCE_AUTO || isOnlyToRead)
     {
         buttons[ITEM_BTN_MANUAL_TI]->setEnabled(false);
     }
@@ -71,16 +85,54 @@ void ConfigEditCOMenuContentPrivate::loadOptions()
     }
 
     number = 20;
-    config->getNumValue("CO|InjectateTemp", number);
+
+    QString tiValuePath = QString("CO|InjectateTemp|") + Unit::getSymbol(coParam.getUnit());
+    config->getNumValue(tiValuePath, number);
     buttons[ITEM_BTN_MANUAL_TI]->setText(QString::number(number * 1.0 / 10, 'f', 1));
     number = 0;
     config->getNumValue("CO|InjectateVolume", number);
     buttons[ITEM_BTN_INJECTATE_VOLUME]->setText(QString::number(number));
 
+    if (manualTiLabel)
+    {
+        // update manual ti label
+        QString unitStr = Unit::getSymbol(coParam.getUnit());
+        manualTiLabel->setText(QString("%1 (%2)").arg(trs("InjectateTemp")).arg(trs(unitStr)));
+    }
+
+    combos[ITEM_CBO_TI_SOURCE]->setEnabled(!isOnlyToRead);
+    buttons[ITEM_BTN_CO_CONST]->setEnabled(!isOnlyToRead);
+    buttons[ITEM_BTN_INJECTATE_VOLUME]->setEnabled(!isOnlyToRead);
+
     buttons[ITEM_BTN_CO_CONST]->blockSignals(false);
     buttons[ITEM_BTN_MANUAL_TI]->blockSignals(false);
     buttons[ITEM_BTN_INJECTATE_VOLUME]->blockSignals(false);
     combos[ITEM_CBO_TI_SOURCE]->blockSignals(false);
+}
+
+void ConfigEditCOMenuContentPrivate::saveTiTemp(int temp)
+{
+    int fahrenheitTi = 0;   // fahrenheit unit ti value
+    int celsiusTi = 0;      // celsius unit ti value
+    UnitType curUnit = coParam.getUnit();
+    UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_CO_TB);
+    if (curUnit != defUnit)
+    {
+        // cur unit is fahrenheit
+        fahrenheitTi = static_cast<int>(temp);
+        celsiusTi = Unit::convert(defUnit, curUnit, temp * 1.0 / 10).toDouble() * 10;
+    }
+    else
+    {
+        // cur unit is celsius
+        fahrenheitTi = Unit::convert(UNIT_TF, defUnit, temp * 1.0 / 10).toDouble() * 10;
+        celsiusTi = static_cast<int>(temp);
+    }
+    if (config)
+    {
+        config->setNumValue("CO|InjectateTemp|fahrenheit", fahrenheitTi);
+        config->setNumValue("CO|InjectateTemp|celsius", celsiusTi);
+    }
 }
 
 ConfigEditCOMenuContent::ConfigEditCOMenuContent(Config * const config)
@@ -97,15 +149,6 @@ ConfigEditCOMenuContent::~ConfigEditCOMenuContent()
 void ConfigEditCOMenuContent::readyShow()
 {
     d_ptr->loadOptions();
-    bool isOnlyToRead = configManager.isReadOnly();
-    d_ptr->combos[ConfigEditCOMenuContentPrivate::
-            ITEM_CBO_TI_SOURCE]->setEnabled(!isOnlyToRead);
-    d_ptr->buttons[ConfigEditCOMenuContentPrivate::
-            ITEM_BTN_CO_CONST]->setEnabled(!isOnlyToRead);
-    d_ptr->buttons[ConfigEditCOMenuContentPrivate::
-            ITEM_BTN_MANUAL_TI]->setEnabled(!isOnlyToRead);
-    d_ptr->buttons[ConfigEditCOMenuContentPrivate::
-            ITEM_BTN_INJECTATE_VOLUME]->setEnabled(!isOnlyToRead);
 }
 
 void ConfigEditCOMenuContent::layoutExec()
@@ -146,6 +189,7 @@ void ConfigEditCOMenuContent::layoutExec()
 
     // injection temp
     label = new QLabel(QString("%1 (%2)").arg(trs("InjectateTemp")).arg(trs("celsius")));
+    d_ptr->manualTiLabel = label;
     layout->addWidget(label, count, 0);
     button = new Button("20");
     button ->setButtonStyle(Button::ButtonTextOnly);
@@ -201,7 +245,7 @@ void ConfigEditCOMenuContent::onComboBoxIndexChanged(int index)
                 d_ptr->buttons.value(ConfigEditCOMenuContentPrivate::ITEM_BTN_MANUAL_TI)->setEnabled(false);
             }
             int temp = d_ptr->buttons[ConfigEditCOMenuContentPrivate::ITEM_BTN_MANUAL_TI]->text().toFloat() * 10;
-            d_ptr->config->setNumValue("CO|InjectateTemp", (unsigned)temp);
+            d_ptr->saveTiTemp(temp);
             d_ptr->config->setNumValue("CO|TISource", index);
             break;
         }
@@ -281,24 +325,37 @@ void ConfigEditCOMenuContent::onButtonReleased()
 
             if (numberPad.exec())
             {
+                float minTi = MIN_TI_VALUE;
+                float maxTi = MAX_TI_VALUE;
+                UnitType curUnit = coParam.getUnit();
+                UnitType defUnit = paramInfo.getUnitOfSubParam(SUB_PARAM_CO_TB);
+                if (curUnit != defUnit)
+                {
+                    QString minTiStr = Unit::convert(curUnit, defUnit, minTi);
+                    QString maxTiStr = Unit::convert(curUnit, defUnit, maxTi);
+                    minTi = minTiStr.toFloat();
+                    maxTi = maxTiStr.toFloat();
+                }
                 QString text = numberPad.getStrValue();
                 bool ok = false;
                 float value = text.toFloat(&ok);
-                int16_t actualValue = value * 10;
                 if (ok)
                 {
-                    if (actualValue <= 270)
+                    // out of ti valid range
+                    if (isUpper(value, maxTi) || isUpper(minTi, value))
                     {
-                        button->setText(text);
-                        d_ptr->config->setNumValue("CO|TISource", static_cast<int>(CO_TI_SOURCE_MANUAL));
-                        d_ptr->config->setNumValue("CO|InjectateTemp", static_cast<int>(actualValue));
+                        QString validTiRange = QString::number(minTi, 'f', 1) + "-" +
+                                               QString::number(maxTi, 'f', 1);
+                        MessageBox messageBox(trs("Prompt"),
+                                              trs("InvalidInput") + validTiRange,
+                                              QStringList(trs("EnglishYESChineseSURE")));
+                        messageBox.exec();
                     }
                     else
                     {
-                        MessageBox messageBox(trs("Prompt"),
-                                              trs("InvalidInput") + "0.0-27.0",
-                                              QStringList(trs("EnglishYESChineseSURE")));
-                        messageBox.exec();
+                        button->setText(text);
+                        d_ptr->config->setNumValue("CO|TISource", static_cast<int>(CO_TI_SOURCE_MANUAL));
+                        d_ptr->saveTiTemp(value * 10);
                     }
                 }
             }
