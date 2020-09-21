@@ -232,7 +232,6 @@ public:
         QFile callFile("/sys/class/pmos/plugin_insert_recognition");
         if (!callFile.open(QIODevice::ReadWrite))
         {
-            qDebug() << "fail to open plugin file";
             return -1;
         }
         data = callFile.read(1);
