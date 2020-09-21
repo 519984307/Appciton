@@ -930,7 +930,7 @@
 		    <Scale>10</Scale>
 		</fahrenheit>
 		</TD>
-		<O2 Enable="0" Prio="1">
+		<O2 Enable="1" Prio="2">
 		<percent>
 		    <Low Min="18" Max="97">20</Low>
 		    <High Min="20" Max="99">60</High>

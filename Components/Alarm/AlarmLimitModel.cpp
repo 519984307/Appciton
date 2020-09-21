@@ -251,8 +251,16 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
                 editInfo.curValue = d_ptr->alarmDataInfos.at(row).status;
                 break;
             case SECTION_LEVEL:
+                if (d_ptr->alarmDataInfos.at(row).paramID == PARAM_O2)
+                {
+                    // O2 param only has a high alarm level.
+                    editInfo.list << trs("High");
+                }
+                else
+                {
+                    editInfo.list << trs("Medium") << trs("High");
+                }
                 editInfo.type = ItemEditInfo::LIST;
-                editInfo.list << trs("Medium") << trs("High");
                 editInfo.curValue = d_ptr->alarmDataInfos.at(row).alarmLevel - 1;
                 break;
             case SECTION_LOW_LIMIT:
