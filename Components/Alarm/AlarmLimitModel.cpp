@@ -253,7 +253,11 @@ QVariant AlarmLimitModel::data(const QModelIndex &index, int role) const
             case SECTION_LEVEL:
                 if (d_ptr->alarmDataInfos.at(row).paramID == PARAM_O2)
                 {
-                    // O2 param only has a high alarm level.
+                    /*
+                     * 根据80601-2-55-2011（2015）医疗电气设备标准，其中第25页提出内容:
+                     * 氧浓度在低于18%时，报警等级必须为高级。
+                     * 为了简便实现该功能，O2参数只存在高级报警等级。
+                     */
                     editInfo.list << trs("High");
                 }
                 else
