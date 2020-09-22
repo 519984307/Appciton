@@ -27,6 +27,7 @@
 #include "WindowManager.h"
 #include "COMeasureWindow.h"
 #include "FloatHandle.h"
+#include "PatientManager.h"
 
 #define MIN_TI_VALUE         (0.0)
 #define MAX_TI_VALUE         (27.0)
@@ -61,13 +62,18 @@ void COMenuContentPrivate::loadOptions()
     buttons[ITEM_BTN_CO_CONST]->setText(QString::number(coef * 1.0 / 1000, 'f', 3));
 
     combos[ITEM_CBO_TI_SOURCE]->blockSignals(true);
+
+    // load manual ti value
+    short ti = coParam.getManualTi();
+    QString text = QString::number(ti * 1.0 / 10, 'f', 1);
+    buttons[ITEM_BTN_MANUAL_TI]->setText(text);
+
     // demo mode, update ti source and ti value
     if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
     {
         combos[ITEM_CBO_TI_SOURCE]->setCurrentIndex(CO_TI_SOURCE_MANUAL);
         combos[ITEM_CBO_TI_SOURCE]->setEnabled(false);
-        int tiVal = buttons[ITEM_BTN_MANUAL_TI]->text().toFloat() * 10;
-        coParam.setTiSource(CO_TI_SOURCE_MANUAL, tiVal);
+        coParam.setTiSource(CO_TI_SOURCE_MANUAL, ti);
     }
     else
     {
@@ -83,9 +89,16 @@ void COMenuContentPrivate::loadOptions()
     {
         buttons[ITEM_BTN_MANUAL_TI]->setEnabled(true);
     }
-    short ti = coParam.getManualTi();
-    QString text = QString::number(ti * 1.0 / 10, 'f', 1);
-    buttons[ITEM_BTN_MANUAL_TI]->setText(text);
+
+    // C.O. measure function is only available for adults.
+    if (patientManager.getType() == PATIENT_TYPE_ADULT)
+    {
+        buttons[ITEM_BTN_CO_MEASURE]->setEnabled(true);
+    }
+    else
+    {
+        buttons[ITEM_BTN_CO_MEASURE]->setEnabled(false);
+    }
 
     if (manualTiLabel)
     {
