@@ -129,7 +129,19 @@ bool AlarmLimitModel::setData(const QModelIndex &index, const QVariant &value, i
                 emit dataChanged(index, index);
                 break;
             case SECTION_LEVEL:
-                d_ptr->alarmDataInfos[row].alarmLevel = newValue + 1;
+                if (d_ptr->alarmDataInfos.at(row).paramID == PARAM_O2)
+                {
+                    /*
+                     * 80601-2-55-2011（2015）医疗电气设备标准，其中第25页提出内容:
+                     * 氧浓度在低于18%时，报警等级必须为高级。
+                     * 为了简便实现该功能，O2参数只存在高级报警等级。
+                     */
+                    d_ptr->alarmDataInfos[row].alarmLevel = ALARM_PRIO_HIGH;
+                }
+                else
+                {
+                    d_ptr->alarmDataInfos[row].alarmLevel = newValue + 1;
+                }
                 alarmDataUpdate(d_ptr->alarmDataInfos[row], index.column());
                 emit dataChanged(index, index);
                 break;
