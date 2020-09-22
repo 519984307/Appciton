@@ -860,6 +860,8 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id, UnitType *t0, UnitType *t1)
         *t0 = UNIT_TDF;
         return UNIT_TDC;
 
+    case SUB_PARAM_O2:
+        return UNIT_PERCENT;
     default:
         break;
     }
