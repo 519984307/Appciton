@@ -579,7 +579,7 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
             ConfigEditECGMenuContentPrivate::MenuItem menuItem =
                 ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_GAIN;
             d_ptr->combos[menuItem]->blockSignals(true);
-            d_ptr->combos[menuItem]->setCurrentIndex(index);
+            d_ptr->combos[menuItem]->setCurrentIndex(d_ptr->getCurGainIndex(static_cast<ECGGain> (index)));
             d_ptr->combos[menuItem]->blockSignals(false);
         }
         break;

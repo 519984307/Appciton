@@ -754,7 +754,7 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             ecgParam.updateWaveWidgetStatus();
             d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(true);
             ECGGain gain = ecgParam.getGain(static_cast<ECGLead>(index));
-            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->setCurrentIndex(gain);
+            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->setCurrentIndex(d_ptr->getCurGainIndex(gain));
             d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(false);
             break;
         }
@@ -763,7 +763,7 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             ECGLead lead = static_cast<ECGLead>(index);
             d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(true);
             ECGGain gain = ecgParam.getGain(lead);
-            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->setCurrentIndex(gain);
+            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->setCurrentIndex(d_ptr->getCurGainIndex(gain));
             d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(false);
 
             bool isUpdateWaveStatus = false;
@@ -779,7 +779,7 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
                 ecgParam.setLeadMode3DisplayLead(d_ptr->ecgWaveforms[preECG2Wave]);
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(true);
                 ECGGain gain = ecgParam.getGain(lead);
-                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->setCurrentIndex(gain);
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->setCurrentIndex(d_ptr->getCurGainIndex(gain));
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(false);
 
                 // 更新ecg1的item选择
