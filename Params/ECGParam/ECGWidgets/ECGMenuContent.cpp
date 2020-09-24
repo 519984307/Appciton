@@ -76,6 +76,13 @@ public:
      */
     void updatePrintWaveIds();
 
+    /**
+     * @brief getCurGainIndex 获取ECG增益在下拉框中的当前索引
+     * @param gain  ECG增益
+     * @return   下拉框中的当前索引
+     */
+    int getCurGainIndex(ECGGain gain);
+
     QMap<MenuItem, ComboBox *> combos;
 #ifndef HIDE_ECG_ARRHYTHMIA_FUNCTION
     Button *arrhythmiaBtn;
@@ -192,7 +199,23 @@ void ECGMenuContentPrivate::loadOptions()
     if (index >= 0)
     {
         ECGGain gain = ecgParam.getGain(static_cast<ECGLead>(index));
-        combos[ITEM_CBO_ECG_GAIN]->setCurrentIndex(gain);
+        /*
+         * 根据DV进行ECG增益测试情况，
+         * 在ECG增益为X4时，会出现波形截顶情况；以及在ECG增益为X0.125时，波形振幅太小，基本为直线；
+         * 所以DV要求不显示X0.125，X4 ECG增益
+         */
+        combos[ITEM_CBO_ECG_GAIN]->clear();
+        for (int i = ECG_GAIN_X025; i < ECG_GAIN_X40; i++)
+        {
+            /* 增加ECG增益选项: X0.25, X0.5, X1, X2 */
+            combos[ITEM_CBO_ECG_GAIN]->addItem(trs(ECGSymbol::convert(static_cast<ECGGain>(i))),
+                                               qVariantFromValue(i));
+        }
+        /* 增加ECG增益选项: AUTO */
+        combos[ITEM_CBO_ECG_GAIN]->addItem(trs(ECGSymbol::convert(ECG_GAIN_AUTO)),
+                                           qVariantFromValue(static_cast<int>(ECG_GAIN_AUTO)));
+
+        combos[ITEM_CBO_ECG_GAIN]->setCurrentIndex(getCurGainIndex(gain));
         combos[ITEM_CBO_ECG1]->setCurrentIndex(index);
     }
 
@@ -367,6 +390,37 @@ void ECGMenuContentPrivate::updatePrintWaveIds()
     }
 }
 
+int ECGMenuContentPrivate::getCurGainIndex(ECGGain gain)
+{
+    /*
+     * 根据DV进行ECG增益测试情况，
+     * 在ECG增益为X4时，会出现波形截顶情况；以及在ECG增益为X0.125时，波形振幅太小，基本为直线；
+     * 获取不显示X0.125，X4 ECG增益后各增益对应的索引。
+     */
+    switch (gain)
+    {
+    case ECG_GAIN_X025:
+        return 0;
+        break;
+    case ECG_GAIN_X05:
+        return 1;
+        break;
+    case ECG_GAIN_X10:
+        return 2;
+        break;
+    case ECG_GAIN_X20:
+        return 3;
+        break;
+    case ECG_GAIN_AUTO:
+        return 4;
+        break;
+    default:
+        break;
+    }
+
+    return 0;
+}
+
 ECGMenuContent::ECGMenuContent()
     : MenuContent(trs("ECGMenu"), trs("ECGMenuDesc")),
       d_ptr(new ECGMenuContentPrivate)
@@ -472,10 +526,10 @@ void ECGMenuContent::layoutExec()
     label = new QLabel(trs("ECGGain"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    for (int i = 0; i < ECG_GAIN_NR; i++)
-    {
-        comboBox->addItem(trs(ECGSymbol::convert(static_cast<ECGGain>(i))));
-    }
+//    for (int i = 0; i < ECG_GAIN_NR; i++)
+//    {
+//        comboBox->addItem(trs(ECGSymbol::convert(static_cast<ECGGain>(i))));
+//    }
     itemID  = ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
@@ -746,14 +800,15 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
 
         case ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN:
         {
+            QVariant itemData = (box->itemData(index));
             if (layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN)
             {
-                ecgParam.setGain(static_cast<ECGGain>(index));
+                ecgParam.setGain(static_cast<ECGGain>(itemData.toInt()));
             }
             else
             {
                 ECGLead ecg = static_cast<ECGLead>(d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG1]->currentIndex());
-                ecgParam.setGain(static_cast<ECGGain>(index), ecg);
+                ecgParam.setGain(static_cast<ECGGain>(itemData.toInt()), ecg);
             }
             break;
         }

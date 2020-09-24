@@ -48,6 +48,13 @@ public:
     // load settings
     void loadOptions();
 
+    /**
+     * @brief getCurGainIndex 获取ECG增益在下拉框中的当前索引
+     * @param gain  ECG增益
+     * @return   下拉框中的当前索引
+     */
+    int getCurGainIndex(ECGGain gain);
+
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, QLabel *> comboLabels;
     Config *const config;
@@ -168,19 +175,28 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
         combos[ITEM_CBO_ECG2_WAVE]->setVisible(false);
         comboLabels[ITEM_CBO_ECG2_WAVE]->setVisible(false);
     }
-
+    /*
+     * 根据DV进行ECG增益测试情况，
+     * 在ECG增益为X4时，会出现波形截顶情况；以及在ECG增益为X0.125时，波形振幅太小，基本为直线；
+     * 所以DV要求不显示X0.125，X4 ECG增益
+     */
     combos[ITEM_CBO_ECG1_GAIN]->clear();
-    for (int i = 0; i < ECG_GAIN_NR; i++)
+    for (int i = ECG_GAIN_X025; i < ECG_GAIN_X40; i++)
     {
-        combos[ITEM_CBO_ECG1_GAIN]->addItem(trs(ECGSymbol::convert(static_cast<ECGGain>(i))));
+        /* 增加ECG增益选项: X0.25, X0.5, X1, X2 */
+        combos[ITEM_CBO_ECG1_GAIN]->addItem(trs(ECGSymbol::convert(static_cast<ECGGain>(i))),
+                                           qVariantFromValue(i));
     }
+    /* 增加ECG增益选项: AUTO */
+    combos[ITEM_CBO_ECG1_GAIN]->addItem(trs(ECGSymbol::convert(ECG_GAIN_AUTO)),
+                                       qVariantFromValue(static_cast<int>(ECG_GAIN_AUTO)));
 
     QString leadName = "ECG";
     leadName += ECGSymbol::convert(static_cast<ECGLead>(index), ECG_CONVENTION_AAMI);
     leadName += "WaveWidget";
 
     config->getNumValue(QString("ECG|Gain|%1").arg(leadName), index);
-    combos[ITEM_CBO_ECG1_GAIN]->setCurrentIndex(index);
+    combos[ITEM_CBO_ECG1_GAIN]->setCurrentIndex(getCurGainIndex(static_cast<ECGGain>(index)));
 
     config->getNumValue("ECG|SweepSpeed", index);
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(index);
@@ -228,6 +244,37 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
 
     config->getNumValue("ECG|PacerMaker", index);
     combos[ITEM_CBO_PACER_MARK]->setCurrentIndex(index);
+}
+
+int ConfigEditECGMenuContentPrivate::getCurGainIndex(ECGGain gain)
+{
+    /*
+     * 根据DV进行ECG增益测试情况，
+     * 在ECG增益为X4时，会出现波形截顶情况；以及在ECG增益为X0.125时，波形振幅太小，基本为直线；
+     * 获取不显示X0.125，X4 ECG增益后各增益对应的索引。
+     */
+    switch (gain)
+    {
+    case ECG_GAIN_X025:
+        return 0;
+        break;
+    case ECG_GAIN_X05:
+        return 1;
+        break;
+    case ECG_GAIN_X10:
+        return 2;
+        break;
+    case ECG_GAIN_X20:
+        return 3;
+        break;
+    case ECG_GAIN_AUTO:
+        return 4;
+        break;
+    default:
+        break;
+    }
+
+    return 0;
 }
 
 ConfigEditECGMenuContent::ConfigEditECGMenuContent(Config *const config)
@@ -558,12 +605,13 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
         break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_GAIN:
         {
+            QVariant itemData = (box->itemData(index));
             int lead = 0;
             d_ptr->config->getNumValue("ECG|Ecg1Wave", lead);
             QString leadName = "ECG";
             leadName += ECGSymbol::convert(static_cast<ECGLead>(lead), ECG_CONVENTION_AAMI);
             leadName += "WaveWidget";
-            d_ptr->config->setNumValue(QString("ECG|Gain|%1").arg(leadName), index);
+            d_ptr->config->setNumValue(QString("ECG|Gain|%1").arg(leadName), itemData.toInt());
         }
         break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_HTBT_VOL:
