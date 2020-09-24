@@ -201,7 +201,7 @@ void ECGMenuContentPrivate::loadOptions()
         ECGGain gain = ecgParam.getGain(static_cast<ECGLead>(index));
 #ifdef HIDE_ECG_GAIN_X0125_AND_X4
         /*
-         * 根据DV IEC测试反馈问题，
+         * 根据DV2020.9.16 IEC测试反馈问题，
          * 在ECG增益为X4时，会出现波形截顶情况；以及在ECG增益为X0.125时，波形振幅太小，基本为直线；
          * 所以DV要求不显示X0.125，X4 ECG增益
          */
@@ -402,7 +402,7 @@ int ECGMenuContentPrivate::getCurGainIndex(ECGGain gain)
 {
 #ifdef HIDE_ECG_GAIN_X0125_AND_X4
     /*
-     * 根据DV IEC测试反馈问题，
+     * 根据DV2020.9.16 IEC测试反馈问题，
      * 在ECG增益为X4时，会出现波形截顶情况；以及在ECG增益为X0.125时，波形振幅太小，基本为直线；
      * 获取不显示X0.125，X4 ECG增益后各增益对应的索引。
      */

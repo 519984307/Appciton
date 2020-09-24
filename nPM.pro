@@ -97,7 +97,7 @@ DEFINES += HIDE_WIFI_FUNCTION
 #隐藏ECG12导功能
 DEFINES += HIDE_ECG_12_LEAD_FUNCTION
 
-#根据DV IEC测试反馈问题，在ECG增益为X4时，会出现波形截顶情况；以及在ECG增益为X0.125时，波形振幅太小，基本为直线；
+#根据DV2020.9.16 IEC测试反馈问题，在ECG增益为X4时，会出现波形截顶情况；以及在ECG增益为X0.125时，波形振幅太小，基本为直线；
 #增加隐藏ECG增益X0.125，X4选项功能
 DEFINES += HIDE_ECG_GAIN_X0125_AND_X4
 
