@@ -199,23 +199,6 @@ void ECGMenuContentPrivate::loadOptions()
     if (index >= 0)
     {
         ECGGain gain = ecgParam.getGain(static_cast<ECGLead>(index));
-        combos[ITEM_CBO_ECG_GAIN]->clear();
-        for (int i = ECG_GAIN_X0125; i < ECG_GAIN_NR; i++)
-        {
-#ifdef HIDE_ECG_GAIN_X0125_AND_X4
-            /*
-             * 根据DV2020.9.16 IEC测试反馈问题，
-             * 在ECG增益为X4时，会出现波形截顶情况；以及在ECG增益为X0.125时，波形振幅太小，基本为直线；
-             * 所以DV要求不显示X0.125，X4 ECG增益
-             */
-            if (i == ECG_GAIN_X0125 || i == ECG_GAIN_X40)
-            {
-                continue;
-            }
-#endif
-            combos[ITEM_CBO_ECG_GAIN]->addItem(trs(ECGSymbol::convert(static_cast<ECGGain>(i))),
-                                               qVariantFromValue(i));
-        }
         combos[ITEM_CBO_ECG_GAIN]->setCurrentIndex(getCurGainIndex(gain));
         combos[ITEM_CBO_ECG1]->setCurrentIndex(index);
     }
@@ -515,6 +498,21 @@ void ECGMenuContent::layoutExec()
     label = new QLabel(trs("ECGGain"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
+    for (int i = ECG_GAIN_X0125; i < ECG_GAIN_NR; i++)
+    {
+#ifdef HIDE_ECG_GAIN_X0125_AND_X4
+        /*
+         * 根据DV2020.9.16 IEC测试反馈问题，
+         * 在ECG增益为X4时，会出现波形截顶情况；以及在ECG增益为X0.125时，波形振幅太小，基本为直线；
+         * 所以DV要求不显示X0.125，X4 ECG增益
+         */
+        if (i == ECG_GAIN_X0125 || i == ECG_GAIN_X40)
+        {
+            continue;
+        }
+#endif
+        comboBox->addItem(trs(ECGSymbol::convert(static_cast<ECGGain>(i))), qVariantFromValue(i));
+    }
     itemID  = ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN;
     comboBox->setProperty("Item",
                           qVariantFromValue(itemID));
