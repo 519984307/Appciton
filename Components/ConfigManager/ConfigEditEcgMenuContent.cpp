@@ -175,8 +175,9 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
         combos[ITEM_CBO_ECG2_WAVE]->setVisible(false);
         comboLabels[ITEM_CBO_ECG2_WAVE]->setVisible(false);
     }
+#ifdef HIDE_ECG_GAIN_X0125_AND_X4
     /*
-     * 根据DV进行ECG增益测试情况，
+     * 根据DV IEC测试反馈问题，
      * 在ECG增益为X4时，会出现波形截顶情况；以及在ECG增益为X0.125时，波形振幅太小，基本为直线；
      * 所以DV要求不显示X0.125，X4 ECG增益
      */
@@ -190,6 +191,13 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
     /* 增加ECG增益选项: AUTO */
     combos[ITEM_CBO_ECG1_GAIN]->addItem(trs(ECGSymbol::convert(ECG_GAIN_AUTO)),
                                        qVariantFromValue(static_cast<int>(ECG_GAIN_AUTO)));
+#else
+    for (int i = ECG_GAIN_X0125; i < ECG_GAIN_NR; i++)
+    {
+        combos[ITEM_CBO_ECG1_GAIN]->addItem(trs(ECGSymbol::convert(static_cast<ECGGain>(i))),
+                                            qVariantFromValue(i));
+    }
+#endif
 
     QString leadName = "ECG";
     leadName += ECGSymbol::convert(static_cast<ECGLead>(index), ECG_CONVENTION_AAMI);
@@ -248,33 +256,21 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
 
 int ConfigEditECGMenuContentPrivate::getCurGainIndex(ECGGain gain)
 {
+#ifdef HIDE_ECG_GAIN_X0125_AND_X4
     /*
-     * 根据DV进行ECG增益测试情况，
+     * 根据DV IEC测试反馈问题，
      * 在ECG增益为X4时，会出现波形截顶情况；以及在ECG增益为X0.125时，波形振幅太小，基本为直线；
      * 获取不显示X0.125，X4 ECG增益后各增益对应的索引。
      */
-    switch (gain)
+    if (gain == ECG_GAIN_AUTO)
     {
-    case ECG_GAIN_X025:
-        return 0;
-        break;
-    case ECG_GAIN_X05:
-        return 1;
-        break;
-    case ECG_GAIN_X10:
-        return 2;
-        break;
-    case ECG_GAIN_X20:
-        return 3;
-        break;
-    case ECG_GAIN_AUTO:
-        return 4;
-        break;
-    default:
-        break;
+        return combos[ITEM_CBO_ECG1_GAIN]->count() - 1;
     }
 
-    return 0;
+    return gain - ECG_GAIN_X025;
+#else
+    return gain;
+#endif
 }
 
 ConfigEditECGMenuContent::ConfigEditECGMenuContent(Config *const config)
