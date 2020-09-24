@@ -199,30 +199,23 @@ void ECGMenuContentPrivate::loadOptions()
     if (index >= 0)
     {
         ECGGain gain = ecgParam.getGain(static_cast<ECGLead>(index));
-#ifdef HIDE_ECG_GAIN_X0125_AND_X4
-        /*
-         * 根据DV2020.9.16 IEC测试反馈问题，
-         * 在ECG增益为X4时，会出现波形截顶情况；以及在ECG增益为X0.125时，波形振幅太小，基本为直线；
-         * 所以DV要求不显示X0.125，X4 ECG增益
-         */
         combos[ITEM_CBO_ECG_GAIN]->clear();
-        for (int i = ECG_GAIN_X025; i < ECG_GAIN_X40; i++)
-        {
-            /* 增加ECG增益选项: X0.25, X0.5, X1, X2 */
-            combos[ITEM_CBO_ECG_GAIN]->addItem(trs(ECGSymbol::convert(static_cast<ECGGain>(i))),
-                                               qVariantFromValue(i));
-        }
-        /* 增加ECG增益选项: AUTO */
-        combos[ITEM_CBO_ECG_GAIN]->addItem(trs(ECGSymbol::convert(ECG_GAIN_AUTO)),
-                                           qVariantFromValue(static_cast<int>(ECG_GAIN_AUTO)));
-#else
         for (int i = ECG_GAIN_X0125; i < ECG_GAIN_NR; i++)
         {
+#ifdef HIDE_ECG_GAIN_X0125_AND_X4
+            /*
+             * 根据DV2020.9.16 IEC测试反馈问题，
+             * 在ECG增益为X4时，会出现波形截顶情况；以及在ECG增益为X0.125时，波形振幅太小，基本为直线；
+             * 所以DV要求不显示X0.125，X4 ECG增益
+             */
+            if (i == ECG_GAIN_X0125 || i == ECG_GAIN_X40)
+            {
+                continue;
+            }
+#endif
             combos[ITEM_CBO_ECG_GAIN]->addItem(trs(ECGSymbol::convert(static_cast<ECGGain>(i))),
                                                qVariantFromValue(i));
         }
-#endif
-
         combos[ITEM_CBO_ECG_GAIN]->setCurrentIndex(getCurGainIndex(gain));
         combos[ITEM_CBO_ECG1]->setCurrentIndex(index);
     }
