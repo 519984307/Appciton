@@ -48,6 +48,13 @@ public:
     // load settings
     void loadOptions();
 
+    /**
+     * @brief getCurGainIndex 获取ECG增益在下拉框中的当前索引
+     * @param gain  ECG增益
+     * @return   下拉框中的当前索引
+     */
+    int getCurGainIndex(ECGGain gain);
+
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, QLabel *> comboLabels;
     Config *const config;
@@ -170,9 +177,21 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
     }
 
     combos[ITEM_CBO_ECG1_GAIN]->clear();
-    for (int i = 0; i < ECG_GAIN_NR; i++)
+    for (int i = ECG_GAIN_X0125; i < ECG_GAIN_NR; i++)
     {
-        combos[ITEM_CBO_ECG1_GAIN]->addItem(trs(ECGSymbol::convert(static_cast<ECGGain>(i))));
+#ifdef HIDE_ECG_GAIN_X0125_AND_X4
+        /*
+         * 根据DV2020.9.16 IEC测试反馈问题，
+         * 在ECG增益为X4时，会出现波形截顶情况；以及在ECG增益为X0.125时，波形振幅太小，基本为直线；
+         * 所以DV要求不显示X0.125，X4 ECG增益
+         */
+        if (i == ECG_GAIN_X0125 || i == ECG_GAIN_X40)
+        {
+            continue;
+        }
+#endif
+        combos[ITEM_CBO_ECG1_GAIN]->addItem(trs(ECGSymbol::convert(static_cast<ECGGain>(i))),
+                                            qVariantFromValue(i));
     }
 
     QString leadName = "ECG";
@@ -180,7 +199,7 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
     leadName += "WaveWidget";
 
     config->getNumValue(QString("ECG|Gain|%1").arg(leadName), index);
-    combos[ITEM_CBO_ECG1_GAIN]->setCurrentIndex(index);
+    combos[ITEM_CBO_ECG1_GAIN]->setCurrentIndex(getCurGainIndex(static_cast<ECGGain>(index)));
 
     config->getNumValue("ECG|SweepSpeed", index);
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(index);
@@ -228,6 +247,25 @@ void ConfigEditECGMenuContentPrivate::loadOptions()
 
     config->getNumValue("ECG|PacerMaker", index);
     combos[ITEM_CBO_PACER_MARK]->setCurrentIndex(index);
+}
+
+int ConfigEditECGMenuContentPrivate::getCurGainIndex(ECGGain gain)
+{
+#ifdef HIDE_ECG_GAIN_X0125_AND_X4
+    /*
+     * 根据DV2020.9.16 IEC测试反馈问题，
+     * 在ECG增益为X4时，会出现波形截顶情况；以及在ECG增益为X0.125时，波形振幅太小，基本为直线；
+     * 获取不显示X0.125，X4 ECG增益后各增益对应的索引。
+     */
+    if (gain == ECG_GAIN_AUTO)
+    {
+        return combos[ITEM_CBO_ECG1_GAIN]->count() - 1;
+    }
+
+    return gain - ECG_GAIN_X025;
+#else
+    return gain;
+#endif
 }
 
 ConfigEditECGMenuContent::ConfigEditECGMenuContent(Config *const config)
@@ -532,7 +570,7 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
             ConfigEditECGMenuContentPrivate::MenuItem menuItem =
                 ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_GAIN;
             d_ptr->combos[menuItem]->blockSignals(true);
-            d_ptr->combos[menuItem]->setCurrentIndex(index);
+            d_ptr->combos[menuItem]->setCurrentIndex(d_ptr->getCurGainIndex(static_cast<ECGGain> (index)));
             d_ptr->combos[menuItem]->blockSignals(false);
         }
         break;
@@ -558,12 +596,13 @@ void ConfigEditECGMenuContent::onComboBoxIndexChanged(int index)
         break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_ECG1_GAIN:
         {
+            QVariant itemData = (box->itemData(index));
             int lead = 0;
             d_ptr->config->getNumValue("ECG|Ecg1Wave", lead);
             QString leadName = "ECG";
             leadName += ECGSymbol::convert(static_cast<ECGLead>(lead), ECG_CONVENTION_AAMI);
             leadName += "WaveWidget";
-            d_ptr->config->setNumValue(QString("ECG|Gain|%1").arg(leadName), index);
+            d_ptr->config->setNumValue(QString("ECG|Gain|%1").arg(leadName), itemData.toInt());
         }
         break;
         case ConfigEditECGMenuContentPrivate::ITEM_CBO_HTBT_VOL:

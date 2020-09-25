@@ -54,9 +54,13 @@ void ECGWaveWidget::_autoGainHandle(int data)
     _autoGainTime = t;
 
     // 开始寻找最合适的增益。
+#ifdef HIDE_ECG_GAIN_X0125_AND_X4
+    int gain = ECG_GAIN_X20;
+    for (; gain >= ECG_GAIN_X025; gain--)
+#else
     int gain = ECG_GAIN_X40;
-//    for (; gain >= ECG_GAIN_X05; gain--)
     for (; gain >= ECG_GAIN_X0125; gain--)
+#endif
     {
         if ((_autoGainTraveVally >= _autoGainLogicalRange[gain].minRange) &&
                 (_autoGainTracePeek <= _autoGainLogicalRange[gain].maxRange))
@@ -71,9 +75,11 @@ void ECGWaveWidget::_autoGainHandle(int data)
     // gain为新的增益。
     if (gain < 0)
     {
+#ifdef HIDE_ECG_GAIN_X0125_AND_X4
+        gain = ECG_GAIN_X025;
+#else
         gain = ECG_GAIN_X0125;
-//        gain = ECG_GAIN_X05;
-        // return;
+#endif
     }
 
     if (gain != static_cast<int>(ecgParam.getGain(ecgParam.waveIDToLeadID((WaveformID)getID()))))
@@ -87,8 +93,11 @@ void ECGWaveWidget::_autoGainHandle(int data)
  *************************************************************************************************/
 void ECGWaveWidget::_calcGainRange(void)
 {
-//    for (int i = ECG_GAIN_X05; i <= ECG_GAIN_X30; i++)
+#ifdef HIDE_ECG_GAIN_X0125_AND_X4
+    for (int i = ECG_GAIN_X025; i <= ECG_GAIN_X20; i++)
+#else
     for (int i = ECG_GAIN_X0125; i <= ECG_GAIN_X40; i++)
+#endif
     {
         int rulerHeight = _calcRulerHeight((ECGGain)i);
 

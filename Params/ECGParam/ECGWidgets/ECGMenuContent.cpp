@@ -76,6 +76,13 @@ public:
      */
     void updatePrintWaveIds();
 
+    /**
+     * @brief getCurGainIndex 获取ECG增益在下拉框中的当前索引
+     * @param gain  ECG增益
+     * @return   下拉框中的当前索引
+     */
+    int getCurGainIndex(ECGGain gain);
+
     QMap<MenuItem, ComboBox *> combos;
 #ifndef HIDE_ECG_ARRHYTHMIA_FUNCTION
     Button *arrhythmiaBtn;
@@ -192,7 +199,7 @@ void ECGMenuContentPrivate::loadOptions()
     if (index >= 0)
     {
         ECGGain gain = ecgParam.getGain(static_cast<ECGLead>(index));
-        combos[ITEM_CBO_ECG_GAIN]->setCurrentIndex(gain);
+        combos[ITEM_CBO_ECG_GAIN]->setCurrentIndex(getCurGainIndex(gain));
         combos[ITEM_CBO_ECG1]->setCurrentIndex(index);
     }
 
@@ -367,6 +374,25 @@ void ECGMenuContentPrivate::updatePrintWaveIds()
     }
 }
 
+int ECGMenuContentPrivate::getCurGainIndex(ECGGain gain)
+{
+#ifdef HIDE_ECG_GAIN_X0125_AND_X4
+    /*
+     * 根据DV2020.9.16 IEC测试反馈问题，
+     * 在ECG增益为X4时，会出现波形截顶情况；以及在ECG增益为X0.125时，波形振幅太小，基本为直线；
+     * 获取不显示X0.125，X4 ECG增益后各增益对应的索引。
+     */
+    if (gain == ECG_GAIN_AUTO)
+    {
+        return combos[ITEM_CBO_ECG_GAIN]->count() - 1;
+    }
+
+    return gain - ECG_GAIN_X025;
+#else
+    return gain;
+#endif
+}
+
 ECGMenuContent::ECGMenuContent()
     : MenuContent(trs("ECGMenu"), trs("ECGMenuDesc")),
       d_ptr(new ECGMenuContentPrivate)
@@ -472,9 +498,20 @@ void ECGMenuContent::layoutExec()
     label = new QLabel(trs("ECGGain"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    for (int i = 0; i < ECG_GAIN_NR; i++)
+    for (int i = ECG_GAIN_X0125; i < ECG_GAIN_NR; i++)
     {
-        comboBox->addItem(trs(ECGSymbol::convert(static_cast<ECGGain>(i))));
+#ifdef HIDE_ECG_GAIN_X0125_AND_X4
+        /*
+         * 根据DV2020.9.16 IEC测试反馈问题，
+         * 在ECG增益为X4时，会出现波形截顶情况；以及在ECG增益为X0.125时，波形振幅太小，基本为直线；
+         * 所以DV要求不显示X0.125，X4 ECG增益
+         */
+        if (i == ECG_GAIN_X0125 || i == ECG_GAIN_X40)
+        {
+            continue;
+        }
+#endif
+        comboBox->addItem(trs(ECGSymbol::convert(static_cast<ECGGain>(i))), qVariantFromValue(i));
     }
     itemID  = ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN;
     comboBox->setProperty("Item",
@@ -700,7 +737,7 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             ecgParam.updateWaveWidgetStatus();
             d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(true);
             ECGGain gain = ecgParam.getGain(static_cast<ECGLead>(index));
-            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->setCurrentIndex(gain);
+            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->setCurrentIndex(d_ptr->getCurGainIndex(gain));
             d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(false);
             break;
         }
@@ -709,7 +746,7 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             ECGLead lead = static_cast<ECGLead>(index);
             d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(true);
             ECGGain gain = ecgParam.getGain(lead);
-            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->setCurrentIndex(gain);
+            d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->setCurrentIndex(d_ptr->getCurGainIndex(gain));
             d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(false);
 
             bool isUpdateWaveStatus = false;
@@ -725,7 +762,7 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
                 ecgParam.setLeadMode3DisplayLead(d_ptr->ecgWaveforms[preECG2Wave]);
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(true);
                 ECGGain gain = ecgParam.getGain(lead);
-                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->setCurrentIndex(gain);
+                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->setCurrentIndex(d_ptr->getCurGainIndex(gain));
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN]->blockSignals(false);
 
                 // 更新ecg1的item选择
@@ -746,14 +783,15 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
 
         case ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN:
         {
+            QVariant itemData = (box->itemData(index));
             if (layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN)
             {
-                ecgParam.setGain(static_cast<ECGGain>(index));
+                ecgParam.setGain(static_cast<ECGGain>(itemData.toInt()));
             }
             else
             {
                 ECGLead ecg = static_cast<ECGLead>(d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_ECG1]->currentIndex());
-                ecgParam.setGain(static_cast<ECGGain>(index), ecg);
+                ecgParam.setGain(static_cast<ECGGain>(itemData.toInt()), ecg);
             }
             break;
         }
