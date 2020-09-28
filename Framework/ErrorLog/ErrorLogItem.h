@@ -58,6 +58,7 @@ public:
         SUB_SYS_RESP,
         SUB_SYS_WIFI,
         SUB_SYS_PRINTER,
+        SUB_SYS_SUNTECH_NIBP,
     };
 
     ErrorLogItemBase()

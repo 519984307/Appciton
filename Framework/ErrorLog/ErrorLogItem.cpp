@@ -56,6 +56,8 @@ void ErrorLogItemBase::setSubSystem(ErrorLogItemBase::SubSystem subSys)
     case SUB_SYS_PRINTER:
         subSysStr = "PRT72";
         break;
+    case SUB_SYS_SUNTECH_NIBP:
+        subSysStr = "NIBP";
     default:
         break;
     }

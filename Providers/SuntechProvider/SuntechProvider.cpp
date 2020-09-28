@@ -17,6 +17,8 @@
 #include "NIBPMonitorStateDefine.h"
 #include "PatientManager.h"
 #include "AlarmSourceManager.h"
+#include "Framework/ErrorLog/ErrorLogItem.h"
+#include "Framework/ErrorLog/ErrorLog.h"
 
 #define     HOST_START_BYTE           0x3A     // receive packet header :
 #define     MODULE_START_BYTE         0x3E     // send packet header >
@@ -81,6 +83,23 @@ enum ErrCode
     SUNTECH_ERRCODE_PERMISSION_PROBLEM          = 0x5B,         // 许可问题，如安全超控装置安装或自动归零超出范围
     SUNTECH_ERRCODE_TRANSDUCTER_OUT_OF_RANGE    = 0x61,         // 传感器超出范围
     SUNTECH_ERRCODE_EEPROM_CALIBR_FAILURE       = 0x63,         // EEPROM校准数据失败
+};
+
+static const char *nibpErrorCode[] =
+{
+    "Weak or no oscillometric signal.\r\n",
+    "Artifact or erratic oscillometric signal.\r\n",
+    "Out of Range Blood Pressure Value.\r\n",
+    "Exceeded measurement time limit.\r\n",
+    "Pneumatic Blockage.\r\n",
+    "Blood reading terminated by user.\r\n",
+    "Inflate timeout or air leak or loose cuff.\r\n",
+    "Safety timeout.\r\n",
+    "Cuff overpressure.\r\n",
+    "Power supply out of range or other hardware problem.\r\n",
+    "Permission problem such as safety override fitted or autozero out of range.\r\n",
+    "Transducer out of range.\r\n",
+    "Eeprom calibration data failure.\r\n",
 };
 
 #define SUNTECH_VERSION "LX"
@@ -666,6 +685,7 @@ void SuntechProvider::_handlePacket(unsigned char *data, int len)
         {
             if (data[1] != 0)
             {
+                _handleErrorWarn(&data[1], true);
                 AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_NIBP);
                 if (alarmSource)
                 {
@@ -761,3 +781,64 @@ unsigned char SuntechProvider::_calcCheckSum(const unsigned char *data, int len)
     sum = 0x00 - sum;
     return sum;
 }
+
+
+void SuntechProvider::_handleErrorWarn(unsigned char *packet, bool isSelfTest)
+{
+    char errorData;
+    ErrorLogItem::SystemState sysState;
+    if (isSelfTest)
+    {
+        errorData = packet[0];
+        sysState = ErrorLogItem::SYS_STAT_SELFTEST;
+    }
+    else
+    {
+        sysState = ErrorLogItem::SYS_STAT_RUNTIME;
+        errorData = packet[18];
+    }
+    if (!errorData)
+    {
+        return;
+    }
+
+    QString errorStr("");
+    errorStr = "error code = ";
+    errorStr += "0x" + QString::number(errorData, 16) + ", ";
+    errorStr += "\r\n";
+
+    switch (errorData)
+    {
+    case 0x01:
+    case 0x02:
+    case 0x03:
+    case 0x04:
+        errorStr += nibpErrorCode[errorData - 1];
+        break;
+    case 0x55:
+    case 0x56:
+    case 0x57:
+    case 0x58:
+    case 0x59:
+    case 0x5A:
+    case 0x5B:
+        errorStr += nibpErrorCode[errorData - 81];
+        break;
+    case 0x61:
+    case 0x63:
+        errorStr += nibpErrorCode[errorData - 87];
+        break;
+    default:
+        errorStr += "Unknown error.\r\n";
+        break;
+    }
+
+    ErrorLogItem *item = new CriticalFaultLogItem();
+    item->setName("NIBP Error");
+    item->setLog(errorStr);
+    item->setSubSystem(ErrorLogItem::SUB_SYS_SUNTECH_NIBP);
+    item->setSystemState(sysState);
+    item->setSystemResponse(ErrorLogItem::SYS_RSP_REPORT);
+    errorLog.append(item);
+}
+

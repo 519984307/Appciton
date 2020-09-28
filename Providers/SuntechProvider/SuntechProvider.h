@@ -97,9 +97,20 @@ private slots:
     void _sendCMD(void);
     void _sendInitval(void);
 private:
+    // 为了通过静态检车，添加拷贝构造
+    SuntechProvider(SuntechProvider&);
+
+
     void _handlePacket(unsigned char *data, int len);
 
     void _sendCmd(const unsigned char *data, unsigned int len);
+
+    /**
+     * @brief _handleErrorWarm handle the Error or warming message
+     * @brief packet  data for error
+     * @brief isSelfTest check if error happened during selftest
+     */
+    void _handleErrorWarn(unsigned char *packet, bool isSelfTest);
 
     // 协议数据校验
     unsigned char _calcCheckSum(const unsigned char *data, int len);
