@@ -34,9 +34,15 @@ public:
 
 void PITrendWidget::setPIValue(int16_t pi)
 {
-    if (pi >= 0)
+    if (0 <= pi && pi < 1000)
     {
+        // PI value range 0%-9.99%, set the resolution to 0.01
         d_ptr->piString = QString::number(pi / (d_ptr->scale * 1.0), 'f', 2);
+    }
+    else if (pi >= 1000 && pi <= 10000)
+    {
+        // PI value range 10.0%-100%, set the resolution to 0.1
+        d_ptr->piString = QString::number(pi / (d_ptr->scale * 1.0), 'f', 1);
     }
     else
     {
