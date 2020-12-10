@@ -200,6 +200,13 @@ void SPO2MenuContentPrivate::loadOptions()
         seniorParamLbl[ITEM_CBO_PVI_AVERAGING_MODE]->setVisible(false);
     }
 
+    /* Proposed by Masimo:
+     * sensor selection should not be user selectable, the sensor type is determined by the MX board.
+     */
+    combos[ITEM_CBO_SPO2_SENSOR]->setVisible(false);
+    seniorParamLbl[ITEM_CBO_SPO2_SENSOR]->setVisible(false);
+
+
     setCboBlockSignalsStatus(false);
 }
 
