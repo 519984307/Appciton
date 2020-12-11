@@ -23,7 +23,6 @@
 #define RUN_BAUD_RATE  (57600)
 #define MIN_PACKET_LEN  (5)
 #define TEMP_BUFF_SIZE  (64)
-#define MANU_ID_BLM     (0x23ae5d53)
 #define MANU_ID_DAVID   (0x55d9b582)
 
 enum RBRecvPacketType
@@ -845,12 +844,7 @@ void RainbowProviderPrivate::handlePacket(unsigned char *data, int len)
         {
             if (provider == SPO2_RAINBOW_FACTORY_ID_DAVID)
             {
-                // 解锁david板子失败后再次解锁
-                provider = SPO2_RAINBOW_FACTORY_ID_BLM;
-                QTimer::singleShot(50, q_ptr, SLOT(requestBoardInfo()));
-            }
-            else if (provider == SPO2_RAINBOW_FACTORY_ID_BLM)
-            {
+                // 解锁david板子失败后结束解锁
                 provider = SPO2_RAINBOW_FACTORY_ID_NR;
                 qdebug("rainbow unlock failed");
             }
@@ -1365,15 +1359,12 @@ unsigned char RainbowProviderPrivate::calcChecksum(const unsigned char *data, in
 void RainbowProviderPrivate::unlockBoard(unsigned int sn, unsigned int flag)
 {
     unsigned char data[9] = {0};
-    unsigned int unlockKey = MANU_ID_BLM ^ sn;
+    unsigned int unlockKey = 0;
     if (provider == SPO2_RAINBOW_FACTORY_ID_DAVID)
     {
         unlockKey = MANU_ID_DAVID ^ sn;
     }
-    else if (provider == SPO2_RAINBOW_FACTORY_ID_BLM)
-    {
-        unlockKey = MANU_ID_BLM ^ sn;
-    }
+
     data[0] = RB_CMD_UNLOCK_BOARD;
     data[1] = (unlockKey >> 24) & 0xff;
     data[2] = (unlockKey >> 16) & 0xff;
