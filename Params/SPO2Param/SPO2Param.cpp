@@ -897,10 +897,10 @@ short SPO2Param::getPI()
 
 void SPO2Param::setSpCO(short spcoValue)
 {
-    // according to technical requirements, the rang of spco display is 0~99%
-    if (spcoValue > 99)
+    // According to the development document R-CSD-1105, SpCO display range is 0 ~ 100.0%
+    if (spcoValue > 100)
     {
-        spcoValue = 99;
+        spcoValue = 100;
     }
 
     if (d_ptr->spcoValue == spcoValue)
