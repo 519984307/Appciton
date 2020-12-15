@@ -837,10 +837,10 @@ short SPO2Param::getPVI()
 
 void SPO2Param::setSpMet(short value)
 {
-    // according to technical requirements,the rang of SPMet display is 0~99.9%
-    if (value > 999)
+    // According to the development document R-CSD-1105, SpMet display range is 0 ~ 100.0%
+    if (value > 1000)
     {
-        value = 999;
+        value = 1000;
     }
 
     if (d_ptr->spmetValue == value && !d_ptr->isForceUpdating)
