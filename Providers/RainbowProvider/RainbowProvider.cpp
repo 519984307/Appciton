@@ -989,8 +989,8 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
             if (valid == true && !spo2BoardFailure)
             {
                 temp = (data[0] << 8) + data[1];
-                float value = temp * 1.0 / 1000 + 0.05;
-                spo2Param.setPI(static_cast<short>(value * 100));
+                // Solve the problem of PI value rounding error.
+                spo2Param.setPI((temp + 5) / 10);
             }
             else
             {
