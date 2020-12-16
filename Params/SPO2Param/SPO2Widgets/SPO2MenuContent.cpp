@@ -43,7 +43,6 @@ public:
         ITEM_CBO_NIBP_SAME_SIDE,
         ITEM_CBO_SIGNAL_IQ,
         ITEM_CBO_SPO2_LINE_FREQ,
-        ITEM_CBO_SPO2_SENSOR,
         ITEM_CBO_SPHB_PRECISION_MODE,
         ITEM_CBO_SPHB_VESSEL_MODE,
         ITEM_CBO_SPHB_AVERAGING_MODE,
@@ -146,23 +145,18 @@ void SPO2MenuContentPrivate::loadOptions()
     machineConfig.getStrValue("SPO2", str);
     if (str == "RAINBOW_SPO2")
     {
-        combos[ITEM_CBO_SPO2_SENSOR]->setVisible(true);
         combos[ITEM_CBO_SPO2_LINE_FREQ]->setVisible(true);
         combos[ITEM_CBO_SPHB_PRECISION_MODE]->setVisible(true);
         combos[ITEM_CBO_SPHB_VESSEL_MODE]->setVisible(true);
         combos[ITEM_CBO_SPHB_AVERAGING_MODE]->setVisible(true);
         combos[ITEM_CBO_SPHB_UNIT]->setVisible(true);
         combos[ITEM_CBO_PVI_AVERAGING_MODE]->setVisible(true);
-        seniorParamLbl[ITEM_CBO_SPO2_SENSOR]->setVisible(true);
         seniorParamLbl[ITEM_CBO_SPO2_LINE_FREQ]->setVisible(true);
         seniorParamLbl[ITEM_CBO_SPHB_PRECISION_MODE]->setVisible(true);
         seniorParamLbl[ITEM_CBO_SPHB_VESSEL_MODE]->setVisible(true);
         seniorParamLbl[ITEM_CBO_SPHB_AVERAGING_MODE]->setVisible(true);
         seniorParamLbl[ITEM_CBO_SPHB_UNIT]->setVisible(true);
         seniorParamLbl[ITEM_CBO_PVI_AVERAGING_MODE]->setVisible(true);
-
-        currentConfig.getNumValue("SPO2|Sensor", index);
-        combos[ITEM_CBO_SPO2_SENSOR]->setCurrentIndex(index);
 
         index = spo2Param.getLineFrequency() == SPO2_LINE_FREQ_50HZ ? 0 : 1;
         combos[ITEM_CBO_SPO2_LINE_FREQ]->setCurrentIndex(index);
@@ -184,14 +178,12 @@ void SPO2MenuContentPrivate::loadOptions()
     }
     else
     {
-        combos[ITEM_CBO_SPO2_SENSOR]->setVisible(false);
         combos[ITEM_CBO_SPO2_LINE_FREQ]->setVisible(false);
         combos[ITEM_CBO_SPHB_PRECISION_MODE]->setVisible(false);
         combos[ITEM_CBO_SPHB_VESSEL_MODE]->setVisible(false);
         combos[ITEM_CBO_SPHB_AVERAGING_MODE]->setVisible(false);
         combos[ITEM_CBO_SPHB_UNIT]->setVisible(false);
         combos[ITEM_CBO_PVI_AVERAGING_MODE]->setVisible(false);
-        seniorParamLbl[ITEM_CBO_SPO2_SENSOR]->setVisible(false);
         seniorParamLbl[ITEM_CBO_SPO2_LINE_FREQ]->setVisible(false);
         seniorParamLbl[ITEM_CBO_SPHB_PRECISION_MODE]->setVisible(false);
         seniorParamLbl[ITEM_CBO_SPHB_VESSEL_MODE]->setVisible(false);
@@ -366,21 +358,6 @@ void SPO2MenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_SIGNAL_IQ, comboBox);
 
-    // 血氧探头
-    label = new QLabel(trs("SpO2Sensor"));
-    layout->addWidget(label, d_ptr->combos.count(), 0);
-    d_ptr->seniorParamLbl.insert(SPO2MenuContentPrivate::ITEM_CBO_SPO2_SENSOR, label);
-    comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("M-LNCS")
-                       << trs("R25")
-                       << trs("R1 20L"));
-    itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_SPO2_SENSOR);
-    comboBox->setProperty("Item", qVariantFromValue(itemID));
-    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
-    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
-    d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_SPO2_SENSOR, comboBox);
-
     // Line Frequency
     label = new QLabel(trs("LineFrequency"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -522,9 +499,6 @@ void SPO2MenuContent::onComboBoxIndexChanged(int index)
             break;
         case SPO2MenuContentPrivate::ITEM_CBO_SPO2_LINE_FREQ:
             spo2Param.setLineFrequency(static_cast<SPO2LineFrequencyType>(index));
-            break;
-        case SPO2MenuContentPrivate::ITEM_CBO_SPO2_SENSOR:
-            spo2Param.setSensor(static_cast<SPO2RainbowSensor>(index));
             break;
         case SPO2MenuContentPrivate::ITEM_CBO_SPHB_PRECISION_MODE:
             spo2Param.setSpHbPrecision(static_cast<SpHbPrecisionMode>(index));
