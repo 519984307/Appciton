@@ -595,7 +595,8 @@ void RainbowProvider::dataArrived(unsigned char *data, unsigned int length)
 void RainbowProvider::dispatchPortHasReset()
 {
     /*
-     * To reset the baud rate, the buffer must be cleared to avoid parsing data to the previous packet.
+     * After Rainbow module is reset,
+     * the buffer must be cleared to avoid parsing data to the previous packet.
      */
     ringBuff.clear();
     // 返回复位成功后，需要给模块一点时间复位，才可以成功设置波特率。
