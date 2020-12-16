@@ -1079,8 +1079,8 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         if (valid && !spo2BoardFailure)
         {
             temp = (data[0] << 8) + data[1];
-            float value = temp * 1.0 / 10 + 0.5;
-            spo2Param.setSpMet(value * 10);
+            // Solve the problem of SpMet value rounding error.
+            spo2Param.setSpMet(temp);
         }
         else
         {
