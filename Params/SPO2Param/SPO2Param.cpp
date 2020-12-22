@@ -90,7 +90,8 @@ public:
     int repeatTimes;
 
     bool isLowPerfusion;
-    bool isForceUpdating;  // 当spo2的弱灌注状态发生变化时，该状态位为true
+    bool isForceUpdatingPR;      // When the low perfusion state of SpO2 changed, we forced to update the PR value.
+    bool isForceUpdatingSPO2;    // When the low perfusion state of SpO2 changed, we forced to update the SpO2 value.
     bool plugInIsLowPerfusion;
     bool plugInIsForceUpdating;  // 当spo2的弱灌注状态发生变化时，该状态位为true
 
@@ -165,7 +166,8 @@ SPO2ParamPrivate::SPO2ParamPrivate()
     , moduleType(MODULE_SPO2_NR)
     , repeatTimes(0)
     , isLowPerfusion(false)
-    , isForceUpdating(false)
+    , isForceUpdatingPR(false)
+    , isForceUpdatingSPO2(false)
     , plugInIsLowPerfusion(false)
     , plugInIsForceUpdating(false)
     , isT5ModuleUpgradeCompleted(false)
@@ -691,10 +693,11 @@ SoundManager::VolumeLevel SPO2Param::getPluseToneVolume(void)
 void SPO2Param::setSPO2(short spo2Value)
 {
     paramUpdateTimer->start(PARAM_UPDATE_TIMEOUT);
-    if (d_ptr->spo2Value == spo2Value && !d_ptr->isForceUpdating)
+    if (d_ptr->spo2Value == spo2Value && !d_ptr->isForceUpdatingSPO2)
     {
         return;
     }
+    d_ptr->isForceUpdatingSPO2 = false;
 
     d_ptr->spo2Value = spo2Value;
 
@@ -744,6 +747,7 @@ void SPO2Param::setPluginSPO2(short spo2Value)
     {
         return;
     }
+    d_ptr->plugInIsForceUpdating = false;
     d_ptr->plugInSpo2Value = spo2Value;
 
     if (NULL != d_ptr->trendWidget)
@@ -783,7 +787,7 @@ short SPO2Param::getSPO2D()
 
 void SPO2Param::setSpHb(short value)
 {
-    if (d_ptr->sphbValue == value && !d_ptr->isForceUpdating)
+    if (d_ptr->sphbValue == value)
     {
         return;
     }
@@ -801,7 +805,7 @@ short SPO2Param::getSpHb()
 
 void SPO2Param::setSpOC(short value)
 {
-    if (d_ptr->spocValue == value && !d_ptr->isForceUpdating)
+    if (d_ptr->spocValue == value)
     {
         return;
     }
@@ -819,7 +823,7 @@ short SPO2Param::getSpOC()
 
 void SPO2Param::setPVI(short value)
 {
-    if (d_ptr->pviValue == value && !d_ptr->isForceUpdating)
+    if (d_ptr->pviValue == value)
     {
         return;
     }
@@ -843,7 +847,7 @@ void SPO2Param::setSpMet(short value)
         value = 1000;
     }
 
-    if (d_ptr->spmetValue == value && !d_ptr->isForceUpdating)
+    if (d_ptr->spmetValue == value)
     {
         return;
     }
@@ -865,10 +869,11 @@ short SPO2Param::getSpMet()
 void SPO2Param::setPR(short prValue)
 {
     ecgDupParam.restartParamUpdateTime();
-    if (d_ptr->prValue == prValue && !d_ptr->isForceUpdating)
+    if (d_ptr->prValue == prValue && !d_ptr->isForceUpdatingPR)
     {
         return;
     }
+    d_ptr->isForceUpdatingPR = false;
     d_ptr->prValue = prValue;
     ecgDupParam.updatePR(prValue);
 }
@@ -1849,12 +1854,9 @@ void SPO2Param::setPerfusionStatus(bool isLow, bool isPlugin)
     {
         if (isLow != d_ptr->isLowPerfusion)
         {
-            d_ptr->isForceUpdating = true;
+            d_ptr->isForceUpdatingPR = true;
+            d_ptr->isForceUpdatingSPO2 = true;
             d_ptr->isLowPerfusion = isLow;
-        }
-        else
-        {
-            d_ptr->isForceUpdating = false;
         }
     }
     else
@@ -1863,10 +1865,6 @@ void SPO2Param::setPerfusionStatus(bool isLow, bool isPlugin)
         {
             d_ptr->plugInIsForceUpdating = true;
             d_ptr->plugInIsLowPerfusion = isLow;
-        }
-        else
-        {
-            d_ptr->plugInIsForceUpdating = false;
         }
     }
 }
