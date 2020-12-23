@@ -594,6 +594,11 @@ void RainbowProvider::dataArrived(unsigned char *data, unsigned int length)
 
 void RainbowProvider::dispatchPortHasReset()
 {
+    /*
+     * After Rainbow module is reset,
+     * the buffer must be cleared to avoid parsing data to the previous packet.
+     */
+    ringBuff.clear();
     // 返回复位成功后，需要给模块一点时间复位，才可以成功设置波特率。
     QTimer::singleShot(500, this, SLOT(changeBaudrate()));
 }
