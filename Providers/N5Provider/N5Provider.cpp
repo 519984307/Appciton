@@ -238,9 +238,6 @@ void N5Provider::_errorWarm(unsigned char *packet, int len)
 
 static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
 {
-    int type;
-    systemConfig.getNumValue("General|PatientType", type);
-
     NIBPMeasureResultInfo info;
     short t = static_cast<short>(data[0]);
     info.errCode = t;
@@ -260,34 +257,6 @@ static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
         info.pr = t;
     }
 
-    if (info.errCode != 0x00)
-    {
-        return info;
-    }
-    if (type == PATIENT_TYPE_ADULT)
-    {
-        if (info.sys > 255 || info.sys < 40 || info.dia > 215 || info.dia < 10 || info.map > 235 || info.map < 20)
-        {
-            info.errCode = 0x06;
-        }
-    }
-    else if (type == PATIENT_TYPE_PED)
-    {
-        /* 标准中压力范围只有新生儿和“其他”两种，而“其他范围”包括了成人和小儿。“其他范围”中要求能够显示SYS为230的压力值，
-        不能根据DAVID的技术要求来限定小儿的测量范围。应UL检测所的要求，把小儿的限制范围改为与成人的一样。
-        (实际上小儿的SYS范围算法限定为最高240, 但是改上位机软件就能显示230了，就不改算法了) */
-        if (info.sys > 255 || info.sys < 40 || info.dia > 215 || info.dia < 10 || info.map > 235 || info.map < 20)
-        {
-            info.errCode = 0x06;
-        }
-    }
-    else if (type == PATIENT_TYPE_NEO)
-    {
-        if (info.sys > 135 || info.sys < 40 || info.dia > 100 || info.dia < 10 || info.map > 110 || info.map < 20)
-        {
-            info.errCode = 0x06;
-        }
-    }
     return info;
 }
 
