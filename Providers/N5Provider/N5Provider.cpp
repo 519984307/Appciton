@@ -248,13 +248,20 @@ static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
     t = static_cast<short>(data[5] + (data[6] << 8));
     info.map = t;
     t = static_cast<short>(data[7] + (data[8] << 8));
-    if (t < 0)
+    info.pr = t;
+    if (info.errCode != 0x00)
     {
-        info.pr = InvData();
+        return info;
     }
-    else
+
+    // Get the NIBP measure range
+    int lowSys, highSys, lowDia, highDia, lowMap, highMap;
+    nibpParam.getMeasureRange(&lowSys, &highSys, &lowDia, &highDia, &lowMap, &highMap);
+    if (info.sys > highSys || info.sys < lowSys || info.dia > highDia || info.dia < lowDia
+            || info.map > highMap || info.map < lowMap)
     {
-        info.pr = t;
+        // NIBP measure ouf of range.
+        info.errCode = 0x06;
     }
 
     return info;

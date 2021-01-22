@@ -1049,6 +1049,30 @@ void NIBPParam::createSnapshot(NIBPOneShotType err)
     }
 }
 
+void NIBPParam::getMeasureRange(int *lowSys, int *highSys, int *lowDia, int *highDia, int *lowMap, int *highMap)
+{
+    int limit = 0;
+    currentConfig.getNumValue("NIBP|SysLowLimit", limit);
+    *lowSys = limit;
+    limit = 0;
+    currentConfig.getNumValue("NIBP|SysHighLimit", limit);
+    *highSys = limit;
+
+    limit = 0;
+    currentConfig.getNumValue("NIBP|DiaLowLimit", limit);
+    *lowDia = limit;
+    limit = 0;
+    currentConfig.getNumValue("NIBP|DiaHighLimit", limit);
+    *highDia = limit;
+
+    limit = 0;
+    currentConfig.getNumValue("NIBP|MapLowLimit", limit);
+    *lowMap = limit;
+    limit = 0;
+    currentConfig.getNumValue("NIBP|MapHighLimit", limit);
+    *highMap = limit;
+}
+
 /**************************************************************************************************
  * 设置预充气值。
  *************************************************************************************************/

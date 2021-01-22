@@ -211,6 +211,16 @@ public:
     bool isSnapshotFlag(void);
     void createSnapshot(NIBPOneShotType err);
 
+    /**
+     * @brief getMeasureRange get the pressure measure range
+     * @param lowSys
+     * @param highSys
+     * @param lowDia
+     * @param highDia
+     * @param lowMap
+     * @param highMap
+     */
+    void getMeasureRange(int *lowSys, int *highSys, int *lowDia, int *highDia, int *lowMap, int *highMap);
 public:
     // 设置预充气值。。
     void setInitPressure(int index);
