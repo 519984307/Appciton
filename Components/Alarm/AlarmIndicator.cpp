@@ -81,12 +81,18 @@ void AlarmIndicator::publishAlarm(AlarmStatus status)
                 *it = node;
             }
 
+            if (0 < it->alarmAudioDelay)
+            {
+                --node.alarmAudioDelay;
+                *it = node;
+            }
             // pause/audio off/reset状态没有生理报警声音
             if (0 == node.pauseTime
                     && status != ALARM_STATUS_AUDIO_OFF
                     && status != ALARM_STATUS_RESET
                     && status != ALARM_STATUS_PAUSE
-                    && !node.acknowledge)
+                    && !node.acknowledge
+                    && 0 == node.alarmAudioDelay)
             {
                 if (phySoundPriority < node.alarmPriority)
                 {
@@ -535,6 +541,7 @@ bool AlarmIndicator::addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
     AlarmInfoNode node(alarmTime, alarmType, alarmPriority, alarmMessage, alarmSource, alarmID);
     node.removeAfterLatch = isRemoveAfterLatch;
     node.removeLigthAfterConfirm = isRemoveLightAfterConfirm;
+    node.alarmAudioDelay = alarmSource->getAlarmDelay(alarmID);
 
     list->append(node);
 

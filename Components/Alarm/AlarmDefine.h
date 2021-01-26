@@ -29,7 +29,8 @@ struct AlarmInfoNode
                   const char *message, AlarmParamIFace *source, int id)
         : alarmType(type), alarmPriority(priority), latch(false), acknowledge(false),
           removeAfterLatch(false), promptAlarmBeep(false), pauseTime(0), displayTime(ALARM_INFO_DISPLAY_TIME),
-          alarmTime(t), alarmMessage(message), alarmSource(source), alarmID(id), removeLigthAfterConfirm(true)
+          alarmTime(t), alarmMessage(message), alarmSource(source), alarmID(id), alarmAudioDelay(0),
+          removeLigthAfterConfirm(true)
     {
     }
 
@@ -47,6 +48,7 @@ struct AlarmInfoNode
         alarmMessage = NULL;
         alarmSource = NULL;
         alarmID = 0;
+        alarmAudioDelay = 0;
         removeLigthAfterConfirm = true;
     }
 
@@ -65,6 +67,7 @@ struct AlarmInfoNode
                 this->alarmTime == other.alarmTime &&
                 (strcmp(this->alarmMessage, other.alarmMessage) == 0) &&
                 this->alarmID == other.alarmID &&
+                this->alarmAudioDelay == other.alarmAudioDelay &&
                 this->removeLigthAfterConfirm == other.removeLigthAfterConfirm)
         {
             return true;
@@ -87,6 +90,7 @@ struct AlarmInfoNode
     const char *alarmMessage;
     AlarmParamIFace *alarmSource;
     int alarmID;
+    int alarmAudioDelay;
     bool removeLigthAfterConfirm;
 };
 
