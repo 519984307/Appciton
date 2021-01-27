@@ -85,6 +85,7 @@ public:
     bool connectedProvider;
     bool connectedPluginProvider;
     SPO2ModuleType moduleType;
+    SPO2RainbowSensor sensorType;   // spo2 rainbow sensor type
 
     QList<cchdData> cchdDataList;
     int repeatTimes;
@@ -164,6 +165,7 @@ SPO2ParamPrivate::SPO2ParamPrivate()
     , connectedProvider(false)
     , connectedPluginProvider(false)
     , moduleType(MODULE_SPO2_NR)
+    , sensorType(SPO2_RAINBOW_SENSOR_M_LNCS)
     , repeatTimes(0)
     , isLowPerfusion(false)
     , isForceUpdatingPR(false)
@@ -1915,8 +1917,18 @@ bool SPO2Param::isShowSignalIQ()
 
 void SPO2Param::setSensor(SPO2RainbowSensor sensor)
 {
-    currentConfig.setNumValue("SPO2|Sensor", static_cast<int>(sensor));
+    if (d_ptr->sensorType == sensor)
+    {
+        return;
+    }
+    d_ptr->sensorType = sensor;
+
     layoutManager.updateLayout();
+}
+
+SPO2RainbowSensor SPO2Param::getSensor()
+{
+    return d_ptr->sensorType;
 }
 
 void SPO2Param::showRainbowProgramMessage(SPO2RainbowProgramMessageType msg, bool isPlugin)

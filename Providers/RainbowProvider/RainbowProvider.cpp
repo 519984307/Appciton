@@ -88,6 +88,17 @@ enum RBWaveformSelectionBitsType
     ACOUSTIC_DISPLAY_DATA            = 0X400000,  // Acoustic display data
 };
 
+enum ActivateParameter
+{
+    ACTIVATE_PARAM_SPO2             = 0x0001,
+    ACTIVATE_PARAM_PR               = 0x0002,
+    ACTIVATE_PARAM_PI               = 0x0004,
+    ACTIVATE_PARAM_SPCO             = 0x0008,
+    ACTIVATE_PARAM_SPMET            = 0x0010,
+    ACTIVATE_PARAM_SPHB             = 0x0040,
+    ACTIVATE_PARAM_SPOC             = 0x2000,
+    ACTIVATE_PARAM_PVI              = 0x4000,
+};
 
 enum RBInitializeStep
 {
@@ -354,6 +365,13 @@ public:
      * @param flag
      */
     void addAlarms(unsigned int flag);
+
+    /**
+     * @brief updateSensorType  update Sensor Type
+     * @param sensorParam   sensor param
+     * @param availableParam available param
+     */
+    void updateSensorType(unsigned short sensorParam, unsigned short availableParam);
 
     static const unsigned char minPacketLen = MIN_PACKET_LEN;
 
@@ -1257,6 +1275,13 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
                 spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_CHECK_SENSOR, true);
             }
         }
+        else
+        {
+            // spo2 sensor connected, update spo2 sensor type
+            unsigned short sensorParam = (data[8] << 8) | data[9];
+            unsigned short availableParam = (data[30] << 8) | data[31];
+            updateSensorType(sensorParam, availableParam);
+        }
     }
     break;
     default:
@@ -2020,5 +2045,21 @@ void RainbowProviderPrivate::addAlarms(unsigned int flag)
         {
             spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_SPO2_ONLY_MODE, false);
         }
+    }
+}
+
+void RainbowProviderPrivate::updateSensorType(unsigned short sensorParam, unsigned short availableParam)
+{
+    if ((sensorParam & ACTIVATE_PARAM_SPHB) && (availableParam & ACTIVATE_PARAM_SPHB))
+    {
+        spo2Param.setSensor(SPO2_RAINBOW_SENSOR_R1);
+    }
+    else if ((sensorParam & ACTIVATE_PARAM_SPCO) && (availableParam & ACTIVATE_PARAM_SPCO))
+    {
+        spo2Param.setSensor(SPO2_RAINBOW_SENSOR_R25);
+    }
+    else
+    {
+        spo2Param.setSensor(SPO2_RAINBOW_SENSOR_M_LNCS);
     }
 }
