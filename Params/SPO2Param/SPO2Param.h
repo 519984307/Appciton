@@ -361,6 +361,11 @@ public:
      * @param sensor
      */
     void setSensor(SPO2RainbowSensor sensor);
+    /**
+     * @brief getSensor get the sensor type
+     * @return  sensor type
+     */
+    SPO2RainbowSensor getSensor();
 
     /**
      * @brief showRainbowProgramMessage show the rainbow module program message
