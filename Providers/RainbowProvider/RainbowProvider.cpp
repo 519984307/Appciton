@@ -253,6 +253,7 @@ public:
         , isInitializing(false)
         , prValue(InvData())
         , spo2Value(InvData())
+        , lastSpo2WaveData(InvData())
         , spHbPrecision(PRECISION_NEAREST_0_1)
         , pviAveragingMode(AVERAGING_MODE_NORMAL)
         , spHbBloodVessel(BLOOD_VESSEL_ARTERIAL)
@@ -398,6 +399,7 @@ public:
     short prValue;
 
     short spo2Value;
+    short lastSpo2WaveData;   // record last spo2 wave data
 
     SpHbPrecisionMode spHbPrecision;
 
@@ -1312,20 +1314,27 @@ void RainbowProviderPrivate::handleWaveformInfo(unsigned char *data, int len)
     waveData = 256 - waveData;      // upside down
 
 
+    unsigned char signalIQ = 0;
     if (data[2] & SPO2_IQ_FLAG_BIT)  // get beep pulse audio status
     {
-        unsigned char signalIQ = data[2];
-        spo2Param.addWaveformData(waveData, signalIQ, isPlugin);
-        // add wavedata twice for rounding SPO2 Waveform Sample  62.5 * 2 = 125
-        spo2Param.addWaveformData(waveData, signalIQ, isPlugin);
+        signalIQ = data[2];
         spo2Param.setPulseAudio(true);
+    }
+
+    if (lastSpo2WaveData == InvData())
+    {
+        spo2Param.addWaveformData(waveData, 0, isPlugin);
+        // add wavedata twice for rounding SPO2 Waveform Sample  62.5 * 2 = 125
+        spo2Param.addWaveformData(waveData, 0, isPlugin);
     }
     else
     {
-        spo2Param.addWaveformData(waveData, 0, isPlugin);
+        // SPO2 waveform adds mid-value.
+        spo2Param.addWaveformData((waveData + lastSpo2WaveData) / 2, signalIQ, isPlugin);
         // add wavedata twice for rounding SPO2 Waveform Sample  62.5 * 2 = 125
-        spo2Param.addWaveformData(waveData, 0, isPlugin);
+        spo2Param.addWaveformData(waveData, signalIQ, isPlugin);
     }
+    lastSpo2WaveData = waveData;
 }
 
 void RainbowProviderPrivate::handleBoardInfo(unsigned char *data, int len)
