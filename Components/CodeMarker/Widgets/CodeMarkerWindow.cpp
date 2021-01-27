@@ -20,7 +20,6 @@
 #include <QTimer>
 #include "EventStorageManager.h"
 #include "TimeManager.h"
-#include "IConfig.h"
 #include <QKeyEvent>
 
 class CodeMarkerWindowPrivate
@@ -54,11 +53,7 @@ CodeMarkerWindow::CodeMarkerWindow() : Dialog()
         , d_ptr(new CodeMarkerWindowPrivate())
 {
     QString codemarkerStr;
-    int num = 0;
-    systemConfig.getNumAttr("General|Language", "CurrentOption", num);
-    QString markerStr = "CodeMarker|SelectMarker|Language";
-    markerStr += QString::number(num, 10);
-    currentConfig.getStrValue(markerStr, codemarkerStr);
+    currentConfig.getStrValue("CodeMarker|SelectMarker|Language", codemarkerStr);
     d_ptr->origCodeMarker = codemarkerStr.split(',');
     for (int i = 0; i < d_ptr->origCodeMarker.size(); i++)
     {
