@@ -241,16 +241,16 @@
 		</SPOC>
 		<SPMET Enable="0" Prio="1">
 		<percent>
-		    <Low Min="0" Max="998">0</Low>
-		    <High Min="1" Max="999">30</High>
+		    <Low Min="0" Max="999">0</Low>
+		    <High Min="1" Max="1000">30</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</percent>
 		</SPMET>
 		<SPCO Enable="0" Prio="1">
 		<percent>
-		    <Low Min="0" Max="98">0</Low>
-		    <High Min="1" Max="99">30</High>
+		    <Low Min="0" Max="99">0</Low>
+		    <High Min="1" Max="100">30</High>
 		    <Step>1</Step>
 		    <Scale>1</Scale>
 		</percent>
