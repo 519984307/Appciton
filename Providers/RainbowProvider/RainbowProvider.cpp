@@ -567,7 +567,7 @@ void RainbowProvider::dataArrived(unsigned char *data, unsigned int length)
         unsigned char totalLen = 2 + len + 2;
 
 #if 1   /* TODO: check the packet length */
-        if (totalLen > 40)
+        if (totalLen > 100)
         {
             qWarning() << "packet too large, drop " << hex << ringBuff.at(0);
             ringBuff.pop(1);
