@@ -59,9 +59,9 @@ public:
         return symbol[index];
     }
 
-    static const char *convert(SPO2AlarmDelay index)
+    static const char *convert(SPO2AlarmAudioDelay index)
     {
-        static const char *symbol[SPO2_ALARM_DELAY_NR] =
+        static const char *symbol[SPO2_ALARM_AUDIO_DELAY_NR] =
         {
             "_0sec", "_5sec", "_10sec", "_15sec"
         };

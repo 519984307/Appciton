@@ -343,13 +343,13 @@ public:
      * @brief setSPO2AlarmDelay set the spo2 alarm limit audio delay
      * @param delay alarm limit audio delay
      */
-    void setSPO2AlarmDelay(SPO2AlarmDelay delay);
+    void setSPO2AlarmDelay(SPO2AlarmAudioDelay delay);
 
     /**
      * @brief getSPO2AlarmDelay get the spo2 alarm limit audio delay
      * @return alarm limit audio delay
      */
-    SPO2AlarmDelay getSPO2AlarmDelay();
+    SPO2AlarmAudioDelay getSPO2AlarmDelay();
     /**
      * @brief getAlarmAudioDelay  get the spo2 alarm limit audio delay
      * @return  alarm limit audio delay
