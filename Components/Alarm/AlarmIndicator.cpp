@@ -541,7 +541,7 @@ bool AlarmIndicator::addAlarmInfo(unsigned alarmTime, AlarmType alarmType,
     AlarmInfoNode node(alarmTime, alarmType, alarmPriority, alarmMessage, alarmSource, alarmID);
     node.removeAfterLatch = isRemoveAfterLatch;
     node.removeLigthAfterConfirm = isRemoveLightAfterConfirm;
-    node.alarmAudioDelay = alarmSource->getAlarmDelay(alarmID);
+    node.alarmAudioDelay = alarmSource->getAlarmAudioDelay(alarmID);
 
     list->append(node);
 

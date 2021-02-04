@@ -351,10 +351,10 @@ public:
      */
     SPO2AlarmDelay getSPO2AlarmDelay();
     /**
-     * @brief getAlarmDelay  get the spo2 alarm limit audio delay
+     * @brief getAlarmAudioDelay  get the spo2 alarm limit audio delay
      * @return  alarm limit audio delay
      */
-    int getAlarmDelay();
+    int getAlarmAudioDelay();
 
     /**
      * @brief clearTrendWaveData 清除趋势波形的数据

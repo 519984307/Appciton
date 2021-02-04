@@ -1910,7 +1910,7 @@ SPO2AlarmDelay SPO2Param::getSPO2AlarmDelay()
     return static_cast<SPO2AlarmDelay> (delay);
 }
 
-int SPO2Param::getAlarmDelay()
+int SPO2Param::getAlarmAudioDelay()
 {
     int alarmDelay = 0;
     switch (getSPO2AlarmDelay())
