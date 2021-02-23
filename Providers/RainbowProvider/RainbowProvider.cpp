@@ -1279,10 +1279,14 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         }
         else
         {
-            // spo2 sensor connected, update spo2 sensor type
-            unsigned short sensorParam = (data[8] << 8) | data[9];
-            unsigned short availableParam = (data[30] << 8) | data[31];
-            updateSensorType(sensorParam, availableParam);
+            // Only update SpO2 sensor of non plugin type
+            if (!isPlugin)
+            {
+                // spo2 sensor connected, update spo2 sensor type
+                unsigned short sensorParam = (data[8] << 8) | data[9];
+                unsigned short availableParam = (data[30] << 8) | data[31];
+                updateSensorType(sensorParam, availableParam);
+            }
         }
     }
     break;
