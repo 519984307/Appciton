@@ -465,8 +465,10 @@ static void _initProviderParam(void)
         machineConfig.getStrValue("SPO2", str);
         if (str == "MASIMO_SPO2")
         {
+#ifdef SUPPORT_SPO2_MASIMO_SET_PROTOCOL
             paramManager.addProvider(new MasimoSetProvider());
             spo2Param.setModuleType(MODULE_MASIMO_SPO2);
+#endif
         }
         else if (str == "BLM_S5")
         {

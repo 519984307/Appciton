@@ -1431,9 +1431,11 @@ void SPO2Param::setSensitivity(int sens)
     currentConfig.setNumValue("SPO2|Sensitivity", static_cast<int>(sens));
     if (NULL != d_ptr->provider)
     {
-        if (d_ptr->moduleType == MODULE_MASIMO_SPO2
-                || d_ptr->moduleType == MODULE_RAINBOW_SPO2)
-        {
+#ifdef SUPPORT_SPO2_MASIMO_SET_PROTOCOL
+        if (d_ptr->moduleType == MODULE_MASIMO_SPO2 || d_ptr->moduleType == MODULE_RAINBOW_SPO2) {
+#else
+        if (d_ptr->moduleType == MODULE_RAINBOW_SPO2) {
+#endif
             d_ptr->provider->setSensitivityFastSat(static_cast<SensitivityMode>(sens), getFastSat());
         }
         else if (d_ptr->moduleType != MODULE_SPO2_NR)
@@ -1443,9 +1445,11 @@ void SPO2Param::setSensitivity(int sens)
     }
     if (NULL != d_ptr->plugInProvider)
     {
-        if (d_ptr->moduleType == MODULE_MASIMO_SPO2
-                || d_ptr->moduleType == MODULE_RAINBOW_SPO2)
-        {
+#ifdef SUPPORT_SPO2_MASIMO_SET_PROTOCOL
+        if (d_ptr->moduleType == MODULE_MASIMO_SPO2 || d_ptr->moduleType == MODULE_RAINBOW_SPO2) {
+#else
+        if (d_ptr->moduleType == MODULE_RAINBOW_SPO2) {
+#endif
             d_ptr->plugInProvider->setSensitivityFastSat(static_cast<SensitivityMode>(sens), getFastSat());
         }
         else if (d_ptr->moduleType != MODULE_SPO2_NR)

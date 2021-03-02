@@ -388,7 +388,9 @@ void MachineConfigModuleContent::layoutExec()
     combo->addItems(QStringList()
                     << trs("Off")
                     << trs(SPO2Symbol::convert(MODULE_BLM_S5))
+#ifdef SUPPORT_SPO2_MASIMO_SET_PROTOCOL
                     << trs(SPO2Symbol::convert(MODULE_MASIMO_SPO2))
+#endif
                     << trs(SPO2Symbol::convert(MODULE_RAINBOW_SPO2)));
     layout->addWidget(combo, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(MachineConfigModuleContentPrivte

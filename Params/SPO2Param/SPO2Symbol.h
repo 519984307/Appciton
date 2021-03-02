@@ -18,7 +18,11 @@ public:
     {
         static const char *symbol[MODULE_SPO2_NR] =
         {
+#ifdef SUPPORT_SPO2_MASIMO_SET_PROTOCOL
             "BLM_S5", "MASIMO_SPO2", "RAINBOW_SPO2"
+#else
+            "BLM_S5", "RAINBOW_SPO2"
+#endif
         };
         return symbol[index];
     }
