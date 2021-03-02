@@ -277,6 +277,12 @@ void SPO2LimitAlarm::notifyAlarm(int id, bool isAlarm)
     }
 }
 
+int SPO2LimitAlarm::getAlarmAudioDelay(int id)
+{
+    Q_UNUSED(id);
+    return spo2Param.getAlarmAudioDelay();
+}
+
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/

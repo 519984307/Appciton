@@ -57,6 +57,9 @@ public:
 
     virtual void notifyAlarm(int id, bool isAlarm);
 
+    /* reimplement */
+    virtual int getAlarmAudioDelay(int id);
+
     // 构造与析构。
     virtual ~SPO2LimitAlarm();
 

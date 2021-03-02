@@ -128,6 +128,7 @@
 	<SpHbPrecision>0</SpHbPrecision>
 	<SpHbUnit>0</SpHbUnit>
 	<PviAveragingMode>0</PviAveragingMode>
+        <AlarmDelay>0</AlarmDelay>
     </SPO2>
     <CO2>
         <CO2ModeDefault>1</CO2ModeDefault>

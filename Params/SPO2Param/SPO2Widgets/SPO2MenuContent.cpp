@@ -47,7 +47,9 @@ public:
         ITEM_CBO_SPHB_VESSEL_MODE,
         ITEM_CBO_SPHB_AVERAGING_MODE,
         ITEM_CBO_SPHB_UNIT,
-        ITEM_CBO_PVI_AVERAGING_MODE
+        ITEM_CBO_PVI_AVERAGING_MODE,
+        ITEM_CBO_ALARM_AUDIO_DELAY,    // alarm audio delay
+        ITEM_CBO_NR,
     };
 
     SPO2MenuContentPrivate()
@@ -73,7 +75,7 @@ public:
 
 void SPO2MenuContentPrivate::setCboBlockSignalsStatus(bool isBlocked)
 {
-    for (int i = ITEM_CBO_WAVE_SPEED; i <= ITEM_CBO_PVI_AVERAGING_MODE; i++)
+    for (int i = ITEM_CBO_WAVE_SPEED; i < ITEM_CBO_NR; i++)
     {
         MenuItem item = static_cast<MenuItem>(i);
         if (combos[item])
@@ -138,7 +140,7 @@ void SPO2MenuContentPrivate::loadOptions()
     int index = spo2Param.isShowSignalIQ() ? 1 : 0;
     combos[ITEM_CBO_SIGNAL_IQ]->setCurrentIndex(index);
 
-
+    combos[ITEM_CBO_ALARM_AUDIO_DELAY]->setCurrentIndex(spo2Param.getSPO2AlarmDelay());
 
     QString str;
     machineConfig.getStrValue("SPO2", str);
@@ -445,6 +447,21 @@ void SPO2MenuContent::layoutExec()
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_PVI_AVERAGING_MODE, comboBox);
 
+    // spo2 alarm delay
+    label = new QLabel(trs("SPO2AlarmAudioDelay"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    d_ptr->seniorParamLbl.insert(SPO2MenuContentPrivate::ITEM_CBO_ALARM_AUDIO_DELAY, label);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList() << trs(SPO2Symbol::convert(SPO2_ALARM_AUDIO_DELAY_0S))
+                                     << trs(SPO2Symbol::convert(SPO2_ALARM_AUDIO_DELAY_5S))
+                                     << trs(SPO2Symbol::convert(SPO2_ALARM_AUDIO_DELAY_10S))
+                                     << trs(SPO2Symbol::convert(SPO2_ALARM_AUDIO_DELAY_15S)));
+    itemID = static_cast<int>(SPO2MenuContentPrivate::ITEM_CBO_ALARM_AUDIO_DELAY);
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_ALARM_AUDIO_DELAY, comboBox);
+
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
@@ -512,6 +529,9 @@ void SPO2MenuContent::onComboBoxIndexChanged(int index)
             break;
         case SPO2MenuContentPrivate::ITEM_CBO_PVI_AVERAGING_MODE:
             spo2Param.setPviAveragingMode(static_cast<AveragingMode>(index));
+            break;
+        case SPO2MenuContentPrivate::ITEM_CBO_ALARM_AUDIO_DELAY:
+            spo2Param.setSPO2AlarmDelay(static_cast<SPO2AlarmAudioDelay>(index));
             break;
         default:
             break;

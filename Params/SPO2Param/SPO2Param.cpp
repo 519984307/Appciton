@@ -1896,6 +1896,42 @@ void SPO2Param::initModule(bool plugin)
     }
 }
 
+void SPO2Param::setSPO2AlarmDelay(SPO2AlarmAudioDelay delay)
+{
+    currentConfig.setNumValue("SPO2|AlarmDelay", static_cast<int>(delay));
+}
+
+SPO2AlarmAudioDelay SPO2Param::getSPO2AlarmDelay()
+{
+    int delay = SPO2_ALARM_AUDIO_DELAY_0S;
+    currentConfig.getNumValue("SPO2|AlarmDelay", delay);
+    return static_cast<SPO2AlarmAudioDelay> (delay);
+}
+
+int SPO2Param::getAlarmAudioDelay()
+{
+    int alarmAudioDelay = 0;
+    switch (getSPO2AlarmDelay())
+    {
+    case SPO2_ALARM_AUDIO_DELAY_0S:
+        alarmAudioDelay = 0;
+        break;
+    case SPO2_ALARM_AUDIO_DELAY_5S:
+        alarmAudioDelay = 5;
+        break;
+    case SPO2_ALARM_AUDIO_DELAY_10S:
+        alarmAudioDelay = 10;
+        break;
+    case SPO2_ALARM_AUDIO_DELAY_15S:
+        alarmAudioDelay = 15;
+        break;
+    default:
+        break;
+    }
+
+    return alarmAudioDelay;
+}
+
 void SPO2Param::clearTrendWaveData()
 {
     emit clearTrendData();

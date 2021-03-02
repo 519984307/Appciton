@@ -340,6 +340,23 @@ public:
     void initModule(bool plugin);
 
     /**
+     * @brief setSPO2AlarmDelay set the spo2 alarm limit audio delay
+     * @param delay alarm limit audio delay
+     */
+    void setSPO2AlarmDelay(SPO2AlarmAudioDelay delay);
+
+    /**
+     * @brief getSPO2AlarmDelay get the spo2 alarm limit audio delay
+     * @return alarm limit audio delay
+     */
+    SPO2AlarmAudioDelay getSPO2AlarmDelay();
+    /**
+     * @brief getAlarmAudioDelay  get the spo2 alarm limit audio delay
+     * @return  alarm limit audio delay
+     */
+    int getAlarmAudioDelay();
+
+    /**
      * @brief clearTrendWaveData 清除趋势波形的数据
      */
     void clearTrendWaveData();

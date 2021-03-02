@@ -41,6 +41,12 @@ public:
 
     // 将报警ID转换成字串。
     virtual const char *toString(int id) = 0;
+
+    /**
+     * @brief getAlarmAudioDelay get the alarm audio delay time
+     * @return  alarm audio delay time
+     */
+    virtual int getAlarmAudioDelay(int /*id*/) { return 0;}
 };
 
 class AlarmLimitIFace: public AlarmParamIFace

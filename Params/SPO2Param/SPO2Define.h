@@ -179,6 +179,19 @@ enum WaveUpdateType
     WAVE_UPDATE_NR  // 无效值
 };
 
+/**
+ * @brief The SPO2AlarmAudioDelay enum  The delay only affects audible alarms for SpO2,
+ *  and yet does not delay the on-screen, visual indication of a SpO2 alarm limit violation.
+ */
+enum SPO2AlarmAudioDelay
+{
+    SPO2_ALARM_AUDIO_DELAY_0S,
+    SPO2_ALARM_AUDIO_DELAY_5S,
+    SPO2_ALARM_AUDIO_DELAY_10S,
+    SPO2_ALARM_AUDIO_DELAY_15S,
+    SPO2_ALARM_AUDIO_DELAY_NR,
+};
+
 enum SPO2LineFrequencyType
 {
     SPO2_LINE_FREQ_50HZ,

@@ -167,6 +167,7 @@ SpHbVesselMode,SpHb动脉/静脉模式,SpHb Arterial/Venous Mode
 SpHbAveragingMode,SpHb平均模式,SpHb Averaging Mode
 SpHbUnit,SpHb 单位,SpHb Unit
 PviAveragingMode,PVI平均模式,PVI Averaging Mode
+SPO2AlarmAudioDelay,SpO₂报警音延迟,SpO₂ Alarm audio delay
 AveragingNormal,正常,Normal
 AveragingFast,快速,Fast
 SpHbAveragingLong,长,Long
@@ -508,6 +509,8 @@ NIBP_PR,脉率,PR
 ECG3-Lead,3导联,3-Lead
 ECG5-Lead,5导联,5-Lead
 ECG12-Lead,12导联,12-Lead
+_0sec, 0 秒, 0 s
+_5sec, 5 秒, 5 s
 _8sec, 8 秒, 8 s
 _10sec,10 秒,10 s
 _15sec,15 秒,15 s
