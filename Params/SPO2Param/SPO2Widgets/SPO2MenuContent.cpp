@@ -88,8 +88,7 @@ void SPO2MenuContentPrivate::loadOptions()
     setCboBlockSignalsStatus(true);
 
     combos[ITEM_CBO_SENSITIVITY]->clear();
-    if (moduleType == MODULE_MASIMO_SPO2
-            || moduleType == MODULE_RAINBOW_SPO2)
+    if (moduleType == MODULE_RAINBOW_SPO2)
     {
         for (int i = SPO2_MASIMO_SENS_MAX; i < SPO2_MASIMO_SENS_NR; i++)
         {
@@ -105,7 +104,7 @@ void SPO2MenuContentPrivate::loadOptions()
     }
 
     combos[ITEM_CBO_WAVE_SPEED]->setCurrentIndex(spo2Param.getSweepSpeed());
-    if (moduleType == MODULE_MASIMO_SPO2 || moduleType == MODULE_RAINBOW_SPO2)
+    if (moduleType == MODULE_RAINBOW_SPO2)
     {
         combos[ITEM_CBO_AVERAGE_TIME]->setCurrentIndex(spo2Param.getAverageTime());
         combos[ITEM_CBO_FAST_SAT]->setCurrentIndex(spo2Param.getFastSat());
@@ -236,7 +235,7 @@ void SPO2MenuContent::layoutExec()
     d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED, comboBox);
 
     // 平均时间
-    if (d_ptr->moduleType == MODULE_MASIMO_SPO2 || d_ptr->moduleType == MODULE_RAINBOW_SPO2)
+    if (d_ptr->moduleType == MODULE_RAINBOW_SPO2)
     {
         label = new QLabel(trs("AverageTime"));
         layout->addWidget(label, d_ptr->combos.count(), 0);
@@ -257,15 +256,14 @@ void SPO2MenuContent::layoutExec()
     label = new QLabel(trs("Sensitivity"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    SPO2ModuleType moduleType = spo2Param.getModuleType();
-    if (moduleType == MODULE_MASIMO_SPO2 || moduleType == MODULE_RAINBOW_SPO2)
+    if (d_ptr->moduleType == MODULE_RAINBOW_SPO2)
     {
         for (int i = SPO2_MASIMO_SENS_MAX; i < SPO2_MASIMO_SENS_NR; i++)
         {
             comboBox->addItem(trs(SPO2Symbol::convert(static_cast<SensitivityMode>(i))));
         }
     }
-    else if (moduleType != MODULE_SPO2_NR)
+    else if (d_ptr->moduleType != MODULE_SPO2_NR)
     {
         for (int i = SPO2_SENS_LOW; i < SPO2_SENS_NR; i++)
         {
@@ -281,7 +279,7 @@ void SPO2MenuContent::layoutExec()
     d_ptr->combos.insert(SPO2MenuContentPrivate::ITEM_CBO_SENSITIVITY, comboBox);
 
     // 快速血氧
-    if (d_ptr->moduleType == MODULE_MASIMO_SPO2 || d_ptr->moduleType == MODULE_RAINBOW_SPO2)
+    if (d_ptr->moduleType == MODULE_RAINBOW_SPO2)
     {
         label = new QLabel(trs("FastSat"));
         layout->addWidget(label, d_ptr->combos.count(), 0);

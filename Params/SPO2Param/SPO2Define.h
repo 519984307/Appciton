@@ -16,7 +16,6 @@
 enum SPO2ModuleType
 {
     MODULE_BLM_S5,
-    MODULE_MASIMO_SPO2,
     MODULE_RAINBOW_SPO2,
     MODULE_SPO2_NR,
 };

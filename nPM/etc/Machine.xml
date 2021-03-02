@@ -67,7 +67,7 @@
     <!--参数与Provider的关系-->
     <ECG SptProvider="DemoProvider,BLM_E5">BLM_E5</ECG>
     <RESP SptProvider="DemoProvider,BLM_E5">BLM_E5</RESP>
-    <SPO2 SptProvider="DemoProvider,BLM_S5,MASIMO_SPO2,RAINBOW_SPO2">RAINBOW_SPO2</SPO2>
+    <SPO2 SptProvider="DemoProvider,BLM_S5,RAINBOW_SPO2">RAINBOW_SPO2</SPO2>
     <NIBP SptProvider="DemoProvider,BLM_N5,SUNTECH_NIBP">BLM_N5</NIBP>
     <CO2 SptProvider="DemoProvider,MASIMO_CO2">MASIMO_CO2</CO2>
     <IBP SptProvider="DemoProvider,WITLEAF_IBP,SMART_IBP">SMART_IBP</IBP>

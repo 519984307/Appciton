@@ -463,12 +463,7 @@ static void _initProviderParam(void)
     {
         QString str;
         machineConfig.getStrValue("SPO2", str);
-        if (str == "MASIMO_SPO2")
-        {
-            paramManager.addProvider(new MasimoSetProvider());
-            spo2Param.setModuleType(MODULE_MASIMO_SPO2);
-        }
-        else if (str == "BLM_S5")
+        if (str == "BLM_S5")
         {
             paramManager.addProvider(new S5Provider());
             spo2Param.setModuleType(MODULE_BLM_S5);
