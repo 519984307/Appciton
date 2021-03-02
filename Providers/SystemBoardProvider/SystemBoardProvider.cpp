@@ -509,7 +509,6 @@ void SystemBoardProvider::enableAlarmAudioMute(bool enable)
 {
     unsigned char stat = enable ? 1 : 0;
     sendCmd(MSG_CMD_SET_ALARM_MUTE_LED, &stat, 1);
-    qDebug() << Q_FUNC_INFO << enable;
 }
 
 /***************************************************************************************************
