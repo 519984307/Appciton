@@ -220,7 +220,7 @@ public:
      * @param lowMap
      * @param highMap
      */
-    void getMeasureRange(int *lowSys, int *highSys, int *lowDia, int *highDia, int *lowMap, int *highMap);
+    void getMeasureRange(short *lowSys, short *highSys, short *lowDia, short *highDia, short *lowMap, short *highMap);
 public:
     // 设置预充气值。。
     void setInitPressure(int index);

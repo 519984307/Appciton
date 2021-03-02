@@ -255,14 +255,33 @@ static NIBPMeasureResultInfo getMeasureResultInfo(unsigned char *data)
     }
 
     // Get the NIBP measure range
-    int lowSys, highSys, lowDia, highDia, lowMap, highMap;
+    short lowSys, highSys, lowDia, highDia, lowMap, highMap;
     nibpParam.getMeasureRange(&lowSys, &highSys, &lowDia, &highDia, &lowMap, &highMap);
-    if (info.sys > highSys || info.sys < lowSys || info.dia > highDia || info.dia < lowDia
-            || info.map > highMap || info.map < lowMap)
-    {
-        // NIBP measure ouf of range.
-        info.errCode = 0x06;
-    }
+
+   if ((info.sys > highSys) && ((info.sys < highSys + NIBP_MEASURE_ERROR)))
+   {
+       info.sys = highSys;
+   }
+   if ((info.sys < lowSys) && ((info.sys > lowSys - NIBP_MEASURE_ERROR)))
+   {
+       info.sys = lowSys;
+   }
+   if ((info.dia > highDia) && ((info.dia < highDia + NIBP_MEASURE_ERROR)))
+   {
+       info.dia = highDia;
+   }
+   if ((info.dia < lowDia) && ((info.dia > lowDia - NIBP_MEASURE_ERROR)))
+   {
+       info.dia = lowDia;
+   }
+   if ((info.map > highMap) && (info.map < (highMap + NIBP_MEASURE_ERROR)))
+   {
+       info.map = highMap;
+   }
+   if ((info.map < lowMap) && ((info.map > lowMap - NIBP_MEASURE_ERROR)))
+   {
+       info.map = lowMap;
+   }
 
     return info;
 }
