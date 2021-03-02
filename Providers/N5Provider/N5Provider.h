@@ -16,7 +16,7 @@
 #include <QTextStream>
 
 #define DATA_TXT ("/usr/local/nPM/data/")
-#define NIBP_MEASURE_ERROR  (10)  //NIBP测量是有误差的，单次测量误差控制在10以内
+#define NIBP_MEASURE_ERROR  (8)  //NIBP测量是有误差的，单次测量误差控制在8以内(一般超界限阈值为255，误差控制在3%为7.65)
 
 // 收到的数据帧类型。
 enum NIBPPacketType
