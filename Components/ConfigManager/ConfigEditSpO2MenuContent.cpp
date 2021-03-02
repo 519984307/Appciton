@@ -82,11 +82,8 @@ void ConfigEditSpO2MenuContentPrivate::loadOptions()
     config->getNumValue("SPO2|SweepSpeed", index);
     combos[ITEM_CBO_WAVE_SPEED]->setCurrentIndex(index);
 
-#ifdef SUPPORT_SPO2_MASIMO_SET_PROTOCOL
-    if (moduleType == MODULE_MASIMO_SPO2 || moduleType == MODULE_RAINBOW_SPO2) {
-#else
-    if (moduleType == MODULE_RAINBOW_SPO2) {
-#endif
+    if (moduleType == MODULE_RAINBOW_SPO2)
+    {
         // average time
         index = 0;
         config->getNumValue("SPO2|AverageTime", index);
@@ -101,11 +98,8 @@ void ConfigEditSpO2MenuContentPrivate::loadOptions()
     // Sensitivity
     index = 0;
     config->getNumValue("SPO2|Sensitivity", index);
-#ifdef SUPPORT_SPO2_MASIMO_SET_PROTOCOL
-    if (moduleType == MODULE_MASIMO_SPO2 || moduleType == MODULE_RAINBOW_SPO2) {
-#else
-    if (moduleType == MODULE_RAINBOW_SPO2) {
-#endif
+    if (moduleType == MODULE_RAINBOW_SPO2)
+    {
         if (index > SPO2_MASIMO_SENS_MAX)
         {
             index -= 1;
@@ -151,9 +145,6 @@ void ConfigEditSpO2MenuContent::readyShow()
     {
         case MODULE_BLM_S5:
             break;
-#ifdef SUPPORT_SPO2_MASIMO_SET_PROTOCOL
-        case MODULE_MASIMO_SPO2:
-#endif
         case MODULE_RAINBOW_SPO2:
         {
             if (d_ptr->focusLable)
@@ -198,11 +189,8 @@ void ConfigEditSpO2MenuContent::layoutExec()
     d_ptr->combos.insert(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED, comboBox);
 
     // 平均时间
-#ifdef SUPPORT_SPO2_MASIMO_SET_PROTOCOL
-    if (d_ptr->moduleType == MODULE_MASIMO_SPO2 || d_ptr->moduleType == MODULE_RAINBOW_SPO2) {
-#else
-    if (d_ptr->moduleType == MODULE_RAINBOW_SPO2) {
-#endif
+    if (d_ptr->moduleType == MODULE_RAINBOW_SPO2)
+    {
         label = new QLabel(trs("AverageTime"));
         layout->addWidget(label, d_ptr->combos.count(), 0);
         comboBox = new ComboBox();
@@ -222,11 +210,8 @@ void ConfigEditSpO2MenuContent::layoutExec()
     label = new QLabel(trs("Sensitivity"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-#ifdef SUPPORT_SPO2_MASIMO_SET_PROTOCOL
-    if (d_ptr->moduleType == MODULE_MASIMO_SPO2 || d_ptr->moduleType == MODULE_RAINBOW_SPO2) {
-#else
-    if (d_ptr->moduleType == MODULE_RAINBOW_SPO2) {
-#endif
+    if (d_ptr->moduleType == MODULE_RAINBOW_SPO2)
+    {
         /*
          * According to the MX-5 Prev V&V communication protocol Checklist/Data Table 16.1,
          * ensure Maximum sensitivity is not allowed as a default. The device must use Normal
@@ -253,11 +238,8 @@ void ConfigEditSpO2MenuContent::layoutExec()
     d_ptr->combos.insert(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SENSITIVITY, comboBox);
 
     // 快速血氧
-#ifdef SUPPORT_SPO2_MASIMO_SET_PROTOCOL
-    if (d_ptr->moduleType == MODULE_MASIMO_SPO2 || d_ptr->moduleType == MODULE_RAINBOW_SPO2) {
-#else
-    if (d_ptr->moduleType == MODULE_RAINBOW_SPO2) {
-#endif
+    if (d_ptr->moduleType == MODULE_RAINBOW_SPO2)
+    {
         label = new QLabel(trs("FastSat"));
         layout->addWidget(label, d_ptr->combos.count(), 0);
         comboBox = new ComboBox();
@@ -342,11 +324,7 @@ void ConfigEditSpO2MenuContent::onComboBoxIndexChanged(int index)
         str = "SmartPluseTone";
         break;
     case ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SENSITIVITY:
-#ifdef SUPPORT_SPO2_MASIMO_SET_PROTOCOL
-        if (d_ptr->moduleType == MODULE_MASIMO_SPO2 || d_ptr->moduleType == MODULE_RAINBOW_SPO2)
-#else
         if (d_ptr->moduleType == MODULE_RAINBOW_SPO2)
-#endif
         {
             index += 1;
         }
