@@ -157,8 +157,11 @@ float SystemManager::getScreenPixelWPitch(void)
     int screenInfoIndex = 0;
     machineConfig.getNumValue("ScreenInfoEnable", screenInfoIndex);
     QStringList screenInfoList = machineConfig.getChildNodeNameList("ScreenInfo");
-    QString screenInfoPath = QString("ScreenInfo|%1|ScreenPixelWPitch").arg(screenInfoList.at(screenInfoIndex));
-    machineConfig.getNumValue(screenInfoPath, pixelPitch);
+    if (screenInfoList.count() != 0)
+    {
+        QString screenInfoPath = QString("ScreenInfo|%1|ScreenPixelWPitch").arg(screenInfoList.at(screenInfoIndex));
+        machineConfig.getNumValue(screenInfoPath, pixelPitch);
+    }
     return pixelPitch;
 }
 
@@ -171,8 +174,11 @@ float SystemManager::getScreenPixelHPitch(void)
     int screenInfoIndex = 0;
     machineConfig.getNumValue("ScreenInfoEnable", screenInfoIndex);
     QStringList screenInfoList = machineConfig.getChildNodeNameList("ScreenInfo");
-    QString screenInfoPath = QString("ScreenInfo|%1|ScreenPixelHPitch").arg(screenInfoList.at(screenInfoIndex));
-    machineConfig.getNumValue(screenInfoPath, pixelPitch);
+    if (screenInfoList.count() != 0)
+    {
+        QString screenInfoPath = QString("ScreenInfo|%1|ScreenPixelHPitch").arg(screenInfoList.at(screenInfoIndex));
+        machineConfig.getNumValue(screenInfoPath, pixelPitch);
+    }
     return pixelPitch;
 }
 
@@ -182,8 +188,11 @@ float SystemManager::getScreenSize()
     int screenInfoIndex = 0;
     machineConfig.getNumValue("ScreenInfoEnable", screenInfoIndex);
     QStringList screenInfoList = machineConfig.getChildNodeNameList("ScreenInfo");
-    QString screenInfoPath = QString("ScreenInfo|%1|ScreenSize").arg(screenInfoList.at(screenInfoIndex));
-    machineConfig.getNumValue(screenInfoPath, screenSize);
+    if (screenInfoList.count() != 0)
+    {
+        QString screenInfoPath = QString("ScreenInfo|%1|ScreenSize").arg(screenInfoList.at(screenInfoIndex));
+        machineConfig.getNumValue(screenInfoPath, screenSize);
+    }
     return screenSize;
 }
 
