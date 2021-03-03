@@ -1052,7 +1052,7 @@ void NIBPParam::createSnapshot(NIBPOneShotType err)
 void NIBPParam::getMeasureRange(short *lowSys, short *highSys, short *lowDia,
                                 short *highDia, short *lowMap, short *highMap)
 {
-    short limit = 0;
+    int limit = 0;
     currentConfig.getNumValue("NIBP|SysLowLimit", limit);
     *lowSys = limit;
     limit = 0;
