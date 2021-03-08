@@ -111,6 +111,12 @@
         <InitialCuffInflation>4</InitialCuffInflation>
 	<SUNTECHInitialCuffInflation>4</SUNTECHInitialCuffInflation>
 	<CompleteTone>0</CompleteTone>
+	<SysHighLimit>135</SysHighLimit>
+	<SysLowLimit>40</SysLowLimit>
+	<DiaHighLimit>100</DiaHighLimit>
+	<DiaLowLimit>10</DiaLowLimit>
+	<MapHighLimit>110</MapHighLimit>
+	<MapLowLimit>20</MapLowLimit>
     </NIBP>
     <SPO2>
         <AverageTime>2</AverageTime>
