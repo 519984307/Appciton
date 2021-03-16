@@ -967,6 +967,8 @@ void EventWindowPrivate::eventTrendUpdate()
     QString titleStr;
     bool multiSubParamAlarm = false;
     bool subParamAlarm = false;
+    bool isNeoMachine = false;
+    machineConfig.getNumValue("NeonateMachine", isNeoMachine);
     int paramNum = ctx.trendSegment->trendValueNum;
     for (int i = 0; i < paramNum; i ++)
     {
@@ -976,7 +978,14 @@ void EventWindowPrivate::eventTrendUpdate()
         {
             continue;
         }
-
+        /*
+        * DV注册审评提出：由于总血红蛋白（SPHb）和碳氧血红蛋白（SPCO）参数无新生儿临床数据，要求在技术指标中进行删除。
+        * 新生儿专用监护仪 主机软件删除总血红蛋白（SPHb）和碳氧血红蛋白SPCO）参数
+        */
+        if (isNeoMachine && (subId == SUB_PARAM_SPHB || subId == SUB_PARAM_SPCO))
+        {
+            continue;
+        }
         // not support spo2 high configure
         if (paramInfo.getParamID(subId) == PARAM_SPO2 && !systemManager.isSupport(CONFIG_SPO2_HIGH_CONFIGURE))
         {

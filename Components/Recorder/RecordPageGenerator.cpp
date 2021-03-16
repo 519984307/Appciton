@@ -39,6 +39,7 @@
 #include "PatientManager.h"
 #include "EventDataDefine.h"
 #include "TrendDataStorageManager.h"
+#include "IConfig.h"
 
 #define DEFAULT_PAGE_WIDTH 200
 #define PEN_WIDTH 2
@@ -654,6 +655,8 @@ QStringList RecordPageGenerator::getTrendStringList(const TrendDataPackage &tren
     QStringList strList;
     ParamID paramid;
     SubParamID subparamID;
+    bool isNeoMachine = false;   // Neonate Machine status
+    machineConfig.getNumValue("NeonateMachine", isNeoMachine);
     for (int i = 0; i < SUB_PARAM_NR; i++)
     {
         subparamID = (SubParamID)i;
@@ -661,7 +664,14 @@ QStringList RecordPageGenerator::getTrendStringList(const TrendDataPackage &tren
         {
             continue;
         }
-
+        /*
+        * DV注册审评提出：由于总血红蛋白（SPHb）和碳氧血红蛋白（SPCO）参数无新生儿临床数据，要求在技术指标中进行删除。
+        * 新生儿专用监护仪 主机软件删除总血红蛋白（SPHb）和碳氧血红蛋白SPCO）参数
+        */
+        if (isNeoMachine && (subparamID == SUB_PARAM_SPHB || subparamID == SUB_PARAM_SPCO))
+        {
+            continue;
+        }
         paramid = paramInfo.getParamID(subparamID);
 
         // spo2 plugin is not connected
