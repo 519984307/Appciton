@@ -762,7 +762,8 @@ TrendTableModelPrivate::TrendTableModelPrivate()
       curDateStr(InvStr())
 {
     orderMap.clear();
-
+    bool isNeoMachine = false;   // Neonate Machine status
+    machineConfig.getNumValue("NeonateMachine", isNeoMachine);
     QList<ParamID> paramIDList = paramManager.getParamIDs();
     qSort(paramIDList);
 
@@ -773,7 +774,14 @@ TrendTableModelPrivate::TrendTableModelPrivate()
         {
             continue;
         }
-
+        /*
+        * DV注册审评提出：由于总血红蛋白（SPHb）和碳氧血红蛋白（SPCO）参数无新生儿临床数据，要求在技术指标中进行删除。
+        * 新生儿专用监护仪 主机软件删除总血红蛋白（SPHb）和碳氧血红蛋白SPCO）参数
+        */
+        if (isNeoMachine && (i == SUB_PARAM_SPHB || i == SUB_PARAM_SPCO))
+        {
+            continue;
+        }
         switch (i)
         {
         case SUB_PARAM_ECG_PVCS:
