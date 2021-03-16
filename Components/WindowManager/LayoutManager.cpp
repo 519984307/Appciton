@@ -1256,21 +1256,44 @@ void LayoutManagerPrivate::performSPO2Layout()
             QString nodeName = node["@text"].toString();
             int nodeSpan = node["@span"].toInt();
             int nodePos = node["@pos"].toInt();
-
-            // change layout accord current sensor
-            if (spo2Param.getSensor() == SPO2_RAINBOW_SENSOR_R25)
+            int isNeoMachine = 0;   // Neonate Machine status
+            machineConfig.getNumValue("NeonateMachine", isNeoMachine);
+            /*
+            * DV注册审评提出：由于总血红蛋白（SPHb）和碳氧血红蛋白（SPCO）参数无新生儿临床数据，要求在技术指标中进行删除。
+            * 新生儿专用监护仪 主机软件删除总血红蛋白（SPHb）和碳氧血红蛋白SPCO）参数
+            */
+            if (isNeoMachine)
             {
                 if (nodeName == QString(layoutNodeName(LAYOUT_NODE_PARAM_SPHB)))
                 {
-                    nodeName = QString(layoutNodeName(LAYOUT_NODE_PARAM_SPCO));
-                }
-                else if (nodeName == QString(layoutNodeName(LAYOUT_NODE_PARAM_SPOC)))
-                {
-                    continue;
+                    nodeName = QString(layoutNodeName(LAYOUT_NODE_PARAM_SPMET));
                 }
                 else if (nodeName == QString(layoutNodeName(LAYOUT_NODE_TREND_WAVE_SPHB)))
                 {
-                    nodeName = QString(layoutNodeName(LAYOUT_NODE_TREND_WAVE_SPCO));
+                    nodeName = QString(layoutNodeName(LAYOUT_NODE_PARAM_SPMET));
+                }
+                else if (nodeName == QString(layoutNodeName(LAYOUT_NODE_PARAM_SPMET)))
+                {
+                    continue;
+                }
+            }
+            else
+            {
+                // change layout accord current sensor
+                if (spo2Param.getSensor() == SPO2_RAINBOW_SENSOR_R25)
+                {
+                    if (nodeName == QString(layoutNodeName(LAYOUT_NODE_PARAM_SPHB)))
+                    {
+                        nodeName = QString(layoutNodeName(LAYOUT_NODE_PARAM_SPCO));
+                    }
+                    else if (nodeName == QString(layoutNodeName(LAYOUT_NODE_PARAM_SPOC)))
+                    {
+                        continue;
+                    }
+                    else if (nodeName == QString(layoutNodeName(LAYOUT_NODE_TREND_WAVE_SPHB)))
+                    {
+                        nodeName = QString(layoutNodeName(LAYOUT_NODE_TREND_WAVE_SPCO));
+                    }
                 }
             }
 
