@@ -54,8 +54,11 @@ public:
 
     SPO2MenuContentPrivate()
         : cchdBtn(NULL),
-          moduleType(MODULE_BLM_S5)
-    {}
+          moduleType(MODULE_BLM_S5),
+          isNeoMachine(false)
+    {
+        machineConfig.getNumValue("NeonateMachine", isNeoMachine);
+    }
 
     /**
      * @brief setCboBlockSignalsStatus  设置cobomo信号锁住状态
@@ -71,6 +74,7 @@ public:
     Button *cchdBtn;
 
     SPO2ModuleType moduleType;
+    bool isNeoMachine;      // Neonate Machine status
 };
 
 void SPO2MenuContentPrivate::setCboBlockSignalsStatus(bool isBlocked)
@@ -147,16 +151,16 @@ void SPO2MenuContentPrivate::loadOptions()
     if (str == "RAINBOW_SPO2")
     {
         combos[ITEM_CBO_SPO2_LINE_FREQ]->setVisible(true);
-        combos[ITEM_CBO_SPHB_PRECISION_MODE]->setVisible(true);
-        combos[ITEM_CBO_SPHB_VESSEL_MODE]->setVisible(true);
-        combos[ITEM_CBO_SPHB_AVERAGING_MODE]->setVisible(true);
-        combos[ITEM_CBO_SPHB_UNIT]->setVisible(true);
+        combos[ITEM_CBO_SPHB_PRECISION_MODE]->setVisible(!isNeoMachine);
+        combos[ITEM_CBO_SPHB_VESSEL_MODE]->setVisible(!isNeoMachine);
+        combos[ITEM_CBO_SPHB_AVERAGING_MODE]->setVisible(!isNeoMachine);
+        combos[ITEM_CBO_SPHB_UNIT]->setVisible(!isNeoMachine);
         combos[ITEM_CBO_PVI_AVERAGING_MODE]->setVisible(true);
         seniorParamLbl[ITEM_CBO_SPO2_LINE_FREQ]->setVisible(true);
-        seniorParamLbl[ITEM_CBO_SPHB_PRECISION_MODE]->setVisible(true);
-        seniorParamLbl[ITEM_CBO_SPHB_VESSEL_MODE]->setVisible(true);
-        seniorParamLbl[ITEM_CBO_SPHB_AVERAGING_MODE]->setVisible(true);
-        seniorParamLbl[ITEM_CBO_SPHB_UNIT]->setVisible(true);
+        seniorParamLbl[ITEM_CBO_SPHB_PRECISION_MODE]->setVisible(!isNeoMachine);
+        seniorParamLbl[ITEM_CBO_SPHB_VESSEL_MODE]->setVisible(!isNeoMachine);
+        seniorParamLbl[ITEM_CBO_SPHB_AVERAGING_MODE]->setVisible(!isNeoMachine);
+        seniorParamLbl[ITEM_CBO_SPHB_UNIT]->setVisible(!isNeoMachine);
         seniorParamLbl[ITEM_CBO_PVI_AVERAGING_MODE]->setVisible(true);
 
         index = spo2Param.getLineFrequency() == SPO2_LINE_FREQ_50HZ ? 0 : 1;
