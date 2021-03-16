@@ -1256,7 +1256,7 @@ void LayoutManagerPrivate::performSPO2Layout()
             QString nodeName = node["@text"].toString();
             int nodeSpan = node["@span"].toInt();
             int nodePos = node["@pos"].toInt();
-            int isNeoMachine = 0;   // Neonate Machine status
+            bool isNeoMachine = false;   // Neonate Machine status
             machineConfig.getNumValue("NeonateMachine", isNeoMachine);
             /*
             * DV注册审评提出：由于总血红蛋白（SPHb）和碳氧血红蛋白（SPCO）参数无新生儿临床数据，要求在技术指标中进行删除。

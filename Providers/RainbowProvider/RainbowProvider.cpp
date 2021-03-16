@@ -16,6 +16,7 @@
 #include "AlarmSourceManager.h"
 #include "Framework/Language/LanguageManager.h"
 #include "SystemManager.h"
+#include "IConfig.h"
 
 #define SOM  (0xA1)
 #define EOM  (0xAF)
@@ -262,9 +263,11 @@ public:
         , isPlugin(false)
         , inProgramMode(false)
         , spo2BoardFailure(false)
+        , isNeoMachine(false)
         , programTimer(NULL)
         , cmdAckNum(0)
     {
+        machineConfig.getNumValue("NeonateMachine", isNeoMachine);
     }
 
     ~RainbowProviderPrivate();
@@ -414,6 +417,7 @@ public:
     bool isPlugin;
     bool inProgramMode;
     bool spo2BoardFailure;   // Whether the spo2 board is faulty
+    bool isNeoMachine;       // Neonate Machine status
     QTimer *programTimer;   /* timer to timeout every second during program */
     short cmdAckNum;    /* command ack num, some command need multi ack, because it send multi commnads */
 };
@@ -2063,6 +2067,14 @@ void RainbowProviderPrivate::addAlarms(unsigned int flag)
 
 void RainbowProviderPrivate::updateSensorType(unsigned short sensorParam, unsigned short availableParam)
 {
+    /*
+    * DV注册审评提出：由于总血红蛋白（SPHb）和碳氧血红蛋白（SPCO）参数无新生儿临床数据，要求在技术指标中进行删除。
+    * 新生儿专用监护仪 主机软件删除总血红蛋白（SPHb）和碳氧血红蛋白SPCO）参数
+    */
+    if (isNeoMachine)
+    {
+        return;
+    }
     if ((sensorParam & ACTIVATE_PARAM_SPHB) && (availableParam & ACTIVATE_PARAM_SPHB))
     {
         spo2Param.setSensor(SPO2_RAINBOW_SENSOR_R1);
