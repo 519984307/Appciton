@@ -54,11 +54,8 @@ public:
 
     SPO2MenuContentPrivate()
         : cchdBtn(NULL),
-          moduleType(MODULE_BLM_S5),
-          isNeoMachine(false)
-    {
-        machineConfig.getNumValue("NeonateMachine", isNeoMachine);
-    }
+          moduleType(MODULE_BLM_S5)
+    {}
 
     /**
      * @brief setCboBlockSignalsStatus  设置cobomo信号锁住状态
@@ -74,7 +71,6 @@ public:
     Button *cchdBtn;
 
     SPO2ModuleType moduleType;
-    bool isNeoMachine;      // Neonate Machine status
 };
 
 void SPO2MenuContentPrivate::setCboBlockSignalsStatus(bool isBlocked)
@@ -150,6 +146,7 @@ void SPO2MenuContentPrivate::loadOptions()
     machineConfig.getStrValue("SPO2", str);
     if (str == "RAINBOW_SPO2")
     {
+        bool isNeoMachine = systemManager.isNeonateMachine();  // Neonate machine status
         combos[ITEM_CBO_SPO2_LINE_FREQ]->setVisible(true);
         combos[ITEM_CBO_SPHB_PRECISION_MODE]->setVisible(!isNeoMachine);
         combos[ITEM_CBO_SPHB_VESSEL_MODE]->setVisible(!isNeoMachine);
