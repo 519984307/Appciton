@@ -105,10 +105,10 @@ public:
     void setEachPageRowCount(int rows);
 
     /**
-     * @brief setNeoDisState set neo disable nibp state
-     * @param state  state
+     * @brief editableParam  Whether the parameter alarm limit can be edited
+     * @param editable
      */
-    void setNeoDisState(bool state);
+    void editableParam(ParamID pid, bool editable);
 protected:
     /**
      * @brief alarmDataUpdate callback when specific alarm config changed
