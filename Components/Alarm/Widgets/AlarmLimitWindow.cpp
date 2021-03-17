@@ -31,7 +31,7 @@
 #include <SystemManager.h>
 #include "MessageBox.h"
 #include "SPO2Param.h"
-#include "IConfig.h"
+#include "NIBPParam.h"
 
 #define TABLE_ROW_NUM 7
 
@@ -61,11 +61,6 @@ public:
 
 void AlarmLimitWindowPrivate::loadoptions()
 {
-    int enable = 0;
-    machineConfig.getModuleInitialStatus("NIBPNEOMeasureEnable", reinterpret_cast<bool *>(&enable));
-    bool isNeoDisState = (patientManager.getType() == PATIENT_TYPE_NEO && !enable);
-    model->setNeoDisState(isNeoDisState);
-
     QList<ParamID> pids = paramManager.getParamIDs();
     QList<AlarmDataInfo> infos;
     for (int i = 0; i < SUB_PARAM_NR; ++i)
@@ -125,6 +120,10 @@ void AlarmLimitWindowPrivate::loadoptions()
         }
     }
     this->infos = infos;
+    /*
+      * DV多参数监护仪(非新生儿专用监护仪)在切换新生儿病人时，停用NIBP测量功能，并禁用设置NIBP相关参数、禁用NIBP维护功能
+      */
+    model->setNeoDisState(nibpParam.getNeoDisState());
     model->setupAlarmDataInfos(infos);
     model->setEachPageRowCount(TABLE_ROW_NUM);
 }
