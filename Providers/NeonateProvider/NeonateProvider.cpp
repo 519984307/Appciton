@@ -137,7 +137,14 @@ void NeonateProvider::handlePacket(unsigned char *data, int len)
     case NEONATE_CYCLE_O2_DATA:
     {
         int16_t o2 = data[1] | (data[2] << 8);
-        o2Param.setO2Concentration(o2);
+        if (o2 < 0)
+        {
+            o2Param.setO2Concentration(InvData());
+        }
+        else
+        {
+            o2Param.setO2Concentration(o2);
+        }
         break;
     }
     case NEONATE_CYCLE_AD_DATA:
