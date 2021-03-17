@@ -47,9 +47,10 @@ enum O2Concentration
     O2_CONCENTRATION_21_PERCENT     = 0x01,
     O2_CONCENTRATION_100_PERCENT    = 0x02
 };
-
+class NeonateProviderPrivate;
 class NeonateProvider : public BLMProvider, public O2ProviderIFace
 {
+    Q_OBJECT
 public:     // Provider的接口
     virtual bool attachParam(Param *param);
 
@@ -87,6 +88,14 @@ protected:
     virtual void reconnected(void);
     virtual void sendDisconnected();
 
+private slots:
+    /**
+     * @brief _motorVibrateControl Control the vibration state of the motor
+     */
+    void _motorVibrateControl();
+
 private:
     void _selfTest(unsigned char *packet, int len);
+
+    NeonateProviderPrivate *const d_ptr;
 };

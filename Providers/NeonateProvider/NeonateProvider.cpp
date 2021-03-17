@@ -17,6 +17,23 @@
 #include "SystemManager.h"
 #include "AlarmSourceManager.h"
 
+#define MOTOR_INTERMITTENT_VIBRATE_TIME  (10*1000)   // 10s Motor intermittent vibration time
+
+class NeonateProviderPrivate
+{
+public:
+    NeonateProviderPrivate()
+        : motorControlTimer(), motorVibrateState(false), mototControlStatus(false)
+    {}
+
+    ~NeonateProviderPrivate()
+    {}
+
+    QTimer motorControlTimer;   // Control motor timer
+    bool motorVibrateState;     // Used to control the intermittent vibration function of the motor.
+    bool mototControlStatus;    // Control whether the motor starts or stops the vibration function.
+};
+
 bool NeonateProvider::attachParam(Param *param)
 {
     if (param->getParamID() == PARAM_O2)
@@ -29,13 +46,19 @@ bool NeonateProvider::attachParam(Param *param)
 }
 
 NeonateProvider::NeonateProvider() : BLMProvider("NEONATE_O2"), O2ProviderIFace()
+  , d_ptr(new NeonateProviderPrivate())
 {
     UartAttrDesc portAttr(115200, 8, 'N', 1);
     initPort(portAttr);
+
+    // create timer
+    d_ptr->motorControlTimer.setInterval(MOTOR_INTERMITTENT_VIBRATE_TIME);    // 10s
+    connect(&d_ptr->motorControlTimer, SIGNAL(timeout()), this, SLOT(_motorVibrateControl()));
 }
 
 NeonateProvider::~NeonateProvider()
 {
+    delete d_ptr;
 }
 
 void NeonateProvider::sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len)
@@ -66,8 +89,22 @@ void NeonateProvider::sendCalibration(int concentration)
 
 void NeonateProvider::sendMotorControl(bool status)
 {
+    if (d_ptr->mototControlStatus == status)
+    {
+        return;
+    }
+    if (status)
+    {
+        d_ptr->motorControlTimer.start();
+    }
+    else
+    {
+        d_ptr->motorControlTimer.stop();
+    }
     unsigned char data = status;
     sendCmd(NEONATE_CMD_MOTOR_CONTROL, &data, 1);
+    d_ptr->mototControlStatus = status;
+    d_ptr->motorVibrateState = status;
 }
 
 void NeonateProvider::sendVibrationIntensity(int intensity)
@@ -164,6 +201,14 @@ void NeonateProvider::sendDisconnected()
     {
         alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_SEND_COMMUNICATION_STOP, true);
     }
+}
+
+void NeonateProvider::_motorVibrateControl()
+{
+    // Control the motor to start vibrating or stop vibrating for 10s.
+    unsigned char data = (!d_ptr->motorVibrateState);
+    sendCmd(NEONATE_CMD_MOTOR_CONTROL, &data, 1);
+    d_ptr->motorVibrateState = (!d_ptr->motorVibrateState);
 }
 
 void NeonateProvider::_selfTest(unsigned char *packet, int len)
