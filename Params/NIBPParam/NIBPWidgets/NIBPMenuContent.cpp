@@ -319,28 +319,26 @@ void NIBPMenuContentPrivate::disableMenuItem()
      */
     bool isNeoMachine = false;
     machineConfig.getNumValue("NeonateMachine", isNeoMachine);
-    if (!isNeoMachine && patientManager.getType() == PATIENT_TYPE_NEO)
+    bool enable = (!isNeoMachine && patientManager.getType() == PATIENT_TYPE_NEO);
+    QMap<MenuItem, ComboBox *>::iterator iter = combos.begin();
+    for (; iter != combos.end(); ++iter)
     {
-        QMap<MenuItem, ComboBox *>::iterator iter = combos.begin();
-        for (; iter != combos.end(); ++iter)
+        if (iter.value())
         {
-            if (iter.value())
-            {
-                iter.value()->setEnabled(false);
-            }
+            iter.value()->setDisabled(enable);
         }
-
-        QMap<MenuItem, Button *>::iterator btnIter = btns.begin();
-        for (; btnIter != btns.end(); ++btnIter)
-        {
-            if (btnIter.value())
-            {
-                btnIter.value()->setEnabled(false);
-            }
-        }
-
-        initCuffSpb->setEnabled(false);
     }
+
+    QMap<MenuItem, Button *>::iterator btnIter = btns.begin();
+    for (; btnIter != btns.end(); ++btnIter)
+    {
+        if (btnIter.value())
+        {
+            btnIter.value()->setDisabled(enable);
+        }
+    }
+
+    initCuffSpb->setDisabled(enable);
 }
 
 
