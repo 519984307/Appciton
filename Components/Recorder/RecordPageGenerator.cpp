@@ -39,7 +39,6 @@
 #include "PatientManager.h"
 #include "EventDataDefine.h"
 #include "TrendDataStorageManager.h"
-#include "IConfig.h"
 
 #define DEFAULT_PAGE_WIDTH 200
 #define PEN_WIDTH 2
@@ -655,8 +654,7 @@ QStringList RecordPageGenerator::getTrendStringList(const TrendDataPackage &tren
     QStringList strList;
     ParamID paramid;
     SubParamID subparamID;
-    bool isNeoMachine = false;   // Neonate Machine status
-    machineConfig.getNumValue("NeonateMachine", isNeoMachine);
+    bool isNeoMachine = systemManager.isNeonateMachine();     // Neonate Machine status
     for (int i = 0; i < SUB_PARAM_NR; i++)
     {
         subparamID = (SubParamID)i;

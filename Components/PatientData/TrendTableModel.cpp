@@ -762,8 +762,7 @@ TrendTableModelPrivate::TrendTableModelPrivate()
       curDateStr(InvStr())
 {
     orderMap.clear();
-    bool isNeoMachine = false;   // Neonate Machine status
-    machineConfig.getNumValue("NeonateMachine", isNeoMachine);
+    bool isNeoMachine = systemManager.isNeonateMachine();     // Neonate Machine status
     QList<ParamID> paramIDList = paramManager.getParamIDs();
     qSort(paramIDList);
 

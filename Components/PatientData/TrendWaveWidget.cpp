@@ -1241,8 +1241,7 @@ void TrendWaveWidget::_initAllParamData()
 {
     _allParamMap.clear();
 
-    bool isNeoMachine = false;
-    machineConfig.getNumValue("NeonateMachine", isNeoMachine);
+    bool isNeoMachine = systemManager.isNeonateMachine();     // Neonate Machine status
     QList<ParamID> paramIDList = paramManager.getParamIDs();
     qSort(paramIDList);
     for (int i = 0; i < SUB_PARAM_NR; i ++)
