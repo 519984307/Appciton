@@ -31,7 +31,6 @@
 #include <SystemManager.h>
 #include "MessageBox.h"
 #include "SPO2Param.h"
-#include "IConfig.h"
 
 #define TABLE_ROW_NUM 7
 
@@ -45,9 +44,7 @@ public:
         , nextBtn(NULL)
         , defaultsBtn(NULL)
         , param(param)
-        , isNeoMachine(false)
     {
-        machineConfig.getNumValue("NeonateMachine", isNeoMachine);
     }
 
     void loadoptions();
@@ -59,7 +56,6 @@ public:
     Button *defaultsBtn;
     QList<AlarmDataInfo> infos;
     QString param;
-    bool isNeoMachine;   // Neonate Machine status
 };
 
 void AlarmLimitWindowPrivate::loadoptions()
@@ -77,7 +73,7 @@ void AlarmLimitWindowPrivate::loadoptions()
         * DV注册审评提出：由于总血红蛋白（SPHb）和碳氧血红蛋白（SPCO）参数无新生儿临床数据，要求在技术指标中进行删除。
         * 新生儿专用监护仪 主机软件删除总血红蛋白（SPHb）和碳氧血红蛋白SPCO）参数
         */
-        if (isNeoMachine && (subId == SUB_PARAM_SPHB || subId == SUB_PARAM_SPCO))
+        if (systemManager.isNeonateMachine() && (subId == SUB_PARAM_SPHB || subId == SUB_PARAM_SPCO))
         {
             continue;
         }
@@ -318,7 +314,7 @@ void AlarmLimitWindow::restoreDefaults()
         * DV注册审评提出：由于总血红蛋白（SPHb）和碳氧血红蛋白（SPCO）参数无新生儿临床数据，要求在技术指标中进行删除。
         * 新生儿专用监护仪 主机软件删除总血红蛋白（SPHb）和碳氧血红蛋白SPCO）参数
         */
-        if (d_ptr->isNeoMachine && (subId == SUB_PARAM_SPHB || subId == SUB_PARAM_SPCO))
+        if (systemManager.isNeonateMachine() && (subId == SUB_PARAM_SPHB || subId == SUB_PARAM_SPCO))
         {
             continue;
         }
