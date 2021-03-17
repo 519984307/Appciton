@@ -317,13 +317,13 @@ void NIBPMenuContentPrivate::disableMenuItem()
     /*
      * DV多参数监护仪(非新生儿专用监护仪)在切换新生儿病人时，停用NIBP测量功能，并禁用设置NIBP相关参数、禁用NIBP维护功能
      */
-    bool _isNeoDisable = nibpParam.getNeoDisState();
+    bool isNeoDisable = nibpParam.getNeoDisState();
     QMap<MenuItem, ComboBox *>::iterator iter = combos.begin();
     for (; iter != combos.end(); ++iter)
     {
         if (iter.value())
         {
-            iter.value()->setEnabled(!_isNeoDisable);
+            iter.value()->setEnabled(!isNeoDisable);
         }
     }
 
@@ -332,11 +332,11 @@ void NIBPMenuContentPrivate::disableMenuItem()
     {
         if (btnIter.value())
         {
-            btnIter.value()->setEnabled(!_isNeoDisable);
+            btnIter.value()->setEnabled(!isNeoDisable);
         }
     }
 
-    initCuffSpb->setEnabled(!_isNeoDisable);
+    initCuffSpb->setEnabled(!isNeoDisable);
 }
 
 

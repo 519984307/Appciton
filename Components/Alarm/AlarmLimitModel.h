@@ -104,6 +104,11 @@ public:
      */
     void setEachPageRowCount(int rows);
 
+    /**
+     * @brief setNeoDisState set neo disable nibp state
+     * @param state  state
+     */
+    void setNeoDisState(bool state);
 protected:
     /**
      * @brief alarmDataUpdate callback when specific alarm config changed

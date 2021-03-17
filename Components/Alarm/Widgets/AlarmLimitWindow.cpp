@@ -31,6 +31,7 @@
 #include <SystemManager.h>
 #include "MessageBox.h"
 #include "SPO2Param.h"
+#include "IConfig.h"
 
 #define TABLE_ROW_NUM 7
 
@@ -60,6 +61,11 @@ public:
 
 void AlarmLimitWindowPrivate::loadoptions()
 {
+    int enable = 0;
+    machineConfig.getModuleInitialStatus("NIBPNEOMeasureEnable", reinterpret_cast<bool *>(&enable));
+    bool isNeoDisState = (patientManager.getType() == PATIENT_TYPE_NEO && !enable);
+    model->setNeoDisState(isNeoDisState);
+
     QList<ParamID> pids = paramManager.getParamIDs();
     QList<AlarmDataInfo> infos;
     for (int i = 0; i < SUB_PARAM_NR; ++i)

@@ -30,7 +30,8 @@ public:
     AlarmLimitModelPrivate()
         : viewWidth(400),  // set default value to 400
           editRow(-1),
-          eachPageRowCount(0)
+          eachPageRowCount(0),
+          isNeoDisableNIBP(false)
     {
     }
 
@@ -39,6 +40,7 @@ public:
     int editRow;
     QModelIndex editIndex;
     int eachPageRowCount;
+    bool isNeoDisableNIBP;    // 新生儿是否禁用NIBP
 
     /**
      * @brief calTotalRowCount 计算总页数
@@ -436,15 +438,28 @@ Qt::ItemFlags AlarmLimitModel::flags(const QModelIndex &index) const
     {
         return QAbstractTableModel::flags(index);
     }
+    int row = index.row();
+    if (row >= d_ptr->alarmDataInfos.count())
+    {
+        return QAbstractTableModel::flags(index);;
+    }
 
     Qt::ItemFlags flags;
-    if (d_ptr->editRow == index.row())
+    if (d_ptr->editRow == row)
     {
         if (index.column() != SECTION_PARAM_NAME)
         {
             flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
         }
         else
+        {
+            flags = Qt::ItemIsEnabled;
+        }
+        /*
+         * DV多参数监护仪(非新生儿专用监护仪)在切换新生儿病人时，停用NIBP测量功能，并禁用设置NIBP相关参数、禁用NIBP维护功能
+         */
+        ParamID paramId = d_ptr->alarmDataInfos.at(row).paramID;
+        if (paramId == PARAM_NIBP && d_ptr->isNeoDisableNIBP)
         {
             flags = Qt::ItemIsEnabled;
         }
@@ -549,6 +564,11 @@ int AlarmLimitModel::curEditRow() const
 void AlarmLimitModel::setEachPageRowCount(int rows)
 {
     d_ptr->eachPageRowCount = rows;
+}
+
+void AlarmLimitModel::setNeoDisState(bool state)
+{
+    d_ptr->isNeoDisableNIBP = state;
 }
 
 int AlarmLimitModelPrivate::calTotalPage()
