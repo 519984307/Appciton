@@ -60,6 +60,11 @@ public:
      */
     void statBtnShow(void);
 
+    /**
+     * @brief disableMenuItem Disable menu item
+     */
+    void disableMenuItem();
+
     QMap<MenuItem, ComboBox *> combos;
     QMap<MenuItem, Button *> btns;
     SpinBox *initCuffSpb;
@@ -279,6 +284,9 @@ void NIBPMenuContentPrivate::loadOptions()
         combos[ITEM_CBO_COMPLETE_TONE]->setEnabled(true);
     }
     statBtnShow();
+
+    // Disable menu item
+    disableMenuItem();
 }
 
 void NIBPMenuContentPrivate::statBtnShow(void)
@@ -302,6 +310,33 @@ void NIBPMenuContentPrivate::statBtnShow(void)
     {
         btns[ITEM_BTN_START_STAT]->setText(trs("STATSTART"));
     }
+}
+
+void NIBPMenuContentPrivate::disableMenuItem()
+{
+    /*
+     * DV多参数监护仪(非新生儿专用监护仪)在切换新生儿病人时，停用NIBP测量功能，并禁用设置NIBP相关参数、禁用NIBP维护功能
+     */
+    bool isNeoDisable = nibpParam.getNeoDisState();
+    QMap<MenuItem, ComboBox *>::iterator iter = combos.begin();
+    for (; iter != combos.end(); ++iter)
+    {
+        if (iter.value())
+        {
+            iter.value()->setEnabled(!isNeoDisable);
+        }
+    }
+
+    QMap<MenuItem, Button *>::iterator btnIter = btns.begin();
+    for (; btnIter != btns.end(); ++btnIter)
+    {
+        if (btnIter.value())
+        {
+            btnIter.value()->setEnabled(!isNeoDisable);
+        }
+    }
+
+    initCuffSpb->setEnabled(!isNeoDisable);
 }
 
 
