@@ -376,21 +376,19 @@ void ECGMenuContentPrivate::updatePrintWaveIds()
 
 int ECGMenuContentPrivate::getCurGainIndex(ECGGain gain)
 {
-#ifdef HIDE_ECG_GAIN_X0125_AND_X4
-    /*
-     * 根据DV2020.9.16 IEC测试反馈问题，
-     * 在ECG增益为X4时，会出现波形截顶情况；以及在ECG增益为X0.125时，波形振幅太小，基本为直线；
-     * 获取不显示X0.125，X4 ECG增益后各增益对应的索引。
-     */
-    if (gain == ECG_GAIN_AUTO)
+    // 获取ECG增益在下拉框中的当前索引
+    int gainIndex = 0;
+    // Get the gain information supported by the system
+    QList<ECGGain> gainInfo = ecgParam.getSupportGainInfo();
+    for (int i = 0; i < gainInfo.count(); i++)
     {
-        return combos[ITEM_CBO_ECG_GAIN]->count() - 1;
+        if (gain == gainInfo.at(i))
+        {
+            gainIndex = i;
+            break;
+        }
     }
-
-    return gain - ECG_GAIN_X025;
-#else
-    return gain;
-#endif
+    return gainIndex;
 }
 
 ECGMenuContent::ECGMenuContent()
@@ -498,20 +496,12 @@ void ECGMenuContent::layoutExec()
     label = new QLabel(trs("ECGGain"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
-    for (int i = ECG_GAIN_X0125; i < ECG_GAIN_NR; i++)
+    // Get the gain information supported by the system
+    QList<ECGGain> gainInfo = ecgParam.getSupportGainInfo();
+    for (int i = 0; i < gainInfo.count(); i++)
     {
-#ifdef HIDE_ECG_GAIN_X0125_AND_X4
-        /*
-         * 根据DV2020.9.16 IEC测试反馈问题，
-         * 在ECG增益为X4时，会出现波形截顶情况；以及在ECG增益为X0.125时，波形振幅太小，基本为直线；
-         * 所以DV要求不显示X0.125，X4 ECG增益
-         */
-        if (i == ECG_GAIN_X0125 || i == ECG_GAIN_X40)
-        {
-            continue;
-        }
-#endif
-        comboBox->addItem(trs(ECGSymbol::convert(static_cast<ECGGain>(i))), qVariantFromValue(i));
+        comboBox->addItem(trs(ECGSymbol::convert(gainInfo.at(i))),
+                              qVariantFromValue(static_cast<int>(gainInfo.at(i))));
     }
     itemID  = ECGMenuContentPrivate::ITEM_CBO_ECG_GAIN;
     comboBox->setProperty("Item",

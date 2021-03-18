@@ -1915,6 +1915,29 @@ ECGGain ECGParam::get12LGain(ECGLead lead)
     return _waveWidget[lead]->get12LGain();
 }
 
+QList<ECGGain> ECGParam::getSupportGainInfo()
+{
+    /*
+     * 根据DV 2021.3.14 反馈问题，为了满足国内以及国外监护仪认证，区分中英文样机
+     * CE认证要求: 在ECG增益为X4时，会出现波形截顶情况；以及在ECG增益为X0.125时，波形振幅太小，基本为直线；
+     * 所以DV要求英文样机不显示X0.125，X4 ECG增益, 而中文样机需要支持所有ECG增益选项。
+     */
+    QList<ECGGain> gainInfo;
+    LanguageManager::LanguageId curLanguageId = LanguageManager::getInstance()->getCurLanguage();
+    for (int i = ECG_GAIN_X0125; i < ECG_GAIN_NR; i++)
+    {
+        if (curLanguageId != LanguageManager::ChineseSimplified)
+        {
+            if (i == ECG_GAIN_X0125 || i == ECG_GAIN_X40)
+            {
+                continue;
+            }
+        }
+        gainInfo.append(static_cast<ECGGain>(i));
+    }
+    return gainInfo;
+}
+
 /**************************************************************************************************
  * 获取增益。
  *************************************************************************************************/

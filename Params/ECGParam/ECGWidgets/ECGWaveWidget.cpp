@@ -54,14 +54,14 @@ void ECGWaveWidget::_autoGainHandle(int data)
     _autoGainTime = t;
 
     // 开始寻找最合适的增益。
-#ifdef HIDE_ECG_GAIN_X0125_AND_X4
-    int gain = ECG_GAIN_X20;
-    for (; gain >= ECG_GAIN_X025; gain--)
-#else
-    int gain = ECG_GAIN_X40;
-    for (; gain >= ECG_GAIN_X0125; gain--)
-#endif
+    int gain = ECG_GAIN_X10;
+    for (int i = _gainInfo.count() - 1; i >= 0; --i)
     {
+        if (_gainInfo.at(i) == ECG_GAIN_AUTO)
+        {
+            continue;
+        }
+        gain = _gainInfo.at(i);
         if ((_autoGainTraveVally >= _autoGainLogicalRange[gain].minRange) &&
                 (_autoGainTracePeek <= _autoGainLogicalRange[gain].maxRange))
         {
@@ -71,16 +71,6 @@ void ECGWaveWidget::_autoGainHandle(int data)
 
     _autoGainTracePeek = -10000000;
     _autoGainTraveVally = 10000000;
-
-    // gain为新的增益。
-    if (gain < 0)
-    {
-#ifdef HIDE_ECG_GAIN_X0125_AND_X4
-        gain = ECG_GAIN_X025;
-#else
-        gain = ECG_GAIN_X0125;
-#endif
-    }
 
     if (gain != static_cast<int>(ecgParam.getGain(ecgParam.waveIDToLeadID((WaveformID)getID()))))
     {
@@ -93,13 +83,15 @@ void ECGWaveWidget::_autoGainHandle(int data)
  *************************************************************************************************/
 void ECGWaveWidget::_calcGainRange(void)
 {
-#ifdef HIDE_ECG_GAIN_X0125_AND_X4
-    for (int i = ECG_GAIN_X025; i <= ECG_GAIN_X20; i++)
-#else
-    for (int i = ECG_GAIN_X0125; i <= ECG_GAIN_X40; i++)
-#endif
+    for (int k = 0; k < _gainInfo.count(); ++k)
     {
-        int rulerHeight = _calcRulerHeight((ECGGain)i);
+        ECGGain gain = _gainInfo.at(k);
+        if (gain == ECG_GAIN_AUTO)
+        {
+            continue;
+        }
+
+        int rulerHeight = _calcRulerHeight(gain);
 
         int rulerTop = qmargins().top()
                        + ((height() - qmargins().top() - qmargins().bottom() - rulerHeight) / 2);
@@ -111,8 +103,8 @@ void ECGWaveWidget::_calcGainRange(void)
         int valueMin = (_p05mV - _n05mV) * (height() - 1 - qmargins().bottom() -
                                             rulerBottom) / (rulerTop - rulerBottom) + _n05mV;
 
-        _autoGainLogicalRange[i].minRange = valueMin;
-        _autoGainLogicalRange[i].maxRange = valueMax;
+        _autoGainLogicalRange[gain].minRange = valueMin;
+        _autoGainLogicalRange[gain].maxRange = valueMax;
     }
 }
 
@@ -573,7 +565,7 @@ void ECGWaveWidget::paintEvent(QPaintEvent *e)
                 {
                     QPoint start(xBuf(i), margin.top());
                     QPoint end(xBuf(i), this->rect().height() - 10);
-                    drawIPaceMark(painter, start, end);
+                    drawIPaceMark(&painter, start, end);
                 }
 
 //                if (flagBuf(i) & (ECG_EXTERNAL_DOT_FLAG_BIT|ECG_EXTERNAL_SOLD_FLAG_BIT))//epace
@@ -582,7 +574,7 @@ void ECGWaveWidget::paintEvent(QPaintEvent *e)
                     QPoint start = getWavePoint(i);
                     QPoint end(xBuf(i), this->rect().height() - 10 - fontH);
                     QRect r = this->rect();
-                    drawEPaceMark(painter, start, end, r, flagBuf(i), this);
+                    drawEPaceMark(&painter, start, end, r, flagBuf(i), this);
                 }
 
 //                if (flagBuf(i) & ECG_RWAVE_MARK_FLAG_BIT)//R mark
@@ -605,7 +597,7 @@ void ECGWaveWidget::paintEvent(QPaintEvent *e)
                 {
                     QPoint start(xBuf(i), margin.top());
                     QPoint end(xBuf(i), this->rect().height() - 10);
-                    drawIPaceMark(painter, start, end);
+                    drawIPaceMark(&painter, start, end);
                 }
 
 //                if (flagBuf(i) & (ECG_EXTERNAL_DOT_FLAG_BIT|ECG_EXTERNAL_SOLD_FLAG_BIT))//epace
@@ -614,7 +606,7 @@ void ECGWaveWidget::paintEvent(QPaintEvent *e)
                     QPoint start = getWavePoint(i);
                     QPoint end(xBuf(i), this->rect().height() - 10 - fontH);
                     QRect r = this->rect();
-                    drawEPaceMark(painter, start, end, r, flagBuf(i), this);
+                    drawEPaceMark(&painter, start, end, r, flagBuf(i), this);
                 }
 
 //                if (flagBuf(i) & ECG_RWAVE_MARK_FLAG_BIT)//R mark
@@ -634,7 +626,7 @@ void ECGWaveWidget::paintEvent(QPaintEvent *e)
                 {
                     QPoint start(xBuf(i), margin.top());
                     QPoint end(xBuf(i), this->rect().height() - 10);
-                    drawIPaceMark(painter, start, end);
+                    drawIPaceMark(&painter, start, end);
                 }
 
 //                if (flagBuf(i) & (ECG_EXTERNAL_DOT_FLAG_BIT|ECG_EXTERNAL_SOLD_FLAG_BIT))//epace
@@ -643,7 +635,7 @@ void ECGWaveWidget::paintEvent(QPaintEvent *e)
                     QPoint start = getWavePoint(i);
                     QPoint end(xBuf(i), this->rect().height() - 10 - fontH);
                     QRect r = this->rect();
-                    drawEPaceMark(painter, start, end, r, flagBuf(i), this);
+                    drawEPaceMark(&painter, start, end, r, flagBuf(i), this);
                 }
 
 //                if (flagBuf(i) & ECG_RWAVE_MARK_FLAG_BIT)//R mark
@@ -790,6 +782,8 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
     _autoGainTraveVally = 100000000;
     _autoGainTime = 0;
     _isAutoGain = false;
+    // Get the gain information supported by the system
+    _gainInfo = ecgParam.getSupportGainInfo();
     _mesg = ECG_WAVE_NOTIFY_LEAD_OFF;
     rMarkList.clear();
 
@@ -857,35 +851,35 @@ ECGWaveWidget::~ECGWaveWidget()
 /**************************************************************************************************
  * 画内部起搏标记
  *************************************************************************************************/
-void ECGWaveWidget::drawIPaceMark(QPainter &painter, QPoint &start, QPoint &end)
+void ECGWaveWidget::drawIPaceMark(QPainter *painter, const QPoint &start, const QPoint &end)
 {
-    QPen oldPen = painter.pen();
+    QPen oldPen = painter->pen();
 
     QVector<qreal> darsh;
     darsh << 5 << 5;
     QPen pen(Qt::white);
     pen.setDashPattern(darsh);
-    painter.setPen(pen);
-    painter.drawLine(start, end);
+    painter->setPen(pen);
+    painter->drawLine(start, end);
 
-    painter.setPen(oldPen);
+    painter->setPen(oldPen);
 }
 
 /**************************************************************************************************
  * 画外部起搏标记
  *************************************************************************************************/
-void ECGWaveWidget::drawEPaceMark(QPainter &painter, QPoint &start, QPoint &end,
-                                  QRect &r, unsigned flag, ECGWaveWidget *pObj)
+void ECGWaveWidget::drawEPaceMark(QPainter *painter, const QPoint &start, const QPoint &end,
+                                  const QRect &r, unsigned flag, ECGWaveWidget *pObj)
 {
-    QPen oldPen = painter.pen();
-    int pStrWidth = fontManager.textWidthInPixels("P", painter.font()) / 2;
+    QPen oldPen = painter->pen();
+    int pStrWidth = fontManager.textWidthInPixels("P", painter->font()) / 2;
 
     QPen pen(QColor(42, 207, 198));
     pen.setStyle(Qt::SolidLine);
-    painter.setPen(pen);
+    painter->setPen(pen);
     if (flag & ECG_EXTERNAL_SOLD_FLAG_BIT)
     {
-        painter.drawLine(start, end);
+        painter->drawLine(start, end);
     }
     else
     {
@@ -893,12 +887,12 @@ void ECGWaveWidget::drawEPaceMark(QPainter &painter, QPoint &start, QPoint &end,
         darsh << 5 << 5;
         QPen dotPen = pen;
         dotPen.setDashPattern(darsh);
-        painter.setPen(dotPen);
+        painter->setPen(dotPen);
         QLineF dotLine(start, end);
-        painter.drawLine(dotLine);
+        painter->drawLine(dotLine);
     }
 
-    painter.setPen(pen);
+    painter->setPen(pen);
     int startX = start.x() - pStrWidth;
     int startY = r.top() + r.height() - 10;
     if (NULL != pObj)
@@ -922,21 +916,21 @@ void ECGWaveWidget::drawEPaceMark(QPainter &painter, QPoint &start, QPoint &end,
         }
     }
 
-    painter.drawText(startX, startY, "P");
-    painter.setPen(oldPen);
+    painter->drawText(startX, startY, "P");
+    painter->setPen(oldPen);
 }
 
 /**************************************************************************************************
  * 画R波标记
  *************************************************************************************************/
-void ECGWaveWidget::drawRMark(QPainter &painter, QPoint &p, QRect &r, ECGWaveWidget *pObj)
+void ECGWaveWidget::drawRMark(QPainter *painter, const QPoint &p, const QRect &r, ECGWaveWidget *pObj)
 {
-    QPen oldPen = painter.pen();
-    int fontH = fontManager.textHeightInPixels(painter.font());
-    int sWidth = fontManager.textWidthInPixels("S", painter.font());
-    int srH = fontH - painter.fontMetrics().descent();
+    QPen oldPen = painter->pen();
+    int fontH = fontManager.textHeightInPixels(painter->font());
+    int sWidth = fontManager.textWidthInPixels("S", painter->font());
+    int srH = fontH - painter->fontMetrics().descent();
 
-    painter.setPen(Qt::white);
+    painter->setPen(Qt::white);
 
     QPointF center(p);
     // 圆点的半径为3
@@ -950,8 +944,8 @@ void ECGWaveWidget::drawRMark(QPainter &painter, QPoint &p, QRect &r, ECGWaveWid
         center.setX(r.width() - 3);
     }
 
-    painter.setBrush(Qt::white);
-    painter.drawEllipse(center, (qreal)3, (qreal)3);
+    painter->setBrush(Qt::white);
+    painter->drawEllipse(center, (qreal)3, (qreal)3);
 
     int startY = r.y() + 2 * fontH + 5;
     int startX = center.x() - sWidth / 2;
@@ -1039,9 +1033,9 @@ void ECGWaveWidget::drawRMark(QPainter &painter, QPoint &p, QRect &r, ECGWaveWid
         }
     }
 
-    painter.drawText(startX, startY, "S");
+    painter->drawText(startX, startY, "S");
 
-    painter.setPen(oldPen);
+    painter->setPen(oldPen);
 }
 
 void ECGWaveWidget::updatePalette(const QPalette &pal)
