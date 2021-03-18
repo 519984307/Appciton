@@ -39,7 +39,6 @@ public:
     int editRow;
     QModelIndex editIndex;
     int eachPageRowCount;
-    QMap<ParamID, bool> editableParamMap;   // Whether the parameter alarm limit can be edited
 
     /**
      * @brief calTotalRowCount 计算总页数
@@ -437,22 +436,11 @@ Qt::ItemFlags AlarmLimitModel::flags(const QModelIndex &index) const
     {
         return QAbstractTableModel::flags(index);
     }
-    int row = index.row();
-    if (row >= d_ptr->alarmDataInfos.count())
-    {
-        return QAbstractTableModel::flags(index);;
-    }
 
     Qt::ItemFlags flags;
-    if (d_ptr->editRow == row)
+    if (d_ptr->editRow == index.row())
     {
-        bool editable = true;
-        if (!d_ptr->editableParamMap.isEmpty())
-        {
-            ParamID pid = d_ptr->alarmDataInfos.at(row).paramID;
-            editable = d_ptr->editableParamMap.find(pid).value();
-        }
-        if (index.column() != SECTION_PARAM_NAME && editable)
+        if (index.column() != SECTION_PARAM_NAME)
         {
             flags = Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable;
         }
@@ -561,11 +549,6 @@ int AlarmLimitModel::curEditRow() const
 void AlarmLimitModel::setEachPageRowCount(int rows)
 {
     d_ptr->eachPageRowCount = rows;
-}
-
-void AlarmLimitModel::editableParam(ParamID pid, bool editable)
-{
-    d_ptr->editableParamMap.insert(pid, editable);
 }
 
 int AlarmLimitModelPrivate::calTotalPage()

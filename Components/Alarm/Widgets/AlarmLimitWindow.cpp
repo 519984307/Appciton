@@ -31,7 +31,6 @@
 #include <SystemManager.h>
 #include "MessageBox.h"
 #include "SPO2Param.h"
-#include "NIBPParam.h"
 
 #define TABLE_ROW_NUM 7
 
@@ -120,13 +119,6 @@ void AlarmLimitWindowPrivate::loadoptions()
         }
     }
     this->infos = infos;
-    /*
-      * DV多参数监护仪(非新生儿专用监护仪)在切换新生儿病人时，停用NIBP测量功能，并禁用设置NIBP相关参数、禁用NIBP维护功能
-      */
-    if (nibpParam.getNeoDisState())
-    {
-        model->editableParam(PARAM_NIBP, false);
-    }
     model->setupAlarmDataInfos(infos);
     model->setEachPageRowCount(TABLE_ROW_NUM);
 }
