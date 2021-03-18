@@ -971,12 +971,16 @@ void EventWindowPrivate::eventTrendUpdate()
     for (int i = 0; i < paramNum; i ++)
     {
         subId = (SubParamID)ctx.trendSegment->values[i].subParamId;
+        // check sub param is support
+        if (!systemManager.isSupport(subId))
+        {
+            continue;
+        }
         // spo2 plugin is not connected
         if (!spo2Param.isConnected(true) && (subId == SUB_PARAM_SPO2_2 || subId == SUB_PARAM_SPO2_D))
         {
             continue;
         }
-
         // not support spo2 high configure
         if (paramInfo.getParamID(subId) == PARAM_SPO2 && !systemManager.isSupport(CONFIG_SPO2_HIGH_CONFIGURE))
         {

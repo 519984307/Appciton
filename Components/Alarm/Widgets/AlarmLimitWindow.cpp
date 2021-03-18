@@ -69,8 +69,14 @@ void AlarmLimitWindowPrivate::loadoptions()
         {
             continue;
         }
-        ParamID pid = paramInfo.getParamID(subId);
 
+        // check sub param is support
+        if (!systemManager.isSupport(subId))
+        {
+            continue;
+        }
+        // check param is support
+        ParamID pid = paramInfo.getParamID(subId);
         if (!systemManager.isSupport(pid))
         {
             continue;
@@ -298,8 +304,18 @@ void AlarmLimitWindow::restoreDefaults()
     for (int i = 0; i < SUB_PARAM_NR; ++i)
     {
         SubParamID subId = static_cast<SubParamID>(i);
-        ParamID pid = paramInfo.getParamID(subId);
         if (subId == SUB_PARAM_PI)
+        {
+            continue;
+        }
+        // check sub param is support
+        if (!systemManager.isSupport(subId))
+        {
+            continue;
+        }
+        // check param is support
+        ParamID pid = paramInfo.getParamID(subId);
+        if (!systemManager.isSupport(pid))
         {
             continue;
         }

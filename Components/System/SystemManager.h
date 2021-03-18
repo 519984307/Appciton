@@ -75,6 +75,12 @@ public:
     // check whether param is support
     bool isSupport(ParamID paramID) const;
 
+    /**
+     * @brief isSupport  check sub param is support
+     * @param subID  sub param id
+     * @return   true: support sub param ; false: not support
+     */
+    bool isSupport(SubParamID subID) const;
 #ifdef Q_WS_QWS
     /**
      * @brief isTouchScreenOn check whether current touch screen is on or off

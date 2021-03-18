@@ -1251,11 +1251,16 @@ void TrendWaveWidget::_initAllParamData()
             continue;
         }
         SubParamID subID = static_cast<SubParamID>(i);
+        // check sub param is support
+        if (!systemManager.isSupport(subID))
+        {
+            continue;
+        }
         if (getTrendGraphType(subID) == TREND_GRAPH_TYPE_NR)
         {
             continue;
         }
-       switch (i)
+        switch (i)
         {
         case SUB_PARAM_ECG_PVCS:
         case SUB_PARAM_ST_I:

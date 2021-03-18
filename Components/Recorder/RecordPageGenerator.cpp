@@ -661,7 +661,11 @@ QStringList RecordPageGenerator::getTrendStringList(const TrendDataPackage &tren
         {
             continue;
         }
-
+        // check sub param is support
+        if (!systemManager.isSupport(subparamID))
+        {
+            continue;
+        }
         paramid = paramInfo.getParamID(subparamID);
 
         // spo2 plugin is not connected

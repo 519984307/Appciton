@@ -315,6 +315,41 @@ bool SystemManager::isSupport(ParamID paramID) const
     return enable;
 }
 
+bool SystemManager::isSupport(SubParamID subID) const
+{
+    bool support = true;
+    switch (subID)
+    {
+    case SUB_PARAM_NIBP_SYS:
+    case SUB_PARAM_NIBP_DIA:
+    case SUB_PARAM_NIBP_MAP:
+    case SUB_PARAM_NIBP_PR:
+        if (nibpParam.getNeoDisState())
+        {
+            /*
+             * DV多参数监护仪(非新生儿专用监护仪)在切换新生儿病人时，停用NIBP测量功能，并禁用设置NIBP相关参数
+             */
+            support = false;
+        }
+        break;
+    case SUB_PARAM_SPHB:
+    case SUB_PARAM_SPCO:
+        if (systemManager.isNeonateMachine())
+        {
+            /*
+            * DV注册审评提出：由于总血红蛋白（SPHb）和碳氧血红蛋白（SPCO）参数无新生儿临床数据，要求在技术指标中进行删除。
+            * 新生儿专用监护仪 主机软件删除总血红蛋白（SPHb）和碳氧血红蛋白SPCO）参数
+            */
+            support = false;
+        }
+        break;
+    default:
+        break;
+    }
+
+    return support;
+}
+
 #ifdef Q_WS_QWS
 bool SystemManager::isTouchScreenOn() const
 {

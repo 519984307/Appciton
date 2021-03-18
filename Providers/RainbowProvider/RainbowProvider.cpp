@@ -264,8 +264,7 @@ public:
         , spo2BoardFailure(false)
         , programTimer(NULL)
         , cmdAckNum(0)
-    {
-    }
+    {}
 
     ~RainbowProviderPrivate();
 
@@ -2063,6 +2062,14 @@ void RainbowProviderPrivate::addAlarms(unsigned int flag)
 
 void RainbowProviderPrivate::updateSensorType(unsigned short sensorParam, unsigned short availableParam)
 {
+    /*
+    * DV注册审评提出：由于总血红蛋白（SPHb）和碳氧血红蛋白（SPCO）参数无新生儿临床数据，要求在技术指标中进行删除。
+    * 新生儿专用监护仪 主机软件删除总血红蛋白（SPHb）和碳氧血红蛋白SPCO）参数
+    */
+    if (systemManager.isNeonateMachine())
+    {
+        return;
+    }
     if ((sensorParam & ACTIVATE_PARAM_SPHB) && (availableParam & ACTIVATE_PARAM_SPHB))
     {
         spo2Param.setSensor(SPO2_RAINBOW_SENSOR_R1);

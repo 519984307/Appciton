@@ -762,18 +762,22 @@ TrendTableModelPrivate::TrendTableModelPrivate()
       curDateStr(InvStr())
 {
     orderMap.clear();
-
     QList<ParamID> paramIDList = paramManager.getParamIDs();
     qSort(paramIDList);
 
     for (int i = 0; i < SUB_PARAM_NR; i ++)
     {
-        ParamID paramID = paramInfo.getParamID(static_cast<SubParamID>(i));
+        SubParamID subId = static_cast<SubParamID>(i);
+        // check sub param is support
+        if (!systemManager.isSupport(subId))
+        {
+            continue;
+        }
+        ParamID paramID = paramInfo.getParamID(subId);
         if (-1 == paramIDList.indexOf(paramID))
         {
             continue;
         }
-
         switch (i)
         {
         case SUB_PARAM_ECG_PVCS:
