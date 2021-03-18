@@ -194,6 +194,12 @@ public:     // 用于访问配置相关信息。
     // 设置12导界面下波形的增益。
     ECGGain get12LGain(ECGLead lead);
 
+    /**
+     * @brief getECGSupportGainInfo  Get the gain information supported by the system
+     * @return gain list
+     */
+    QList<ECGGain> getSupportGainInfo();
+
     // 设置病人类型
     void setPatientType(unsigned char type);
     unsigned char getPatientType(void);
