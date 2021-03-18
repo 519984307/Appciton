@@ -1,3 +1,13 @@
+/**
+ ** This file is part of the Project project.
+ ** Copyright (C) Better Life Medical Technology Co., Ltd.
+ ** All Rights Reserved.
+ ** Unauthorized copying of this file, via any medium is strictly prohibited
+ ** Proprietary and confidential
+ **
+ ** Written by lianghuan <lianghuan@blmed.cn>, 2021/3/18
+ **/
+
 #include "TDA19988Ctrl.h"
 #include "tda19988.h"
 #include <fcntl.h>
@@ -9,15 +19,18 @@
 #include <QDebug>
 #include <QTimer>
 #include <QProcess>
+#include <QApplication>
+#include <QDesktopWidget>
 
 #define I2C_BUS_DEV "/dev/i2c-0"
-#define BIT(n) (1<<n)
+#define BIT(n) (1 << n)
 #define EDID_LENGTH 128
 
 typedef quint8 u8;
 typedef quint32 u32;
 
-struct DisplayTimings {
+struct DisplayTimings
+{
     int pixelClock;
     int hActive;
     int vActive;
@@ -33,6 +46,13 @@ struct DisplayTimings {
     int doubleClk;
 };
 
+enum TimingType {
+    TIMING_1280_800,
+    TIMING_1024_768,
+    TIMING_1366_768,
+    TIMING_NR
+};
+
 /*
  * NOTE: this setting is similar to the setting in the device tree,
  * see panel setting in am335x-pmos.dts
@@ -41,7 +61,61 @@ struct DisplayTimings {
  * The vFrontPorch and vBackPorch is swapped
  * The hSyncActive is toggled
  */
-static DisplayTimings dispTimings = {
+static DisplayTimings supportTimings[TIMING_NR] =
+{
+    /* 1280x800 */
+    {
+        .pixelClock = 68200000,
+        .hActive = 1280,
+        .vActive = 800,
+        .hFrontPorch = 5,
+        .hBackPorch = 64,
+        .hSyncLen = 128,
+        .vBackPorch = 40,
+        .vFrontPorch = 10,
+        .vSyncLen = 6,
+        .hSyncActive = 1,
+        .vSyncActive = 1,
+        .doubleScan = 0,
+        .doubleClk = 0,
+    },
+    /* 1024x768 */
+    {
+        .pixelClock = 65000000,
+        .hActive = 1024,
+        .vActive = 768,
+        .hFrontPorch = 160,
+        .hBackPorch = 112,
+        .hSyncLen = 48,
+        .vBackPorch = 15,
+        .vFrontPorch = 15,
+        .vSyncLen = 8,
+        .hSyncActive = 1,
+        .vSyncActive = 1,
+        .doubleScan = 0,
+        .doubleClk = 0,
+    },
+    /* 1366x768 */
+    {
+        .pixelClock = 75000000,
+        .hActive = 1360,
+        .vActive = 768,
+        .hFrontPorch = 78,
+        .hBackPorch = 100,
+        .hSyncLen = 4,
+        .vBackPorch = 22,
+        .vFrontPorch = 20,
+        .vSyncLen = 4,
+        .hSyncActive = 1,
+        .vSyncActive = 1,
+        .doubleScan = 0,
+        .doubleClk = 0,
+    }
+};
+
+/* running timings */
+static DisplayTimings dispTimings =
+{
     .pixelClock = 68200000,
     .hActive = 1280,
     .vActive = 800,
@@ -57,7 +131,8 @@ static DisplayTimings dispTimings = {
     .doubleClk = 0,
 };
 
-struct HdmiAviInfoframe {
+struct HdmiAviInfoframe
+{
     int type;
     unsigned char version;
     unsigned char length;
@@ -80,23 +155,27 @@ struct HdmiAviInfoframe {
     unsigned short right_bar;
 };
 
-struct est_timings {
+struct est_timings
+{
     u8 t1;
     u8 t2;
     u8 mfg_rsvd;
 } __attribute__((packed));
 
-struct std_timing {
+struct std_timing
+{
     u8 hsize; /* need to multiply by 8 then add 248 */
     u8 vfreq_aspect;
 } __attribute__((packed));
 
-struct cvt_timing {
+struct cvt_timing
+{
     u8 code[3];
 } __attribute__((packed));
 
 /* If detailed data is pixel timing */
-struct detailed_pixel_timing {
+struct detailed_pixel_timing
+{
     u8 hactive_lo;
     u8 hblank_lo;
     u8 hactive_hblank_hi;
@@ -117,19 +196,23 @@ struct detailed_pixel_timing {
 
 
 /* If it's not pixel timing, it'll be one of the below */
-struct detailed_data_string {
+struct detailed_data_string
+{
     u8 str[13];
 } __attribute__((packed));
 
-struct detailed_data_monitor_range {
+struct detailed_data_monitor_range
+{
     u8 min_vfreq;
     u8 max_vfreq;
     u8 min_hfreq_khz;
     u8 max_hfreq_khz;
     u8 pixel_clock_mhz; /* need to multiply by 10 */
     u8 flags;
-    union {
-        struct {
+    union
+    {
+        struct
+        {
             u8 reserved;
             u8 hfreq_start_khz; /* need to multiply by 2 */
             u8 c; /* need to divide by 2 */
@@ -137,7 +220,8 @@ struct detailed_data_monitor_range {
             u8 k;
             u8 j; /* need to divide by 2 */
         } __attribute__((packed)) gtf2;
-        struct {
+        struct
+        {
             u8 version;
             u8 data1; /* high 6 bits: extra clock resolution */
             u8 data2; /* plus low 2 of above: max hactive */
@@ -150,20 +234,23 @@ struct detailed_data_monitor_range {
 } __attribute__((packed));
 
 
-struct detailed_data_wpindex {
+struct detailed_data_wpindex
+{
     u8 white_yx_lo; /* Lower 2 bits each */
     u8 white_x_hi;
     u8 white_y_hi;
     u8 gamma; /* need to divide by 100 then add 1 */
 } __attribute__((packed));
 
-struct detailed_non_pixel {
+struct detailed_non_pixel
+{
     u8 pad1;
-    u8 type; /* ff=serial, fe=string, fd=monitor range, fc=monitor name
-            fb=color point data, fa=standard timing data,
-            f9=undefined, f8=mfg. reserved */
+    u8 type; /* ff = serial, fe = string, fd = monitor range, fc = monitor name
+            fb = color point data, fa = standard timing data,
+            f9 = undefined, f8 = mfg. reserved */
     u8 pad2;
-    union {
+    union
+    {
         struct detailed_data_string str;
         struct detailed_data_monitor_range range;
         struct detailed_data_wpindex color;
@@ -172,15 +259,18 @@ struct detailed_non_pixel {
     } data;
 } __attribute__((packed));
 
-struct detailed_timing {
+struct detailed_timing
+{
     __le16 pixel_clock; /* need to multiply by 10 KHz */
-    union {
+    union
+    {
         struct detailed_pixel_timing pixel_data;
         struct detailed_non_pixel other_data;
     } data;
 } __attribute__((packed));
 
-struct edid {
+struct edid
+{
     u8 header[8];
     /* Vendor & product info */
     u8 mfg_id[2];
@@ -237,8 +327,10 @@ static int i2c_smbus_read_byte_data(int fd, quint8 cmd)
     i2c_smbus_data data;
     int err;
     err = i2c_smbus_access(fd, I2C_SMBUS_READ, cmd, I2C_SMBUS_BYTE_DATA, &data);
-    if(err < 0)
+    if (err < 0)
+    {
         return err;
+    }
     return data.byte;
 }
 
@@ -259,7 +351,7 @@ static inline int i2c_smbus_write_word_data(int fd, quint8 cmd, quint16 val)
 static inline int i2c_smbus_write_block_data(int fd, quint8 cmd, quint8 length, const quint8 *values)
 {
     i2c_smbus_data data;
-    if(length > I2C_SMBUS_BLOCK_MAX)
+    if (length > I2C_SMBUS_BLOCK_MAX)
     {
         qWarning("I2C write block size(%d) larger than %d.", length, I2C_SMBUS_BLOCK_MAX);
         length = I2C_SMBUS_BLOCK_MAX;
@@ -269,24 +361,24 @@ static inline int i2c_smbus_write_block_data(int fd, quint8 cmd, quint8 length, 
     return i2c_smbus_access(fd, I2C_SMBUS_WRITE, cmd, I2C_SMBUS_I2C_BLOCK_BROKEN, &data);
 }
 
-static inline int i2c_smbus_read_i2c_block_data(int fd, quint8 cmd, quint8 length, u8 * values)
+static inline int i2c_smbus_read_i2c_block_data(int fd, quint8 cmd, quint8 length, u8 *values)
 {
     i2c_smbus_data data;
-    if(length > I2C_SMBUS_BLOCK_MAX)
+    if (length > I2C_SMBUS_BLOCK_MAX)
     {
         qWarning("I2C read block size(%d) larger than %d.", length, I2C_SMBUS_BLOCK_MAX);
         length = I2C_SMBUS_BLOCK_MAX;
     }
     data.block[0] = length;
     int err = i2c_smbus_access(fd, I2C_SMBUS_READ, cmd,
-                           length == 32 ? I2C_SMBUS_I2C_BLOCK_BROKEN :
-                                       I2C_SMBUS_I2C_BLOCK_DATA, &data);
-    if(err < 0)
+                               length == 32 ? I2C_SMBUS_I2C_BLOCK_BROKEN :
+                               I2C_SMBUS_I2C_BLOCK_DATA, &data);
+    if (err < 0)
     {
         return err;
     }
 
-    for(int i = 1; i<=data.block[0]; i++)
+    for (int i = 1; i <= data.block[0]; i++)
     {
         *values++ = data.block[i];
     }
@@ -298,7 +390,7 @@ class TDA19988CtrlPrivate
 {
 public:
     TDA19988CtrlPrivate()
-        :fd(-1), currentSlaveAddr(0), currentPage(0xff), vipCntrl_0(0),
+        : fd(-1), currentSlaveAddr(0), currentPage(0xff), vipCntrl_0(0),
           vipCntrl_1(0), vipCntrl_2(0), hdmiAviInfoframe(NULL), timer(NULL),
           connected(false)
     {
@@ -324,12 +416,14 @@ public:
 
     bool setSlaveAddr(quint8 slaveAddr)
     {
-        if(slaveAddr == currentSlaveAddr)
-            return true;
-
-        if(ioctl(fd, I2C_SLAVE, slaveAddr))
+        if (slaveAddr == currentSlaveAddr)
         {
-            qCritical()<<"set slave address failed: "<<strerror(errno);
+            return true;
+        }
+
+        if (ioctl(fd, I2C_SLAVE, slaveAddr))
+        {
+            qCritical() << "set slave address failed: " << strerror(errno);
             return false;
         }
         currentSlaveAddr = slaveAddr;
@@ -353,7 +447,8 @@ public:
     void setPage(quint16 reg)
     {
         setSlaveAddr(HDMI_ADDR);
-        if(REG2PAGE(reg) != currentPage) {
+        if (REG2PAGE(reg) != currentPage)
+        {
             i2c_smbus_write_byte_data(fd, REG_CURPAGE, REG2PAGE(reg));
         }
         currentPage = REG2PAGE(reg);
@@ -368,8 +463,8 @@ public:
     void regWrite16(quint16 reg, quint16 val)
     {
         setPage(reg);
-        //switch to big endian
-        quint16 newVal = ((val&0xff)<<8) | ((val & 0xff00)>>8);
+        // switch to big endian
+        quint16 newVal = ((val & 0xff) << 8) | ((val & 0xff00) >> 8);
         i2c_smbus_write_word_data(fd, REG2ADDR(reg), newVal);
     }
 
@@ -392,10 +487,10 @@ public:
         int tmp;
         int left = cnt;
         int curRead = 0;
-        for(u8 curaddr = addr; curaddr < addr + cnt && left > 0; curaddr += tmp)
+        for (u8 curaddr = addr; curaddr < addr + cnt && left > 0; curaddr += tmp)
         {
             u8 curLen;
-            if(left > I2C_SMBUS_BLOCK_MAX)
+            if (left > I2C_SMBUS_BLOCK_MAX)
             {
                 curLen = I2C_SMBUS_BLOCK_MAX;
             }
@@ -408,8 +503,10 @@ public:
             tmp = i2c_smbus_read_i2c_block_data(fd,
                                                 curaddr,
                                                 curLen, buf + curRead);
-            if(tmp <= 0)
+            if (tmp <= 0)
+            {
                 return -1;
+            }
             curRead += tmp;
         }
 
@@ -420,16 +517,16 @@ public:
     void regSet(quint16 reg, quint8 val)
     {
         int old_val = regRead(reg);
-        if(old_val >= 0)
+        if (old_val >= 0)
         {
-            regWrite(reg, old_val|val);
+            regWrite(reg, old_val | val);
         }
     }
 
     void regClear(quint16 reg, quint8 val)
     {
         int old_val = regRead(reg);
-        if(old_val >= 0)
+        if (old_val >= 0)
         {
             regWrite(reg, old_val & (~val));
         }
@@ -454,12 +551,14 @@ public:
     HdmiAviInfoframe *hdmiAviInfoframe;
     QTimer *timer;
     bool connected;
+private:
+    TDA19988CtrlPrivate(const TDA19988CtrlPrivate &other);  /* disable copy */
 };
 
 void TDA19988CtrlPrivate::reset()
 {
     /* reset audio and i2c master: */
-    regWrite(REG_SOFTRESET, SOFTRESET_AUDIO|SOFTRESET_I2C_MASTER);
+    regWrite(REG_SOFTRESET, SOFTRESET_AUDIO | SOFTRESET_I2C_MASTER);
     usleep(50000);
     regWrite(REG_SOFTRESET, 0);
     usleep(50000);
@@ -485,7 +584,6 @@ void TDA19988CtrlPrivate::reset()
 
     /* Write the default value MUX register */
     regWrite(REG_MUX_VP_VIP_OUT, 0x24);
-
 }
 
 void TDA19988CtrlPrivate::setMode()
@@ -493,7 +591,7 @@ void TDA19988CtrlPrivate::setMode()
     int hdisplay = dispTimings.hActive;
     int hsync_start = hdisplay + dispTimings.hBackPorch;
     int hsync_end = hsync_start + dispTimings.hSyncLen;
-    int htotal=hsync_end + dispTimings.hFrontPorch;
+    int htotal = hsync_end + dispTimings.hFrontPorch;
 
     int vdisplay = dispTimings.vActive;
     int vsync_start = vdisplay + dispTimings.vBackPorch;
@@ -543,14 +641,17 @@ void TDA19988CtrlPrivate::setMode()
     quint16 vs1_pix_e = hs_pix_s;
     quint16 vs1_line_s = vsync_start - vdisplay;
     quint16 vs1_line_e = vs1_line_s + vsync_end - vsync_start;
-    quint16 vwin2_line_s = 0, vwin2_line_e=0, vs2_pix_s = 0,
+    quint16 vwin2_line_s = 0, vwin2_line_e = 0, vs2_pix_s = 0,
             vs2_pix_e = 0, vs2_line_s = 0, vs2_line_e = 0;
 
     quint8 div = 148500 / clock;
-    if (div != 0) {
+    if (div != 0)
+    {
         div--;
-        if(div > 3)
+        if (div > 3)
+        {
             div = 3;
+        }
     }
 
     /* mute the audio FIFO: */
@@ -563,14 +664,14 @@ void TDA19988CtrlPrivate::setMode()
 
     /* no pre-filter or interpolator: */
     regWrite(REG_HVF_CNTRL_0, HVF_CNTRL_0_PREFIL(0) |
-            HVF_CNTRL_0_INTPOL(0));
+             HVF_CNTRL_0_INTPOL(0));
     regWrite(REG_VIP_CNTRL_5, VIP_CNTRL_5_SP_CNT(0));
     regWrite(REG_VIP_CNTRL_4, VIP_CNTRL_4_BLANKIT(0) |
-            VIP_CNTRL_4_BLC(0));
+             VIP_CNTRL_4_BLC(0));
 
     regClear(REG_PLL_SERIAL_1, PLL_SERIAL_1_SRL_MAN_IZ);
     regClear(REG_PLL_SERIAL_3, PLL_SERIAL_3_SRL_CCIR |
-                      PLL_SERIAL_3_SRL_DE);
+             PLL_SERIAL_3_SRL_DE);
     regWrite(REG_SERIALIZER, 0);
     regWrite(REG_HVF_CNTRL_1, HVF_CNTRL_1_VQR(0));
 
@@ -578,14 +679,14 @@ void TDA19988CtrlPrivate::setMode()
     quint8 rep = 0;
     regWrite(REG_RPT_CNTRL, 0);
     regWrite(REG_SEL_CLK, SEL_CLK_SEL_VRF_CLK(0) |
-            SEL_CLK_SEL_CLK1 | SEL_CLK_ENA_SC_CLK);
+             SEL_CLK_SEL_CLK1 | SEL_CLK_ENA_SC_CLK);
 
     regWrite(REG_PLL_SERIAL_2, PLL_SERIAL_2_SRL_NOSC(div) |
-            PLL_SERIAL_2_SRL_PR(rep));
+             PLL_SERIAL_2_SRL_PR(rep));
 
     /* set color matrix bypass flag: */
     regWrite(REG_MAT_CONTRL, MAT_CONTRL_MAT_BP |
-                MAT_CONTRL_MAT_SC(1));
+             MAT_CONTRL_MAT_SC(1));
 
     /* set BIAS tmds value: */
     regWrite(REG_ANA_GENERAL, 0x09);
@@ -600,9 +701,13 @@ void TDA19988CtrlPrivate::setMode()
      * so invert low-active sync provided by master encoder here
      */
     if (dispTimings.hSyncActive == 0)
+    {
         reg |= VIP_CNTRL_3_H_TGL;
+    }
     if (dispTimings.vSyncActive == 0)
+    {
         reg |= VIP_CNTRL_3_V_TGL;
+    }
     regWrite(REG_VIP_CNTRL_3, reg);
 
     regWrite(REG_VIDFORMAT, 0x00);
@@ -636,9 +741,13 @@ void TDA19988CtrlPrivate::setMode()
      */
     reg = TBG_CNTRL_1_DWIN_DIS | TBG_CNTRL_1_TGL_EN;
     if (dispTimings.hSyncActive == 0)
+    {
         reg |= TBG_CNTRL_1_H_TGL;
+    }
     if (dispTimings.vSyncActive == 0)
+    {
         reg |= TBG_CNTRL_1_V_TGL;
+    }
     regWrite(REG_TBG_CNTRL_1, reg);
 
     /* must be last register set: */
@@ -668,31 +777,39 @@ void TDA19988CtrlPrivate::setMode()
      * aspect ratio
      */
     if (hdmiAviInfoframe->active_aspect & 0xf)
+    {
         ptr[0] |= BIT(4);
+    }
 
     /* Bit 3 and 2 indicate if we transmit horizontal/vertical bar data */
     if (hdmiAviInfoframe->top_bar || hdmiAviInfoframe->bottom_bar)
+    {
         ptr[0] |= BIT(3);
+    }
 
     if (hdmiAviInfoframe->left_bar || hdmiAviInfoframe->right_bar)
+    {
         ptr[0] |= BIT(2);
+    }
 
     ptr[1] = ((hdmiAviInfoframe->colorimetry & 0x3) << 6) |
-         ((hdmiAviInfoframe->picture_aspect & 0x3) << 4) |
-         (hdmiAviInfoframe->active_aspect & 0xf);
+             ((hdmiAviInfoframe->picture_aspect & 0x3) << 4) |
+             (hdmiAviInfoframe->active_aspect & 0xf);
 
     ptr[2] = ((hdmiAviInfoframe->extended_colorimetry & 0x7) << 4) |
-         ((hdmiAviInfoframe->quantization_range & 0x3) << 2) |
-         (hdmiAviInfoframe->nups & 0x3);
+             ((hdmiAviInfoframe->quantization_range & 0x3) << 2) |
+             (hdmiAviInfoframe->nups & 0x3);
 
     if (hdmiAviInfoframe->itc)
+    {
         ptr[2] |= BIT(7);
+    }
 
     ptr[3] = hdmiAviInfoframe->video_code & 0x7f;
 
     ptr[4] = ((hdmiAviInfoframe->ycc_quantization_range & 0x3) << 6) |
-         ((hdmiAviInfoframe->content_type & 0x3) << 4) |
-         (hdmiAviInfoframe->pixel_repeat & 0xf);
+             ((hdmiAviInfoframe->content_type & 0x3) << 4) |
+             (hdmiAviInfoframe->pixel_repeat & 0xf);
 
     ptr[5] = hdmiAviInfoframe->top_bar & 0xff;
     ptr[6] = (hdmiAviInfoframe->top_bar >> 8) & 0xff;
@@ -703,9 +820,9 @@ void TDA19988CtrlPrivate::setMode()
     ptr[11] = hdmiAviInfoframe->right_bar & 0xff;
     ptr[12] = (hdmiAviInfoframe->right_bar >> 8) & 0xff;
 
-    //calculate checksum
+    // calculate checksum
     unsigned char  csum = 0;
-    for(unsigned int i = 0; i< sizeof(aviInfoFrame); i++)
+    for (unsigned int i = 0; i < sizeof(aviInfoFrame); i++)
     {
         csum += aviInfoFrame[i];
     }
@@ -736,22 +853,29 @@ int TDA19988CtrlPrivate::getEdidBlock(u8 *buf, unsigned int blk, size_t length)
     regWrite(REG_EDID_CTRL, 0x0);
 
     /* wait for block read to complete: */
-    for (i = 100; i > 0; i--) {
+    for (i = 100; i > 0; i--)
+    {
         usleep(2000);
         ret = regRead(REG_INT_FLAGS_2);
         if (ret < 0)
+        {
             return ret;
+        }
         if (ret & INT_FLAGS_2_EDID_BLK_RD)
+        {
             break;
+        }
     }
 
-    if (i == 0) {
+    if (i == 0)
+    {
         qWarning("read edid timeout\n");
         return -ETIMEDOUT;
     }
 
     ret = regReadRange(REG_EDID_DATA_0, buf, length);
-    if (ret != (int)length) {
+    if (ret != static_cast<int>(length))
+    {
         qWarning("failed to read edid block %d: %d\n", blk, ret);
         return ret;
     }
@@ -761,7 +885,8 @@ int TDA19988CtrlPrivate::getEdidBlock(u8 *buf, unsigned int blk, size_t length)
 
 /*** DDC fetch and block validation ***/
 
-static const u8 edid_header[] = {
+static const u8 edid_header[] =
+{
     0x00, 0xff, 0xff, 0xff, 0xff, 0xff, 0xff, 0x00
 };
 
@@ -777,9 +902,11 @@ static int drm_edid_header_is_valid(const u8 *raw_edid)
 {
     int i, score = 0;
 
-    for (i = 0; i < (int)sizeof(edid_header); i++)
+    for (i = 0; i < static_cast<int>(sizeof(edid_header)); i++)
         if (raw_edid[i] == edid_header[i])
+        {
             score++;
+        }
 
     return score;
 }
@@ -790,7 +917,9 @@ static int drm_edid_block_checksum(const u8 *raw_edid)
     int i;
     u8 csum = 0;
     for (i = 0; i < EDID_LENGTH; i++)
+    {
         csum += raw_edid[i];
+    }
 
     return csum;
 }
@@ -813,41 +942,59 @@ bool drm_edid_block_valid(u8 *raw_edid, int block, bool *edid_corrupt)
     struct edid *edid = (struct edid *)raw_edid;
 
     if (!raw_edid)
+    {
         return false;
+    }
 
-    if (block == 0) {
+    if (block == 0)
+    {
         int score = drm_edid_header_is_valid(raw_edid);
-        if (score == 8) {
+        if (score == 8)
+        {
             if (edid_corrupt)
+            {
                 *edid_corrupt = false;
-        } else {
+            }
+        }
+        else
+        {
             if (edid_corrupt)
+            {
                 *edid_corrupt = true;
+            }
             goto bad;
         }
     }
 
     csum = drm_edid_block_checksum(raw_edid);
-    if (csum) {
-
+    if (csum)
+    {
         if (edid_corrupt)
+        {
             *edid_corrupt = true;
+        }
 
         /* allow CEA to slide through, switches mangle this */
         if (raw_edid[0] != 0x02)
+        {
             goto bad;
+        }
     }
 
     /* per-block-type checks */
-    switch (raw_edid[0]) {
+    switch (raw_edid[0])
+    {
     case 0: /* base */
-        if (edid->version != 1) {
+        if (edid->version != 1)
+        {
             qDebug("EDID has major version %d, instead of 1\n", edid->version);
             goto bad;
         }
 
         if (edid->revision > 4)
+        {
             qDebug("EDID minor > 4, assuming backward compatibility\n");
+        }
         break;
 
     default:
@@ -862,10 +1009,12 @@ bad:
 
 static bool drm_edid_is_zero(const u8 *in_edid, int length)
 {
-    for(int i = 0; i< length; i++)
+    for (int i = 0; i < length; i++)
     {
-        if(in_edid[i] != 0)
+        if (in_edid[i] != 0)
+        {
             return false;
+        }
     }
 
     return true;
@@ -876,53 +1025,73 @@ struct edid *TDA19988CtrlPrivate::getEdid()
     int i, j = 0, valid_extensions = 0;
     u8 *block, *new_block;
     bool edid_corrupt = false;
-    if ((block = (u8 *)malloc(EDID_LENGTH )) == NULL)
+    if ((block = reinterpret_cast<u8 *>(malloc(EDID_LENGTH))) == NULL)
     {
         return NULL;
     }
 
     /* base block fetch */
-    for (i = 0; i < 4; i++) {
+    for (i = 0; i < 4; i++)
+    {
         if (getEdidBlock(block, 0, EDID_LENGTH))
+        {
             goto out;
+        }
         if (drm_edid_block_valid(block, 0, &edid_corrupt))
+        {
             break;
-        if (i == 0 && drm_edid_is_zero(block, EDID_LENGTH)) {
+        }
+        if (i == 0 && drm_edid_is_zero(block, EDID_LENGTH))
+        {
             goto out;
         }
     }
     if (i == 4)
+    {
         goto out;
+    }
 
     /* if there's no extensions, we're done */
     if (block[0x7e] == 0)
+    {
         return (struct edid *)block;
+    }
 
-    new_block = (u8*)realloc(block, (block[0x7e] + 1) * EDID_LENGTH);
+    new_block = reinterpret_cast<u8 *>(realloc(block, (block[0x7e] + 1) * EDID_LENGTH));
     if (!new_block)
+    {
         goto out;
+    }
     block = new_block;
 
-    for (j = 1; j <= block[0x7e]; j++) {
-        for (i = 0; i < 4; i++) {
+    for (j = 1; j <= block[0x7e]; j++)
+    {
+        for (i = 0; i < 4; i++)
+        {
             if (getEdidBlock(block + (valid_extensions + 1) * EDID_LENGTH,
-                  j, EDID_LENGTH))
+                             j, EDID_LENGTH))
+            {
                 goto out;
+            }
             if (drm_edid_block_valid(block + (valid_extensions + 1)
-                         * EDID_LENGTH, j,
-                         NULL)) {
+                                     * EDID_LENGTH, j,
+                                     NULL))
+            {
                 valid_extensions++;
                 break;
             }
         }
     }
 
-    if (valid_extensions != block[0x7e]) {
-        block[EDID_LENGTH-1] += block[0x7e] - valid_extensions;
+    if (valid_extensions != block[0x7e])
+    {
+        block[EDID_LENGTH - 1] += block[0x7e] - valid_extensions;
         block[0x7e] = valid_extensions;
-        new_block = (u8*)realloc(block, (valid_extensions + 1) * EDID_LENGTH);
+        new_block = reinterpret_cast<u8 *>(realloc(block, (valid_extensions + 1) * EDID_LENGTH));
         if (!new_block)
+        {
             goto out;
+        }
         block = new_block;
     }
 
@@ -934,32 +1103,46 @@ out:
 }
 
 TDA19988Ctrl::TDA19988Ctrl(QObject *parent)
-    :QObject(parent), d_ptr(new TDA19988CtrlPrivate())
+    : QObject(parent), d_ptr(new TDA19988CtrlPrivate())
 {
-    int fd = open(I2C_BUS_DEV, O_RDWR);
-    if(fd < 0)
+    /* load screen timming */
+    QDesktopWidget *pDesk = QApplication::desktop();
+    int screenWidth = pDesk->width();
+    int screenHeight = pDesk->height();
+    if (screenWidth == 1024 && screenHeight == 768)
     {
-        qCritical()<<"open dev file error: "<<strerror(errno);
+        qMemCopy(&dispTimings, &supportTimings[TIMING_1024_768], sizeof(DisplayTimings));
+    }
+    else if ((screenWidth == 1366 && screenHeight == 768) ||
+             (screenWidth == 1360 && screenHeight == 768))
+    {
+        qMemCopy(&dispTimings, &supportTimings[TIMING_1366_768], sizeof(DisplayTimings));
+    }
+
+    int fd = open(I2C_BUS_DEV, O_RDWR);
+    if (fd < 0)
+    {
+        qCritical() << "open dev file error: " << strerror(errno);
         return;
     }
     d_ptr->fd = fd;
 
     d_ptr->setSlaveAddr(CEC_ADDR);
 
-    if(!isValid())
+    if (!isValid())
     {
         return;
     }
 
     /* wave up the device */
-    d_ptr->cecWrite(REG_CEC_ENAMODS, CEC_ENAMODS_EN_RXSENS|CEC_ENAMODS_EN_HDMI);
+    d_ptr->cecWrite(REG_CEC_ENAMODS, CEC_ENAMODS_EN_RXSENS | CEC_ENAMODS_EN_HDMI);
 
     d_ptr->reset();
 
     quint8 revLo = d_ptr->regRead(REG_VERSION_LSB);
     quint8 revHi = d_ptr->regRead(REG_VERSION_MSB);
 
-    quint16 rev = (revHi<<8) | revLo;
+    quint16 rev = (revHi << 8) | revLo;
     qDebug("HDMI framer rev: 0x%04x", rev);
 
     /* after reset, enable DDC */
@@ -979,7 +1162,7 @@ TDA19988Ctrl::TDA19988Ctrl(QObject *parent)
     d_ptr->vipCntrl_1 = VIP_CNTRL_1_SWAP_C(0) | VIP_CNTRL_1_SWAP_D(1);
     d_ptr->vipCntrl_2 = VIP_CNTRL_2_SWAP_E(4) | VIP_CNTRL_2_SWAP_F(5);
 #else
-    //this setting is used for beagle bone black
+    // this setting is used for beagle bone black
     d_ptr->vipCntrl_0 = VIP_CNTRL_0_SWAP_A(2) | VIP_CNTRL_0_SWAP_B(3);
     d_ptr->vipCntrl_1 = VIP_CNTRL_1_SWAP_C(4) | VIP_CNTRL_1_SWAP_D(5);
     d_ptr->vipCntrl_2 = VIP_CNTRL_2_SWAP_E(0) | VIP_CNTRL_2_SWAP_F(1);
@@ -995,7 +1178,6 @@ TDA19988Ctrl::TDA19988Ctrl(QObject *parent)
 
 TDA19988Ctrl::~TDA19988Ctrl()
 {
-
 }
 
 bool TDA19988Ctrl::isValid() const
@@ -1010,7 +1192,7 @@ bool TDA19988Ctrl::isConnected() const
 
 void TDA19988Ctrl::setSignalOutput(bool onOff)
 {
-    if(onOff)
+    if (onOff)
     {
         /* enable video ports */
         d_ptr->regWrite(REG_ENA_VP_0, 0xff);
@@ -1036,14 +1218,14 @@ void TDA19988Ctrl::checkHDMIConnection()
 
     lvl = d_ptr->cecRead(REG_CEC_RXSHPDLEV);
 
-    if(lvl & CEC_RXSHPDLEV_HPD)
+    if (lvl & CEC_RXSHPDLEV_HPD)
     {
-        if(!d_ptr->connected)
+        if (!d_ptr->connected)
         {
-            qDebug()<<"HDMI connected";
+            qDebug() << "HDMI connected";
             d_ptr->connected = true;
 
-            //read edid
+            // read edid
             d_ptr->regClear(REG_TX4, TX4_PD_RAM);
 
             struct edid *edid;
@@ -1051,12 +1233,13 @@ void TDA19988Ctrl::checkHDMIConnection()
 
             d_ptr->regSet(REG_TX4, TX4_PD_RAM);
 
-            if(!edid) {
-                qWarning()<<"Failed to read EDID";
+            if (!edid)
+            {
+                qWarning() << "Failed to read EDID";
                 return;
             }
 
-            //TODO: print the EDID info
+            /* TODO: print the EDID info */
 
             free(edid);
 
@@ -1064,14 +1247,13 @@ void TDA19988Ctrl::checkHDMIConnection()
 
 
             setSignalOutput(true);
-
         }
     }
     else
     {
-        if(d_ptr->connected)
+        if (d_ptr->connected)
         {
-            qDebug()<<"HDMI disconnected";
+            qDebug() << "HDMI disconnected";
             d_ptr->connected = false;
             setSignalOutput(false);
         }
