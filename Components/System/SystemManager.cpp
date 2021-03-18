@@ -42,6 +42,7 @@
 #include "DataStorageDirManager.h"
 #include "StandbyWindow.h"
 #include "NIBPParam.h"
+#include "SPO2Param.h"
 #include "Framework/Language/LanguageManager.h"
 #include "Framework/TimeDate/TimeDate.h"
 #include "EventStorageManagerInterface.h"
@@ -334,12 +335,30 @@ bool SystemManager::isSupport(SubParamID subID) const
         break;
     case SUB_PARAM_SPHB:
     case SUB_PARAM_SPCO:
-        if (systemManager.isNeonateMachine())
+        // not support spo2 high configure
+        if (systemManager.isNeonateMachine() || !systemManager.isSupport(CONFIG_SPO2_HIGH_CONFIGURE))
         {
             /*
             * DV注册审评提出：由于总血红蛋白（SPHb）和碳氧血红蛋白（SPCO）参数无新生儿临床数据，要求在技术指标中进行删除。
             * 新生儿专用监护仪 主机软件删除总血红蛋白（SPHb）和碳氧血红蛋白SPCO）参数
             */
+            support = false;
+        }
+        break;
+    case SUB_PARAM_PVI:
+    case SUB_PARAM_SPOC:
+    case SUB_PARAM_SPMET:
+        // not support spo2 high configure
+        if (!systemManager.isSupport(CONFIG_SPO2_HIGH_CONFIGURE))
+        {
+            support = false;
+        }
+        break;
+    case SUB_PARAM_SPO2_2:
+    case SUB_PARAM_SPO2_D:
+        // spo2 plugin is not connected
+        if (!spo2Param.isConnected(true))
+        {
             support = false;
         }
         break;

@@ -1367,29 +1367,6 @@ void TrendTableModelPrivate::loadTableTitle()
             }
             break;
         }
-        case SUB_PARAM_SPO2_2:
-        case SUB_PARAM_SPO2_D:
-        {
-            // spo2 plugin is not connected
-            if (!spo2Param.isConnected(true))
-            {
-                continue;
-            }
-            break;
-        }
-        case SUB_PARAM_PVI:
-        case SUB_PARAM_SPHB:
-        case SUB_PARAM_SPOC:
-        case SUB_PARAM_SPMET:
-        case SUB_PARAM_SPCO:
-        {
-            // not support spo2 high configure
-            if (!systemManager.isSupport(CONFIG_SPO2_HIGH_CONFIGURE))
-            {
-                continue;
-            }
-            break;
-        }
         default:
             break;
         }
