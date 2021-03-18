@@ -88,11 +88,11 @@ public:
     void updateWaveConfig();
 
     // 画ECG波形标记
-    static void drawIPaceMark(QPainter &painter, QPoint &start, QPoint &end);
+    static void drawIPaceMark(QPainter *painter, const QPoint &start, const QPoint &end);
 
-    static void drawEPaceMark(QPainter &painter, QPoint &start, QPoint &end, QRect &r,
+    static void drawEPaceMark(QPainter *painter, const QPoint &start, const QPoint &end, const QRect &r,
                               unsigned flag, ECGWaveWidget *pObj = NULL);
-    static void drawRMark(QPainter &painter, QPoint &p, QRect &r, ECGWaveWidget *pObj = NULL);
+    static void drawRMark(QPainter *painter, const QPoint &p, const QRect &r, ECGWaveWidget *pObj = NULL);
 
     // 记录R波标记,用于重画，防止R波标记被刷新后只显示一半
     QList<rMark_record> rMarkList;
@@ -168,6 +168,7 @@ private:
     unsigned _autoGainTime;
     int _autoGainTracePeek;
     int _autoGainTraveVally;
+    QList<ECGGain> _gainInfo;  // ecg gain infos
     ECGWaveNotify _mesg;
     struct autoGainLogicalRange
     {
