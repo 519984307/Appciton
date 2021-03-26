@@ -36,6 +36,8 @@
 #define DV_SW_VERSION      "DBA1.0.2.A.CN"    // 多参数监护仪软件版本号
 #define DV_SW_VERSION_NEO  "DAA1.0.2.A.CN"    // 新生儿专用机器软件版本号
 
+#define SW_VERSION_LOGO_SIZE   QSize(150, 240)  // software version logo size
+
 SoftwareVersionWindow::SoftwareVersionWindow(): Dialog()
 {
     layoutExec();
@@ -48,12 +50,19 @@ void SoftwareVersionWindow::layoutExec()
     QGridLayout *glayout = new QGridLayout;
 
     QLabel *label = new QLabel;
-    QPixmap picSrc = QPixmap("/usr/local/nPM/icons/David.png");
-    label->setPixmap(picSrc.scaled(picSrc.width() / 2.5, picSrc.height() / 2.5, Qt::KeepAspectRatio));
+    label->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     // SW version logo visible status
     int logoVisible = 0;
     machineConfig.getNumValue("SWVersionLogoVisible", logoVisible);
-    label->setVisible(logoVisible);
+    if (logoVisible)
+    {
+        QPixmap picSrc = QPixmap("/usr/local/nPM/icons/David.png");
+        label->setPixmap(picSrc.scaled(picSrc.width() / 2, picSrc.height() / 2.5, Qt::IgnoreAspectRatio));
+    }
+    else
+    {
+        label->setFixedSize(SW_VERSION_LOGO_SIZE);
+    }
     glayout->addWidget(label, 0, 0, 3, 1, Qt::AlignCenter);
     glayout->setColumnStretch(0, 1);
 
@@ -93,5 +102,6 @@ void SoftwareVersionWindow::layoutExec()
 
     setWindowLayout(glayout);
 
-    setFixedSize(600, 240);
+    setFixedHeight(240);
+    adjustSize();
 }
