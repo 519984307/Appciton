@@ -60,6 +60,7 @@ public:
         ITEM_CBO_NURSE_CALL,
         ITEM_CBO_ANALOG_OUTPUT,
         ITEM_CBO_SYNC_DEFIBRILLATION,
+        ITEM_CBO_SW_VERSION_LOGO,
         ITEM_CBO_SPO2_CONFIGURE,
         ITEM_CBO_NETWORK_DEBUG,
         ITEM_CBO_MAX
@@ -224,26 +225,38 @@ void MachineConfigModuleContentPrivte::loadOptions()
     index = 0;
     machineConfig.getNumValue("BacklightAdjustment", index);
     combos[ITEM_CBO_BACKLIGHT]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_BACKLIGHT] = index;
 
     index = 0;
     machineConfig.getNumValue("NIBPNEOMeasureEnable", index);
     combos[ITEM_CBO_NIBP_NEO_MEASURE]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_NIBP_NEO_MEASURE] = index;
 
     index = 0;
     machineConfig.getNumValue("HDMIEnable", index);
     combos[ITEM_CBO_HDMI]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_HDMI] = index;
 
     index = 0;
     machineConfig.getNumValue("NurseCallEnable", index);
     combos[ITEM_CBO_NURSE_CALL]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_NURSE_CALL] = index;
 
     index = 0;
     machineConfig.getNumValue("AnalogOutputEnable", index);
     combos[ITEM_CBO_ANALOG_OUTPUT]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_ANALOG_OUTPUT] = index;
 
     index = 0;
     machineConfig.getNumValue("SyncDefibrillationEnable", index);
     combos[ITEM_CBO_SYNC_DEFIBRILLATION]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_SYNC_DEFIBRILLATION] = index;
+
+    // sw version logo
+    index = 0;
+    machineConfig.getNumValue("SWVersionLogoVisible", index);
+    combos[ITEM_CBO_SW_VERSION_LOGO]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_SW_VERSION_LOGO] = index;
 
     index = 0;
     if (QFile::exists("/etc/init.d/S50telnet") && QFile::exists("/etc/init.d/S50dropbear"))
@@ -290,10 +303,12 @@ void MachineConfigModuleContentPrivte::loadOptions()
     index = 0;
     machineConfig.getNumValue("NeonateMachine", index);
     combos[ITEM_CBO_NEO_MACHINE]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_NEO_MACHINE] = index;
 
     index = 0;
     machineConfig.getNumValue("SpO2ConfigureEnable", index);
     combos[ITEM_CBO_SPO2_CONFIGURE]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_SPO2_CONFIGURE] = index;
 
     itemInitMap = itemChangedMap;
 
@@ -638,6 +653,21 @@ void MachineConfigModuleContent::layoutExec()
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
+    // sw version logo
+    label = new QLabel(trs("SWVersionLogo"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->blockSignals(true);
+    combo->addItems(QStringList()
+                    << trs("Off")
+                    << trs("On"));
+    combo->blockSignals(false);
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte::ITEM_CBO_SW_VERSION_LOGO, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_SW_VERSION_LOGO;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+
     label = new QLabel(trs("NeoNIBPMeasure"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     combo = new ComboBox;
@@ -862,6 +892,11 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
         {
              enablePath = "SyncDefibrillationEnable";
              break;
+        }
+        case MachineConfigModuleContentPrivte::ITEM_CBO_SW_VERSION_LOGO:
+        {
+            enablePath = "SWVersionLogoVisible";
+            break;
         }
         case MachineConfigModuleContentPrivte::ITEM_CBO_SPO2_CONFIGURE:
         {

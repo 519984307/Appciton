@@ -1040,6 +1040,7 @@ ECGGain,ECG增益,ECG Gain
 Printspeed,打印速度,Print speed
 SerialNum,序列号,Serial Number
 SWVersion,软件版本,Software Version
+SWVersionLogo,软件版本logo,Software Version Logo
 CodeMarker,Code Marker,Code Marker
 CodeMarker1,CPR,CPR
 CodeMarker2,EPI,EPI
