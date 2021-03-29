@@ -276,18 +276,32 @@ static void _initComponents(void)
     {
         QDesktopWidget *pDesk = QApplication::desktop();
         int screenWidth = pDesk->width();
-        int ScreenHeight = pDesk->height();
+        int screenHeight = pDesk->height();
         QWSPointerCalibrationData calData;
-        calData.devPoints[QWSPointerCalibrationData::TopLeft] = QPoint(0, 0);
-        calData.devPoints[QWSPointerCalibrationData::TopRight] = QPoint(4095, 0);
-        calData.devPoints[QWSPointerCalibrationData::BottomRight] = QPoint(4095, 4095);
-        calData.devPoints[QWSPointerCalibrationData::BottomLeft] = QPoint(0, 4095);
-        calData.devPoints[QWSPointerCalibrationData::Center] = QPoint(2048, 2048);
-        calData.screenPoints[QWSPointerCalibrationData::TopLeft] = QPoint(0, 0);
+        if (screenWidth == 1024 && screenHeight == 768)
+        {
+            // D6 supports touch screen power on self calibration function.
+            calData.devPoints[QWSPointerCalibrationData::TopLeft] = QPoint(0, 4095);
+            calData.devPoints[QWSPointerCalibrationData::TopRight] = QPoint(0, 0);
+            calData.devPoints[QWSPointerCalibrationData::BottomRight] = QPoint(4095, 0);
+            calData.devPoints[QWSPointerCalibrationData::BottomLeft] = QPoint(4095, 4095);
+            calData.devPoints[QWSPointerCalibrationData::Center] = QPoint(2048, 2048);
+        }
+        else if (screenWidth == 1280 && screenHeight == 800)
+        {
+            // D7, D8 supports touch screen power on self calibration function.
+            calData.devPoints[QWSPointerCalibrationData::TopLeft] = QPoint(0, 0);
+            calData.devPoints[QWSPointerCalibrationData::TopRight] = QPoint(4095, 0);
+            calData.devPoints[QWSPointerCalibrationData::BottomRight] = QPoint(4095, 4095);
+            calData.devPoints[QWSPointerCalibrationData::BottomLeft] = QPoint(0, 4095);
+            calData.devPoints[QWSPointerCalibrationData::Center] = QPoint(2048, 2048);
+            calData.screenPoints[QWSPointerCalibrationData::TopLeft] = QPoint(0, 0);
+        }
+
         calData.screenPoints[QWSPointerCalibrationData::TopRight] = QPoint(screenWidth, 0);
-        calData.screenPoints[QWSPointerCalibrationData::BottomRight] = QPoint(screenWidth, ScreenHeight);
-        calData.screenPoints[QWSPointerCalibrationData::BottomLeft] = QPoint(0, ScreenHeight);
-        calData.screenPoints[QWSPointerCalibrationData::Center] = QPoint(screenWidth/2, ScreenHeight/2);
+        calData.screenPoints[QWSPointerCalibrationData::BottomRight] = QPoint(screenWidth, screenHeight);
+        calData.screenPoints[QWSPointerCalibrationData::BottomLeft] = QPoint(0, screenHeight);
+        calData.screenPoints[QWSPointerCalibrationData::Center] = QPoint(screenWidth/2, screenHeight/2);
         QWSServer::mouseHandler()->calibrate(&calData);
     }
 #endif

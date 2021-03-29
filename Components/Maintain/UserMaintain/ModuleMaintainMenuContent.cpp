@@ -58,15 +58,6 @@ void ModuleMaintainMenuContentPrivate::loadOption()
 #ifdef DISABLE_ECG_MODULE_CALIBRATION
     buttons[ITEM_BTN_ECG_MODULE_CALIBRATION]->setEnabled(false);
 #endif
-
-#ifdef Q_WS_QWS
-    int touchScreenType = 0;
-    machineConfig.getNumValue("TouchEnable", touchScreenType);
-    if (touchScreenType == TOUCHSCREEN_CAPACITIVE)
-    {
-        buttons[ITEM_BTN_TOUCH_SCREEN_CALIBRATION]->setEnabled(false);
-    }
-#endif
 }
 
 ModuleMaintainMenuContent::ModuleMaintainMenuContent()
