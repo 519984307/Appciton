@@ -295,9 +295,9 @@ static void _initComponents(void)
             calData.devPoints[QWSPointerCalibrationData::BottomRight] = QPoint(4095, 4095);
             calData.devPoints[QWSPointerCalibrationData::BottomLeft] = QPoint(0, 4095);
             calData.devPoints[QWSPointerCalibrationData::Center] = QPoint(2048, 2048);
-            calData.screenPoints[QWSPointerCalibrationData::TopLeft] = QPoint(0, 0);
         }
 
+        calData.screenPoints[QWSPointerCalibrationData::TopLeft] = QPoint(0, 0);
         calData.screenPoints[QWSPointerCalibrationData::TopRight] = QPoint(screenWidth, 0);
         calData.screenPoints[QWSPointerCalibrationData::BottomRight] = QPoint(screenWidth, screenHeight);
         calData.screenPoints[QWSPointerCalibrationData::BottomLeft] = QPoint(0, screenHeight);
