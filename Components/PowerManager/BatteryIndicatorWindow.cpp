@@ -65,9 +65,9 @@ BatteryIndicatorWindow::BatteryIndicatorWindow()
     batteryImag->setStatus(BATTERY_NOT_EXISTED);
     layout->addWidget(batteryImag, 2, 1);
 
-    d_ptr->timer = new QTimer();
-    d_ptr->timer->setInterval(500);
-    connect(d_ptr->timer, SIGNAL(timeout()), this, SLOT(_timeOutSlot()));
+//    d_ptr->timer = new QTimer();
+//    d_ptr->timer->setInterval(500);
+//    connect(d_ptr->timer, SIGNAL(timeout()), this, SLOT(_timeOutSlot()));
 
     setWindowLayout(layout);
 }
