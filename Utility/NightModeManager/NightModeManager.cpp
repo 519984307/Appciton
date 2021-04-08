@@ -15,6 +15,7 @@
 #include "RunningStatusBarInterface.h"
 #include "NIBPParamInterface.h"
 #include "ConfigManagerInterface.h"
+#include "LightManagerInterface.h"
 
 class NightModeManagerPrivate
 {
@@ -59,6 +60,12 @@ void NightModeManager::setNightMode(bool nightMode)
         isRepetSet = true;
     }
 
+    // ebable the backlight of the Keyboard
+    LightManagerInterface *lightManager = LightManagerInterface::getLightManager();
+    if (lightManager)
+    {
+        lightManager->enableKeyboardBacklight(nightMode);
+    }
     RunningStatusBarInterface *runningStatus = RunningStatusBarInterface::getRunningStatusBar();
     systemConfig.setNumValue("NightMode|EnterNightMode", static_cast<int>(nightMode));
     d_ptr->isNightMode = nightMode;
