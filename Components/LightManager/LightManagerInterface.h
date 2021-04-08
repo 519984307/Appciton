@@ -44,10 +44,10 @@ public:
     virtual void updateAlarm(bool hasAlarm, AlarmPriority priority) = 0;
 
     /**
-     * @brief enableAlarmAudioMute 使能报警音
+     * @brief enableKeyboardBacklight  ebable the backlight of the Keyboard
      * @param enable
      */
-    virtual void enableAlarmAudioMute(bool enable) = 0;
+    virtual void enableKeyboardBacklight(bool enable) = 0;
 
     /**
      * @brief sendCmdData 发送协议命令

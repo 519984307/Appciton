@@ -17,7 +17,6 @@
 #include "AlarmDefine.h"
 #include "SoundManager.h"
 #include "SystemManager.h"
-#include "LightManager.h"
 
 /**************************************************************************************************
  * 构造。
@@ -48,7 +47,6 @@ void AlarmAudioOffState::enter()
 
     alarmIndicator.setAlarmStatus(ALARM_STATUS_AUDIO_OFF);
     alarmIndicator.clearAlarmPause();
-    lightManager.enableAlarmAudioMute(true);
 }
 
 

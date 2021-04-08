@@ -40,7 +40,6 @@ void LightManager::stopHandlingLight(bool enable)
         {
             updateAlarm(false, static_cast<AlarmPriority>(i));
         }
-        enableAlarmAudioMute(false);
    }
 }
 
@@ -63,9 +62,9 @@ void LightManager::updateAlarm(bool hasAlarmed, AlarmPriority priority)
 }
 
 /**************************************************************************************************
- * 报警静音灯控制。
+ * ebable the backlight of the Keyboard
  *************************************************************************************************/
-void LightManager::enableAlarmAudioMute(bool enable)
+void LightManager::enableKeyboardBacklight(bool enable)
 {
     if (_provider == NULL)
     {
@@ -77,7 +76,7 @@ void LightManager::enableAlarmAudioMute(bool enable)
         enable = false;
     }
 
-    _provider->enableAlarmAudioMute(enable);
+    _provider->enableKeyboardBacklight(enable);
 }
 
 /**************************************************************************************************

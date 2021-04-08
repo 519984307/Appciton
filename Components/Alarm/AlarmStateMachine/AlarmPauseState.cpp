@@ -13,7 +13,6 @@
 #include "AlarmStateMachineInterface.h"
 #include <QTimerEvent>
 #include "IConfig.h"
-#include "LightManagerInterface.h"
 
 class AlarmPauseStatePrivate
 {
@@ -82,12 +81,6 @@ void AlarmPauseState::enter()
     d_ptr->leftPauseTime = d_ptr->getAlarmPausetime(static_cast<AlarmPauseTime>(index));
     alarmIndicator->updateAlarmPauseTime(d_ptr->leftPauseTime);
     alarmIndicator->removeAllAlarmResetStatus();
-    LightManagerInterface *lightManager = LightManagerInterface::getLightManager();
-    if (lightManager)
-    {
-        /* the alarm pause light should be always off, we don't use it any more */
-        lightManager->enableAlarmAudioMute(false);
-    }
 }
 
 void AlarmPauseState::exit()
