@@ -12,7 +12,6 @@
 #include "AlarmPauseState.h"
 #include "MockAlarmIndicator.h"
 #include "MockAlarmStateMachine.h"
-#include "MockLightManager.h"
 #include "IConfig.h"
 #include <QVariant>
 
@@ -72,17 +71,11 @@ void TestAlarmPauseState::testEnter()
     EXPECT_CALL(mockAlarmIndicator, updateAlarmPauseTime(static_cast<AlarmPauseTime>(pauseTime)));
     EXPECT_CALL(mockAlarmIndicator, removeAllAlarmResetStatus());
 
-    MockLightManager mockLightManager;
-    LightManagerInterface::registerLightManager(&mockLightManager);
-    /* the alarm pause light not longer turn on in alarm pause state */
-    EXPECT_CALL(mockLightManager, enableAlarmAudioMute(Eq(false)));
-
     d_ptr->pauseState.enter();
     QCOMPARE(d_ptr->pauseState.type(), ALARM_PAUSE_STATE);
     QCOMPARE(d_ptr->pauseState.getTimerID() != 0, true);
 
     QVERIFY(Mock::VerifyAndClearExpectations(&mockAlarmIndicator));
-    QVERIFY(Mock::VerifyAndClearExpectations(&mockLightManager));
 }
 
 void TestAlarmPauseState::testExit()

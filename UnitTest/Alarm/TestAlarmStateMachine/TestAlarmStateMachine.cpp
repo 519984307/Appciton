@@ -11,7 +11,6 @@
 #include "TestAlarmStateMachine.h"
 #include "IConfig.h"
 #include "MockAlarmIndicator.h"
-#include "MockLightManager.h"
 #include "MockAlarmStateMachine.h"
 #include <QVariant>
 #include "MockAlarmState.h"
@@ -53,20 +52,15 @@ void TestAlarmStateMachine::testStart()
 {
     QFETCH(int, alarmState);
     QFETCH(AlarmStatus, alarmStatus);
-    QFETCH(bool, enableAlarmAudioMuteFlag);
 
     systemConfig.setNumValue("PrimaryCfg|Alarm|AlarmStatus", alarmState);
     systemConfig.saveToDisk();
 
     MockAlarmIndicator mockAlarmIndicator;
     AlarmIndicatorInterface::registerAlarmIndicator(&mockAlarmIndicator);
-    MockLightManager mockLightManager;
-    LightManagerInterface::registerLightManager(&mockLightManager);
     if (alarmState > ALARM_STATE_NONE && alarmState <= ALARM_RESET_STATE)
     {
         EXPECT_CALL(mockAlarmIndicator, setAlarmStatus(Eq(alarmStatus)));
-        /* don't turn on pause light any more, the light is useless */
-        EXPECT_CALL(mockLightManager, enableAlarmAudioMute(enableAlarmAudioMuteFlag));
     }
     if (alarmState == ALARM_NORMAL_STATE)
     {
@@ -84,7 +78,6 @@ void TestAlarmStateMachine::testStart()
 
     alarmStateMachine.start();
     QVERIFY(Mock::VerifyAndClearExpectations(&mockAlarmIndicator));
-    QVERIFY(Mock::VerifyAndClearExpectations(&mockLightManager));
 }
 
 void TestAlarmStateMachine::testSwitchState_data()
@@ -101,11 +94,7 @@ void TestAlarmStateMachine::testSwitchState()
     QFETCH(ALarmStateType, type);
     MockAlarmIndicator mockAlarmIndicator;
     AlarmIndicatorInterface::registerAlarmIndicator(&mockAlarmIndicator);
-    MockLightManager mockLightManager;
-    LightManagerInterface::registerLightManager(&mockLightManager);
-
     EXPECT_CALL(mockAlarmIndicator, setAlarmStatus(static_cast<AlarmStatus>(type - 1)));
-    EXPECT_CALL(mockLightManager, enableAlarmAudioMute(_));
 
     if (type == ALARM_NORMAL_STATE)
     {
@@ -128,7 +117,6 @@ void TestAlarmStateMachine::testSwitchState()
 
     alarmStateMachine.switchState(type);
     QVERIFY(Mock::VerifyAndClearExpectations(&mockAlarmIndicator));
-    QVERIFY(Mock::VerifyAndClearExpectations(&mockLightManager));
 }
 
 void TestAlarmStateMachine::testHandAlarmEvent_data()
@@ -145,12 +133,9 @@ void TestAlarmStateMachine::testHandAlarmEvent()
     QFETCH(ALarmStateType, type);
     MockAlarmIndicator mockAlarmIndicator;
     AlarmIndicatorInterface::registerAlarmIndicator(&mockAlarmIndicator);
-    MockLightManager mockLightManager;
-    LightManagerInterface::registerLightManager(&mockLightManager);
     MockAlarmStateMachine mockAlarmStateMachine;
     AlarmStateMachineInterface::registerAlarmStateMachine(& mockAlarmStateMachine);
     EXPECT_CALL(mockAlarmIndicator, setAlarmStatus(_));
-    EXPECT_CALL(mockLightManager, enableAlarmAudioMute(_));
     if (type != ALARM_NORMAL_STATE)
     {
         // 非正常报警状态处理事件的期望
@@ -180,6 +165,5 @@ void TestAlarmStateMachine::testHandAlarmEvent()
     alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_MUTE_BTN_PRESSED, NULL, 0);
     alarmStateMachine.handAlarmEvent(ALARM_STATE_EVENT_MUTE_BTN_RELEASED, NULL, 0);
     QVERIFY(Mock::VerifyAndClearExpectations(&mockAlarmIndicator));
-    QVERIFY(Mock::VerifyAndClearExpectations(&mockLightManager));
     QVERIFY(Mock::VerifyAndClearExpectations(&mockAlarmStateMachine));
 }

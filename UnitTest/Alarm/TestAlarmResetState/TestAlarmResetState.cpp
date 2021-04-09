@@ -11,7 +11,6 @@
 #include "TestAlarmResetState.h"
 #include "AlarmResetState.h"
 #include "MockAlarmIndicator.h"
-#include "MockLightManager.h"
 #include "MockAlarmStateMachine.h"
 #include <QVariant>
 
@@ -37,9 +36,6 @@ void TestAlarmResetState::testEnter()
     AlarmIndicatorInterface::registerAlarmIndicator(&mockAlarmIndicator);
     EXPECT_CALL(mockAlarmIndicator, setAlarmStatus(Eq(ALARM_STATUS_RESET)));
 
-    MockLightManager mockLightManager;
-    LightManagerInterface::registerLightManager(&mockLightManager);
-    EXPECT_CALL(mockLightManager, enableAlarmAudioMute(_));
     AlarmResetState resetState;
     resetState.enter();
     QCOMPARE(resetState.type(), ALARM_RESET_STATE);

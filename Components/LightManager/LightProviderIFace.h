@@ -23,8 +23,8 @@ public:
     // 当hasAlarmed为true时，priority表示报警的级别。
     virtual void updateAlarm(bool hasAlarmed, AlarmPriority priority) = 0;
 
-    // 设置报警静音，当静音打开后只亮静音灯，其他形式的灯光关闭。
-    virtual void enableAlarmAudioMute(bool enable) = 0;
+    // ebable the backlight of the Keyboard
+    virtual void enableKeyboardBacklight(bool enable) = 0;
 
     // 指示灯控制。
     virtual void enableIndicatorLight(bool enable) = 0;

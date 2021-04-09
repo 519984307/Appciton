@@ -11,7 +11,6 @@
 #include "AlarmNormalState.h"
 #include "AlarmIndicatorInterface.h"
 #include "AlarmStateMachineInterface.h"
-#include "LightManagerInterface.h"
 
 class AlarmNormalStatePrivate
 {
@@ -46,8 +45,6 @@ void AlarmNormalState::enter()
     alarmIndicator->setAlarmStatus(ALARM_STATUS_NORMAL);
     alarmIndicator->clearAlarmPause();
     alarmIndicator->updateAlarmAudioState();
-    LightManagerInterface *lightManager = LightManagerInterface::getLightManager();
-    lightManager->enableAlarmAudioMute(false);
 }
 
 /**************************************************************************************************

@@ -26,6 +26,7 @@ SOURCES += main.cpp \
     ../../../Components/WindowManager/IWidget.cpp \
     ../../../Params/NIBPParam/NIBPParamInterface.cpp \
     ../../../Components/ConfigManager/ConfigManagerInterface.cpp \
+    ../../../Components/LightManager/LightManagerInterface.cpp \
     ../../../Components/System/Widgets/RunningStatusBarInterface.cpp \
 
 HEADERS += \
@@ -36,6 +37,7 @@ HEADERS += \
     ../../../Components/WindowManager/IWidget.h \
     ../../../Params/NIBPParam/NIBPParamInterface.h \
     ../../../Components/ConfigManager/ConfigManagerInterface.h \
+    ../../../Components/LightManager/LightManagerInterface.h \
     ../../../Components/PatientManager/PatientDefine.h \
     ../../../Components/System/Widgets/RunningStatusBarInterface.h \
     ../../../Components/System/SystemDefine.h \
@@ -44,6 +46,7 @@ HEADERS += \
     ../MockSoundManager.h \
     ../../../Components/ParamManager/ParamDefine.h \
     ../MockSystemManager.h \
+    ../MockLightManager.h \
     ../../Params/NIBP/MockNIBPParam.h
 
 INCLUDEPATH += \
@@ -55,6 +58,7 @@ INCLUDEPATH += \
     ../../../Components/WindowManager \
     ../../../Params/NIBPParam \
     ../../../Components/ConfigManager \
+    ../../../Components/LightManager  \
     ../../../Components/PatientManager \
     ../../../Components/Alarm \
     ../../../Components/ParamManager \

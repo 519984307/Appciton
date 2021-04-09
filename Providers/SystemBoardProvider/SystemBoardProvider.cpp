@@ -34,7 +34,7 @@ enum SystemBoardMessageType
     MSG_CMD_QUERY_KEY_STATUS       = 0x18,   // 获取除颤按键状态
     MSG_CMD_TRIGGER_BUZZER         = 0x1A,   // 蜂鸣控制器
     MSG_CMD_BATTERY_INFO           = 0x1E,   // 获取电池信息
-    MSG_CMD_SET_ALARM_MUTE_LED     = 0x20,   // set alarm mute LED
+    MSG_CMD_SET_KEYBOARD_BACKLIGHT = 0x20,   // 设置按键板背光
     MSG_CMD_LED_SELFTEST           = 0x22,   // 设置LED灯自检
     MSG_CMD_REQUEST_SHUTDOWM       = 0x24,   // 请求关机
     MSG_CMD_QEQUEST_RESET          = 0x26,   // 请求复位
@@ -501,14 +501,14 @@ void SystemBoardProvider::_notifyAck(unsigned char *data, int len)
 }
 
 /***************************************************************************************************
- * 更新静音报警灯
- * 参数:
- *    enable:当前是否为静音状态
+ * ebable the backlight of the Keyboard
+ * Param:
+ *    enable: true: trun on the backlight of the keyboard; false: turn off.
  **************************************************************************************************/
-void SystemBoardProvider::enableAlarmAudioMute(bool enable)
+void SystemBoardProvider::enableKeyboardBacklight(bool enable)
 {
     unsigned char stat = enable ? 1 : 0;
-    sendCmd(MSG_CMD_SET_ALARM_MUTE_LED, &stat, 1);
+    sendCmd(MSG_CMD_SET_KEYBOARD_BACKLIGHT, &stat, 1);
 }
 
 /***************************************************************************************************

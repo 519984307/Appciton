@@ -24,7 +24,11 @@ public:
 public:
     void setProvider(LightProviderIFace *iface);
     void updateAlarm(bool hasAlarm, AlarmPriority priority);
-    void enableAlarmAudioMute(bool enable);
+    /**
+     * @brief enableKeyboardBacklight  ebable the backlight of the Keyboard
+     * @param enable
+     */
+    void enableKeyboardBacklight(bool enable);
 
     // 发送协议命令
     void sendCmdData(unsigned char cmdId, const unsigned char *data, unsigned int len);

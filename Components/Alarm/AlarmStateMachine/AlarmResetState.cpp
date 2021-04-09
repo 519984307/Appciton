@@ -11,7 +11,6 @@
 #include "AlarmResetState.h"
 #include "AlarmIndicatorInterface.h"
 #include "AlarmStateMachineInterface.h"
-#include "LightManagerInterface.h"
 
 class AlarmResetStatePrivate
 {
@@ -35,8 +34,6 @@ void AlarmResetState::enter()
 {
     AlarmIndicatorInterface *alarmIndicator = AlarmIndicatorInterface::getAlarmIndicator();
     alarmIndicator->setAlarmStatus(ALARM_STATUS_RESET);
-    LightManagerInterface *lightManager = LightManagerInterface::getLightManager();
-    lightManager->enableAlarmAudioMute(false);
 }
 
 void AlarmResetState::handAlarmEvent(AlarmStateEvent event, unsigned char *data, unsigned len)
