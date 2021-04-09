@@ -13,7 +13,6 @@
 #include "AlarmNormalState.h"
 #include "MockAlarmIndicator.h"
 #include "MockAlarmStateMachine.h"
-#include "MockLightManager.h"
 
 using ::testing::Eq;
 using ::testing::Return;
@@ -40,9 +39,6 @@ void TestAlarmNormalState::testEnter()
     EXPECT_CALL(mockAlarmIndicator, clearAlarmPause());
     EXPECT_CALL(mockAlarmIndicator, updateAlarmAudioState());
 
-    MockLightManager mockLightManager;
-    LightManagerInterface::registerLightManager(&mockLightManager);
-    EXPECT_CALL(mockLightManager, enableKeyboardBacklight(_));
     AlarmNormalState normalState;
     normalState.enter();
     QCOMPARE(normalState.type(), ALARM_NORMAL_STATE);
