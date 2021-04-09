@@ -66,7 +66,7 @@ void TestAlarmStateMachine::testStart()
     {
         EXPECT_CALL(mockAlarmIndicator, setAlarmStatus(Eq(alarmStatus)));
         /* don't turn on pause light any more, the light is useless */
-        EXPECT_CALL(mockLightManager, enableAlarmAudioMute(enableAlarmAudioMuteFlag));
+        EXPECT_CALL(mockLightManager, enableKeyboardBacklight(enableAlarmAudioMuteFlag));
     }
     if (alarmState == ALARM_NORMAL_STATE)
     {
@@ -105,7 +105,7 @@ void TestAlarmStateMachine::testSwitchState()
     LightManagerInterface::registerLightManager(&mockLightManager);
 
     EXPECT_CALL(mockAlarmIndicator, setAlarmStatus(static_cast<AlarmStatus>(type - 1)));
-    EXPECT_CALL(mockLightManager, enableAlarmAudioMute(_));
+    EXPECT_CALL(mockLightManager, enableKeyboardBacklight(_));
 
     if (type == ALARM_NORMAL_STATE)
     {
@@ -150,7 +150,7 @@ void TestAlarmStateMachine::testHandAlarmEvent()
     MockAlarmStateMachine mockAlarmStateMachine;
     AlarmStateMachineInterface::registerAlarmStateMachine(& mockAlarmStateMachine);
     EXPECT_CALL(mockAlarmIndicator, setAlarmStatus(_));
-    EXPECT_CALL(mockLightManager, enableAlarmAudioMute(_));
+    EXPECT_CALL(mockLightManager, enableKeyboardBacklight(_));
     if (type != ALARM_NORMAL_STATE)
     {
         // 非正常报警状态处理事件的期望

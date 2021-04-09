@@ -42,7 +42,7 @@ void TestAlarmNormalState::testEnter()
 
     MockLightManager mockLightManager;
     LightManagerInterface::registerLightManager(&mockLightManager);
-    EXPECT_CALL(mockLightManager, enableAlarmAudioMute(_));
+    EXPECT_CALL(mockLightManager, enableKeyboardBacklight(_));
     AlarmNormalState normalState;
     normalState.enter();
     QCOMPARE(normalState.type(), ALARM_NORMAL_STATE);

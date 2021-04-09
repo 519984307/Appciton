@@ -36,6 +36,7 @@ SOURCES += \
     ../../../Utility/Config/IConfig.cpp \
     ../../../Components/TimeManager/TimeManagerInterface.cpp \
     ../../../Components/System/SystemManagerInterface.cpp \
+    ../../../Components/LightManager/LightManagerInterface.cpp \
     ../../../Components/Alarm/AlarmSourceManager.cpp \
     ../../../Utility/DataStorage/DataStorageDirManagerInterface.cpp \
     ../../../Components/Alarm/AlarmInterface.cpp \
@@ -51,10 +52,12 @@ HEADERS += \
     ../../../Components/TimeManager/TimeManagerInterface.h \
     ../../../Components/ParamManager/ParamDefine.h \
     ../../../Components/System/SystemManagerInterface.h \
+    ../../../Components/LightManager/LightManagerInterface.h \
     ../../../Components/Alarm/AlarmSourceManager.h \
     ../../../Utility/DataStorage/DataStorageDirManagerInterface.h \
     ../../../Components/Alarm/AlarmInterface.h \
     MockTimeManager.h \
+    ../MockLightManager.h \
     ../../../Components/Alarm/AlarmParamIFace.h \
     MockSystemAlarm.h
 
@@ -65,4 +68,5 @@ INCLUDEPATH += \
     ../../../Components/TimeManager \
     ../../../Components/ParamManager \
     ../../../Components/System \
+    ../../../Components/LightManager  \
     ../../../Components/Alarm \

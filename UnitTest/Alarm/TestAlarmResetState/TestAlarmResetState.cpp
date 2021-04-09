@@ -39,7 +39,7 @@ void TestAlarmResetState::testEnter()
 
     MockLightManager mockLightManager;
     LightManagerInterface::registerLightManager(&mockLightManager);
-    EXPECT_CALL(mockLightManager, enableAlarmAudioMute(_));
+    EXPECT_CALL(mockLightManager, enableKeyboardBacklight(_));
     AlarmResetState resetState;
     resetState.enter();
     QCOMPARE(resetState.type(), ALARM_RESET_STATE);

@@ -17,7 +17,7 @@ class MockLightManager : public LightManagerInterface
 public:
     MOCK_METHOD1(setProvider, void(LightProviderIFace *));
     MOCK_METHOD2(updateAlarm, void(bool, AlarmPriority));
-    MOCK_METHOD1(enableAlarmAudioMute, void(bool));
+    MOCK_METHOD1(enableKeyboardBacklight, void(bool));
     MOCK_METHOD3(sendCmdData, void(unsigned char, const unsigned char* , unsigned int));
     MOCK_METHOD1(stopHandlingLight, void(bool));
 };
