@@ -110,6 +110,8 @@ enum SPO2OneShotType
     SPO2_ONESHOT_ALARM_LOW_SPHB_PERFUSION_INDEX,         // Low SpHb Perfusion Index
     SPO2_ONESHOT_ALARM_LOW_SPOC_CONFIDENCE,              // Low SPOC Confidence
     SPO2_ONESHOT_ALARM_LOW_SPOC_PERFUSION_INDEX,         // Low SPOC Perfusion Index
+    SPO2_ONESHOT_ALARM_LOW_SPCO_CONFIDENCE,              // Low SPCO Confidence
+    SPO2_ONESHOT_ALARM_LOW_SPCO_PERFUSION_INDEX,         // Low SPCO Perfusion Index
     SPO2_ONESHOT_ALARM_LOW_PVI_CONFIDENCE,               // Low PVI Confidence
 
     SPO2_ONESHOT_ALARM_SEND_COMMUNICATION_STOP,         // 发送通信中断

@@ -1572,6 +1572,8 @@ SPO22LowSpHbConfidence,SpO₂ 2 SpHb可信度低,SpO₂ 2 Low SpHb Confidence
 SPO22LowSpHbPerfusionIndex,SpO₂ 2 SpHb灌注指数低,SpO₂ 2 Low SpHb PI
 SPO22LowSpOCConfidence,SpO₂ 2 SpOC可信度低,SpO₂ 2 Low SpOC Confidence
 SPO22LowSpOCPerfusionIndex,SpO₂ 2 SpOC灌注指数低,SpO₂ 2 Low SpOC PI
+SPO22LowSpCOConfidence,SpO₂ 2 SpCO可信度低,SpO₂ 2 Low SpCO Confidence
+SPO22LowSpCOPerfusionIndex,SpO₂ 2 SpCO灌注指数低,SpO₂ 2 Low SpCO PI
 SPO22LowPVIConfidence,SpO₂ 2 PVI可信度低,SpO₂ 2 Low PVI Confidence
 SPO2LowSignalIQ,SpO₂信号指示低,SpO₂ Low Signal IQ
 SPO2LowPRConfidence,SpO₂ PR可信度低,SpO₂ Low PR Confidence
@@ -1583,6 +1585,8 @@ SPO2LowSpHbConfidence,SpO₂ SpHb可信度低,SpO₂ Low SpHb Confidence
 SPO2LowSpHbPerfusionIndex,SpO₂ SpHb灌注指数低,SpO₂ Low SpHb PI
 SPO2LowSpOCConfidence,SpO₂ SpOC可信度低,SpO₂ Low SpOC Confidence
 SPO2LowSpOCPerfusionIndex,SpO₂ SpOC灌注指数低,SpO₂ Low SpOC PI
+SPO2LowSpCOConfidence,SpO₂ SpCO可信度低,SpO₂ Low SpCO Confidence
+SPO2LowSpCOPerfusionIndex,SpO₂ SpCO灌注指数低,SpO₂ Low SpCO PI
 SPO2LowPVIConfidence,SpO₂ PVI可信度低,SpO₂ Low PVI Confidence
 SPO2Program,SpO₂ 编程,SpO₂ Program 
 RequestEnterProgramMode,请求进入编程模式,Request Enter Program Mode

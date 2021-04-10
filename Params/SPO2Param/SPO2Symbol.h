@@ -154,6 +154,8 @@ public:
                 "SPO22LowSpHbPerfusionIndex",
                 "SPO22LowSpOCConfidence",
                 "SPO22LowSpOCPerfusionIndex",
+                "SPO22LowSpCOConfidence",
+                "SPO22LowSpCOPerfusionIndex",
                 "SPO22LowPVIConfidence",
             };
             return symbol[index];
@@ -204,6 +206,8 @@ public:
                 "SPO2LowSpHbPerfusionIndex",
                 "SPO2LowSpOCConfidence",
                 "SPO2LowSpOCPerfusionIndex",
+                "SPO2LowSpCOConfidence",
+                "SPO2LowSpCOPerfusionIndex",
                 "SPO2LowPVIConfidence",
             };
             return symbol[index];

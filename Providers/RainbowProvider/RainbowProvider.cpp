@@ -201,7 +201,9 @@ enum Spo2Exceptions
 
 enum SpCOExceptions
 {
-    INVAILD_SPCO = 0X0004,  // Invalid spco
+    SPCO_LOW_CONFIDENCE = 0X0001,  // Low SpCO Confidence
+    SPCO_LOW_PERFUSION_INDEX = 0X0002,  // Low SpCO Perfusion Index
+    SPCO_INVAILD = 0X0004,   // Invalid spco
 };
 
 enum PVIExceptions
@@ -1026,7 +1028,14 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     case RB_PARAM_OF_SPCO:
     {
         temp = (data[4] << 8) + data[5];
-        bool valid = !(temp & INVAILD_SPCO);
+
+        // Low SPCO Confidence
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_SPCO_CONFIDENCE, (temp & SPCO_LOW_CONFIDENCE), isPlugin);
+        // Low SPCO Perfusion Index
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_SPCO_PERFUSION_INDEX,
+                                  (temp & SPCO_LOW_PERFUSION_INDEX), isPlugin);
+
+        bool valid = !(temp & SPCO_INVAILD);
         if (valid && !spo2BoardFailure)
         {
             temp = (data[0] << 8) + data[1];
