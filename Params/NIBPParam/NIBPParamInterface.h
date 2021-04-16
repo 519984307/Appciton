@@ -80,4 +80,8 @@ public:
     virtual void setDisableState(bool flag) = 0;
 
     virtual bool isMeasuring()const = 0;
+    /**
+     * @brief resetNeoInitPressure Reset the initial pressure of the Neonatal
+     */
+    virtual void resetNeoInitPressure() {}
 };

@@ -231,6 +231,10 @@ public:
      */
     void enableRawDataSend(bool onOff);
 
+    /**
+     * @brief resetNeoInitPressure Reset the initial pressure of the Neonatal
+     */
+    void resetNeoInitPressure();
     //获取不同病人类型的初始压力值
     int getInitPressure();
 

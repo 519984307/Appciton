@@ -450,6 +450,7 @@ void PatientManager::newPatient()
         {
             nibpParam->clearResult();
             nibpParam->clearTrendListData();
+            nibpParam->resetNeoInitPressure();
             if (nibpParam->isMeasuring())
             {
                 nibpParam->stopMeasure();

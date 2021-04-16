@@ -1093,6 +1093,25 @@ void NIBPParam::enableRawDataSend(bool onOff)
     }
 }
 
+void NIBPParam::resetNeoInitPressure()
+{
+    // Only supports neonatal machine function
+    if (!systemManager.isNeonateMachine() || patientManager.getType() != PATIENT_TYPE_NEO)
+    {
+        return;
+    }
+
+    // Reset the default initial pressure(90mmHg) of the Neonatal
+    if (moduleStr == "BLM_N5")
+    {
+        currentConfig.setNumValue("NIBP|InitialCuffInflation", 3);
+    }
+    else
+    {
+        currentConfig.setNumValue("NIBP|SUNTECHInitialCuffInflation", 3);
+    }
+}
+
 /**************************************************************************************************
  * 获取不同病人类型的初始压力值
  *************************************************************************************************/

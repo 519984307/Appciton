@@ -589,6 +589,9 @@ static void _initProviderParam(void)
         nibpParam.setNIBPDataTrendWidget(nibpDataTrenWidget);
         layoutManager.addLayoutWidget(nibpDataTrenWidget, LAYOUT_NODE_PARAM_NIBPLIST);
         QObject::connect(&alarmConfig, SIGNAL(alarmOff(SubParamID)), &nibpParam, SLOT(alarmOff(SubParamID)));
+
+        // Reset the initial pressure of the Neonatal
+        nibpParam.resetNeoInitPressure();
     }
 
     // CO2部分。
