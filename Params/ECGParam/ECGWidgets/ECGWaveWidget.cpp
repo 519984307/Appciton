@@ -259,14 +259,15 @@ void ECGWaveWidget::_updateFilterMode()
     }
     ECGFilterMode  filterMode = ecgParam.getFilterMode();
     _filterMode->setText(trs(ECGSymbol::convert(filterMode)));
-    if (filterMode != ECG_FILTERMODE_DIAGNOSTIC)
-    {
-        _notchInfo->setVisible(false);
-    }
-    else
-    {
-        _notchInfo->setVisible(true);
-    }
+    // 2021-04-16DAVID提出要求，ECG监护和手术模式下，ECG波形上可以显示陷波滤波器的信息
+//    if (filterMode != ECG_FILTERMODE_DIAGNOSTIC)
+//    {
+//        _notchInfo->setVisible(false);
+//    }
+//    else
+//    {
+//        _notchInfo->setVisible(true);
+//    }
 }
 
 void ECGWaveWidget::_updateNotchInfo()
