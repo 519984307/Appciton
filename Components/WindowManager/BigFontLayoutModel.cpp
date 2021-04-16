@@ -211,7 +211,7 @@ QVariant BigFontLayoutModel::data(const QModelIndex &index, int role) const
                 ParamNodeDescription paramNode = d_ptr->paramNodeDescriptions.value(node->name);
                 if (!paramNode.displayName.isEmpty())
                 {
-                    info.displayName = paramNode.displayName;
+                    info.displayName = trs(paramNode.displayName);
                 }
                 else
                 {

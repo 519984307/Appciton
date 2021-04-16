@@ -738,11 +738,11 @@ QVariant ScreenLayoutModel::data(const QModelIndex &index, int role) const
                 ParamNodeDescription desc = d_ptr->paramNodeDescriptions.value(info.name);
                 if (!desc.displayName.isEmpty())
                 {
-                    info.displayName = desc.displayName;
+                    info.displayName = trs(desc.displayName);
                 }
                 else
                 {
-                    info.displayName = info.name;
+                    info.displayName = trs(info.name);
                 }
             }
 
