@@ -83,7 +83,7 @@ void ScreenLayoutEditor::setReplaceList(const QVariantList &list)
     for (iter = list.constBegin(); iter != list.end(); iter++)
     {
         QVariantMap m = iter->toMap();
-        displayList.append(m["displayName"].toString());
+        displayList.append(trs(m["displayName"].toString()));
     }
 
     if (!displayList.isEmpty())
@@ -117,7 +117,7 @@ void ScreenLayoutEditor::setInsertList(const QVariantList &list)
     for (iter = list.constBegin(); iter != list.end(); iter++)
     {
         QVariantMap m = iter->toMap();
-        displayList.append(m["displayName"].toString());
+        displayList.append(trs(m["displayName"].toString()));
     }
 
     if (!displayList.isEmpty())
