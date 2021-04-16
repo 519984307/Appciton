@@ -572,7 +572,8 @@ void SystemManager::setAutoBrightness(BrightnessLevel br)
 {
     if (d_ptr->isAutoBrightness && !nightModeManager.nightMode())
     {
-        enableBrightness(br);
+        // DAVID屏幕亮度要求：1是最亮; 10是最暗
+        enableBrightness(static_cast<BrightnessLevel>(BRIGHTNESS_NR - br));
     }
 }
 
@@ -595,10 +596,15 @@ void SystemManager::enableBrightness(BrightnessLevel br)
 
     // add screen type select
     char *lightValue = NULL;
-    char industrialLight[BRIGHTNESS_NR] = {1, 7, 15, 20, 25, 32, 38, 42, 46, 50,
-                                           54, 58, 62, 67, 72, 79, 85, 92, 96, 100};
-    char businessLight[BRIGHTNESS_NR] = {70, 64, 58, 52, 50, 47, 44, 41, 38, 36,
-                                         33, 31, 28, 26, 24, 21, 18, 15, 7, 1};
+    // DAVID屏幕亮度要求：1是最亮; 10是最暗
+    char industrialLight[BRIGHTNESS_NR] = {100, 96, 92, 85, 79, 72, 67, 62, 58, 54,
+                                           50, 46, 42, 38, 32, 25, 20, 15, 7, 1};
+    char businessLight[BRIGHTNESS_NR] = {1, 7, 15, 18, 21, 24, 26, 28, 31, 33,
+                                         36, 38, 41, 44, 47, 50, 52, 58, 64, 70};
+//    char industrialLight[BRIGHTNESS_NR] = {1, 7, 15, 20, 25, 32, 38, 42, 46, 50,
+//                                           54, 58, 62, 67, 72, 79, 85, 92, 96, 100};
+//    char businessLight[BRIGHTNESS_NR] = {70, 64, 58, 52, 50, 47, 44, 41, 38, 36,
+//                                         33, 31, 28, 26, 24, 21, 18, 15, 7, 1};
     int index = BACKLIGHT_MODE_1;
     machineConfig.getNumValue("BacklightAdjustment", index);
     if (static_cast<BacklightAdjustment>(index) == BACKLIGHT_MODE_2)
