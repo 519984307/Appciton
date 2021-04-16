@@ -2075,10 +2075,7 @@ int ECGParam::getQRSToneVolume(void)
 void ECGParam::setNotchFilter(ECGNotchFilter filter)
 {
     currentConfig.setNumValue("ECG|NotchFilter", static_cast<int>(filter));
-    if (filter == _notchFilter)
-    {
-        return;
-    }
+
     _notchFilter = static_cast<ECGNotchFilter>(filter);
     if (NULL != _provider)
     {
