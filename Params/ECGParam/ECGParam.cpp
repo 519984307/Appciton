@@ -338,7 +338,7 @@ void ECGParam::setProvider(ECGProviderIFace *provider)
     _provider->enablePacermaker(getPacermaker());
 
     // 设置工频滤波。
-    _provider->setNotchFilter(getNotchFilter());
+    setNotchFilter(_notchFilter);
 
     // 发送获取版本
     _provider->sendVersion();
@@ -1095,7 +1095,7 @@ void ECGParam::reset(void)
     _provider->enablePacermaker(getPacermaker());
 
     // 设置工频滤波。
-    _provider->setNotchFilter(getNotchFilter());
+    setNotchFilter(_notchFilter);
 }
 
 /***************************************************************************************************
@@ -2074,10 +2074,26 @@ int ECGParam::getQRSToneVolume(void)
  *************************************************************************************************/
 void ECGParam::setNotchFilter(ECGNotchFilter filter)
 {
+    if (NULL == _provider)
+    {
+        return;
+    }
     currentConfig.setNumValue("ECG|NotchFilter", static_cast<int>(filter));
 
     _notchFilter = static_cast<ECGNotchFilter>(filter);
-    if (NULL != _provider)
+    if (_filterMode == ECG_FILTERMODE_SURGERY || _filterMode == ECG_FILTERMODE_MONITOR)
+    {
+        // 监护or手术模式时，工频信号关闭，发送50&60Hz信号，临时版本
+        if (_notchFilter == ECG_NOTCH_OFF)
+        {
+            _provider->setNotchFilter(ECG_NOTCH_50_AND_60HZ);
+        }
+        else
+        {
+            _provider->setNotchFilter(_notchFilter);
+        }
+    }
+    else
     {
         _provider->setNotchFilter(_notchFilter);
     }
