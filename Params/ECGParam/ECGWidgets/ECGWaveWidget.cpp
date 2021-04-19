@@ -173,8 +173,8 @@ void ECGWaveWidget::_initValueRange(ECGGain gain)
         gain = get12LGain();
     }
 
+#if 0
     double rulerHeight = _calcRulerHeight(gain);
-
     double rulerTop = qmargins().top()
                       + ((height() - qmargins().top() - qmargins().bottom() - rulerHeight) / 2);
     double rulerBottom = rulerTop + rulerHeight - 1;
@@ -184,6 +184,16 @@ void ECGWaveWidget::_initValueRange(ECGGain gain)
 
     int valueMin = (_p05mV - _n05mV) * (height() - 1 - qmargins().bottom() - rulerBottom)
                    / (rulerTop - rulerBottom) + _n05mV;
+#else
+    double rulerHeightPixelPerCM = _calcRulerHeight(gain);
+    int baseline = height() / 2;
+    double aboveBaselineCM = (baseline - qmargins().top()) / rulerHeightPixelPerCM;
+    double belowBaselineCM = (height() - qmargins().bottom() - baseline) / rulerHeightPixelPerCM;
+    int waveValueFor1CM = _p05mV - _n05mV;
+    /* NOTE: assume wave baseline is 0, should be identical to ecg provider baseline value */
+    int valueMax = static_cast<int>(waveValueFor1CM * aboveBaselineCM);
+    int valueMin = static_cast<int>(-waveValueFor1CM * belowBaselineCM);
+#endif
 
     setValueRange(valueMin, valueMax);
 }
