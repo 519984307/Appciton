@@ -190,9 +190,10 @@ void ECGWaveWidget::_initValueRange(ECGGain gain)
     double aboveBaselineCM = (baseline - qmargins().top()) / rulerHeightPixelPerCM;
     double belowBaselineCM = (height() - qmargins().bottom() - baseline) / rulerHeightPixelPerCM;
     int waveValueFor1CM = _p05mV - _n05mV;
+    double providerBaseLine = (_p05mV + _n05mV) / 2.0;
     /* NOTE: assume wave baseline is 0, should be identical to ecg provider baseline value */
-    int valueMax = static_cast<int>(waveValueFor1CM * aboveBaselineCM);
-    int valueMin = static_cast<int>(-waveValueFor1CM * belowBaselineCM);
+    int valueMax = static_cast<int>(providerBaseLine + waveValueFor1CM * aboveBaselineCM);
+    int valueMin = static_cast<int>(providerBaseLine - waveValueFor1CM * belowBaselineCM);
 #endif
 
     setValueRange(valueMin, valueMax);
