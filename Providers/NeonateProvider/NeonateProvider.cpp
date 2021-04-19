@@ -106,7 +106,7 @@ void NeonateProvider::sendMotorControl(int status)
         }
         return;
     }
-    if (d_ptr->motorControlTimer.isActive())
+    if (d_ptr->motorControlTimer.isActive() && status)
     {
         return;
     }
