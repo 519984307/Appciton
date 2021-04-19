@@ -186,7 +186,7 @@ void ECGWaveWidget::_initValueRange(ECGGain gain)
                    / (rulerTop - rulerBottom) + _n05mV;
 #else
     double rulerHeightPixelPerCM = _calcRulerHeight(gain);
-    int baseline = height() / 2;
+    float baseline = height() / 2;
     double aboveBaselineCM = (baseline - qmargins().top()) / rulerHeightPixelPerCM;
     double belowBaselineCM = (height() - qmargins().bottom() - baseline) / rulerHeightPixelPerCM;
     int waveValueFor1CM = _p05mV - _n05mV;

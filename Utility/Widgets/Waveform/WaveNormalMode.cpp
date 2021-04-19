@@ -157,7 +157,11 @@ int WaveNormalMode::valueToY(int value)
         y = maxY;
     }
 
-    return y;
+    /* Lower the upper side wave by 1 pixel to meet DAVID specification when the round off */
+    int mid = (minY + maxY) / 2;
+    int v = y < mid ? y + 0.5 : y;
+
+    return v;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
