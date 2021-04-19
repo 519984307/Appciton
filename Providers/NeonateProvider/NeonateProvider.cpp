@@ -23,7 +23,7 @@ class NeonateProviderPrivate
 {
 public:
     NeonateProviderPrivate()
-        : motorControlTimer(), motorVibrateState(false), mototControlStatus(false)
+        : motorControlTimer(), motorVibrateState(false), motorControlStatus(0)
     {}
 
     ~NeonateProviderPrivate()
@@ -31,7 +31,7 @@ public:
 
     QTimer motorControlTimer;   // Control motor timer
     bool motorVibrateState;     // Used to control the intermittent vibration function of the motor.
-    bool mototControlStatus;    // Control whether the motor starts or stops the vibration function.
+    int motorControlStatus;    // Control whether the motor starts or stops the vibration function.
 };
 
 bool NeonateProvider::attachParam(Param *param)
@@ -87,12 +87,30 @@ void NeonateProvider::sendCalibration(int concentration)
     sendCmd(NEONATE_CMD_CALIBRATION, &data, 1);
 }
 
-void NeonateProvider::sendMotorControl(bool status)
+void NeonateProvider::sendMotorControl(int status)
 {
-    if (d_ptr->mototControlStatus == status)
+    if (d_ptr->motorControlStatus == status)
     {
         return;
     }
+    d_ptr->motorControlStatus = status;
+
+    if (status == (1 << APNEASTIMULATION_REASON_SELFTEST))
+    {
+        // Selftest status: alway running motor
+        unsigned char data = 1;
+        sendCmd(NEONATE_CMD_MOTOR_CONTROL, &data, 1);
+        if (d_ptr->motorControlTimer.isActive())
+        {
+            d_ptr->motorControlTimer.stop();
+        }
+        return;
+    }
+    if (d_ptr->motorControlTimer.isActive())
+    {
+        return;
+    }
+    d_ptr->motorVibrateState = status;
     if (status)
     {
         d_ptr->motorControlTimer.start();
@@ -101,10 +119,9 @@ void NeonateProvider::sendMotorControl(bool status)
     {
         d_ptr->motorControlTimer.stop();
     }
-    unsigned char data = status;
+
+    unsigned char data = d_ptr->motorVibrateState;
     sendCmd(NEONATE_CMD_MOTOR_CONTROL, &data, 1);
-    d_ptr->mototControlStatus = status;
-    d_ptr->motorVibrateState = status;
 }
 
 void NeonateProvider::sendVibrationIntensity(int intensity)

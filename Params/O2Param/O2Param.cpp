@@ -198,7 +198,7 @@ void O2Param::updateApneaStimulationStatus()
     d_ptr->updateApneaStimulationSta = true;
 }
 
-void O2Param::setVibration(bool vibrate)
+void O2Param::setVibration(int vibrate)
 {
     if (d_ptr->provider)
     {
@@ -261,7 +261,7 @@ void O2Param::setVibrationReason(ApneaStimulationReason reason, bool sta)
     if (getApneaAwakeStatus())
     {
         // 唤醒器之前状态
-        bool preMotorSta = d_ptr->motorSta;
+        int preMotorSta = d_ptr->motorSta;
         if (sta)
         {
             d_ptr->motorSta |= 1 << reason;
@@ -271,7 +271,7 @@ void O2Param::setVibrationReason(ApneaStimulationReason reason, bool sta)
             d_ptr->motorSta &= ~(1 << reason);
         }
         // 唤醒器当前状态
-        bool curMotorSta = d_ptr->motorSta;
+        int curMotorSta = d_ptr->motorSta;
 
         // 状态切换或者新建病人都要重新刷新
         if ((preMotorSta != curMotorSta) || (d_ptr->updateApneaStimulationSta))

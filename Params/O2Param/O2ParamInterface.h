@@ -46,7 +46,7 @@ public:
      * @param control
      * @param selfTest
      */
-    virtual void setVibration(bool control) = 0;
+    virtual void setVibration(int control) = 0;
 
     /**
      * @brief updateApneaStimulationStatus

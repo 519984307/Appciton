@@ -81,7 +81,7 @@ public:
     void updateApneaStimulationStatus();
 public:
     // 马达控制
-    void setVibration(bool vibrate);
+    void setVibration(int vibrate);
 
     // 震动强度设置
     void vibrationIntensityControl(int intensity);
