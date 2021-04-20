@@ -405,8 +405,9 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
         _status.spanCalibInProgress = ((val & BIT3) == BIT3) ? true : false;
         _status.irO2Delay = (val & 0xf0) >> 4;
 
-        if (_status.sidestreamConfig)
+        if (_status.sidestreamConfig && getCo2ModuleType() != MODULE_MASIMO_CO2)
         {
+            // CO2校准报警显示不适用与Masimo CO2模块
             // 旁流CO2模块报警
 //            co2Param.setZeroStatus(CO2_ZERO_REASON_IN_PROGRESS, _status.spanCalibInProgress);
             co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_SPAN_CALIB_IN_PROGRESS, _status.spanCalibInProgress);
