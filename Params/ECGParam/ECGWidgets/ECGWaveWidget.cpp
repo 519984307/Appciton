@@ -129,7 +129,8 @@ void ECGWaveWidget::_adjustLabelLayout()
  *************************************************************************************************/
 double ECGWaveWidget::_calcRulerHeight(ECGGain gain)
 {
-    double rulerHeight = 0.0;
+    // 避免切换自动增益时，标尺高度为0，导致波形绘制位置错位，设置默认增益高度1个像素。
+    double rulerHeight = 1.0;
     switch (gain)
     {
     case ECG_GAIN_X0125:
