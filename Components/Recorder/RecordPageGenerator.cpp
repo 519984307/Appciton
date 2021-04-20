@@ -1634,7 +1634,8 @@ RecordPage *RecordPageGenerator::createWaveSegments(QList<RecordWaveSegmentInfo>
 
     RecordPage *page = new RecordPage(pageWidth);
     QPainter painter(page);
-    QPen pen(Qt::white, PEN_WIDTH);
+    // 修改波形打印画笔宽度为1，解决ECG各增益模式打印范围偏大的问题。
+    QPen pen(Qt::white, 1);
     painter.setPen(pen);
     QFont font = fontManager.recordFont(24);
     painter.setFont(font);
