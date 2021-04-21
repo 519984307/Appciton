@@ -41,7 +41,7 @@ public:
     };
 
     OthersMaintainMenuContentPrivate()
-        : nurseCallBtn(NULL)
+        : nurseCallBtn(NULL), waveLineLabel(NULL)
     {
         combos.clear();
     }
@@ -51,6 +51,7 @@ public:
     QMap<MenuItem, ComboBox *> combos;
 
     Button *nurseCallBtn;
+    QLabel *waveLineLabel;
 };
 
 void OthersMaintainMenuContentPrivate::loadOptions()
@@ -91,6 +92,12 @@ void OthersMaintainMenuContentPrivate::loadOptions()
     {
         combos[ITEM_CBO_WAVE_LINE]->setCurrentIndex(lineIndex);
     }
+    // DAVID提出要求，不允许切换波形线条，隐藏设置项
+    if (waveLineLabel)
+    {
+        waveLineLabel->hide();
+    }
+    combos[ITEM_CBO_WAVE_LINE]->hide();
     tmpStr.clear();
 
 
@@ -174,6 +181,7 @@ void OthersMaintainMenuContent::layoutExec()
 
     // waveline setup
     label = new QLabel(trs("WaveLine"));
+    d_ptr->waveLineLabel = label;
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
