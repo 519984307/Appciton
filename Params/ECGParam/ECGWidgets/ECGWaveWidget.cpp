@@ -91,17 +91,29 @@ void ECGWaveWidget::_calcGainRange(void)
             continue;
         }
 
-        int rulerHeight = _calcRulerHeight(gain);
+#if 0
+        double rulerHeight = _calcRulerHeight(gain);
+        double rulerTop = qmargins().top()
+                          + ((height() - qmargins().top() - qmargins().bottom() - rulerHeight) / 2);
+        double rulerBottom = rulerTop + rulerHeight - 1;
 
-        int rulerTop = qmargins().top()
-                       + ((height() - qmargins().top() - qmargins().bottom() - rulerHeight) / 2);
-        int rulerBottom = rulerTop + rulerHeight - 1;
+        int valueMax = (_p05mV - _n05mV) * (qmargins().top() - rulerBottom - 1)
+                       / (rulerTop - rulerBottom - 1) + _n05mV;
 
-        int valueMax = (_p05mV - _n05mV) * (qmargins().top() -
-                                            rulerBottom) / (rulerTop - rulerBottom) + _n05mV;
+        int valueMin = (_p05mV - _n05mV) * (height() - 1 - qmargins().bottom() - rulerBottom)
+                       / (rulerTop - rulerBottom - 1) + _n05mV;
 
-        int valueMin = (_p05mV - _n05mV) * (height() - 1 - qmargins().bottom() -
-                                            rulerBottom) / (rulerTop - rulerBottom) + _n05mV;
+#else
+        double rulerHeightPixelPerCM = _calcRulerHeight(gain);
+        float baseline = height() / 2;
+        double aboveBaselineCM = (baseline - qmargins().top() + 1) / rulerHeightPixelPerCM;
+        double belowBaselineCM = (height() - qmargins().bottom() - baseline + 1) / rulerHeightPixelPerCM;
+        int waveValueFor1CM = _p05mV - _n05mV;
+        double providerBaseLine = (_p05mV + _n05mV) / 2.0;
+        /* NOTE: assume wave baseline is 0, should be identical to ecg provider baseline value */
+        int valueMax = static_cast<int>(providerBaseLine + waveValueFor1CM * aboveBaselineCM);
+        int valueMin = static_cast<int>(providerBaseLine - waveValueFor1CM * belowBaselineCM);
+#endif
 
         _autoGainLogicalRange[gain].minRange = valueMin;
         _autoGainLogicalRange[gain].maxRange = valueMax;
@@ -180,16 +192,17 @@ void ECGWaveWidget::_initValueRange(ECGGain gain)
                       + ((height() - qmargins().top() - qmargins().bottom() - rulerHeight) / 2);
     double rulerBottom = rulerTop + rulerHeight - 1;
 
-    int valueMax = (_p05mV - _n05mV) * (qmargins().top() - rulerBottom)
-                   / (rulerTop - rulerBottom) + _n05mV;
+    int valueMax = (_p05mV - _n05mV) * (qmargins().top() - rulerBottom - 1)
+                   / (rulerTop - rulerBottom - 1) + _n05mV;
 
     int valueMin = (_p05mV - _n05mV) * (height() - 1 - qmargins().bottom() - rulerBottom)
-                   / (rulerTop - rulerBottom) + _n05mV;
+                   / (rulerTop - rulerBottom - 1) + _n05mV;
+
 #else
     double rulerHeightPixelPerCM = _calcRulerHeight(gain);
     float baseline = height() / 2;
-    double aboveBaselineCM = (baseline - qmargins().top()) / rulerHeightPixelPerCM;
-    double belowBaselineCM = (height() - qmargins().bottom() - baseline) / rulerHeightPixelPerCM;
+    double aboveBaselineCM = (baseline - qmargins().top() + 1) / rulerHeightPixelPerCM;
+    double belowBaselineCM = (height() - qmargins().bottom() - baseline + 1) / rulerHeightPixelPerCM;
     int waveValueFor1CM = _p05mV - _n05mV;
     double providerBaseLine = (_p05mV + _n05mV) / 2.0;
     /* NOTE: assume wave baseline is 0, should be identical to ecg provider baseline value */
