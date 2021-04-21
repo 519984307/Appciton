@@ -1173,27 +1173,27 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo &waveInfo, short wave)
         switch (gain)
         {
         case ECG_GAIN_X0125:
-            scale = 0.125 * 10 * RECORDER_PIXEL_PER_MM / 2.0;
+            scale = 0.125 * 10 * RECORDER_PIXEL_PER_MM / 2.0 * 0.95;
             break;
 
         case ECG_GAIN_X025:
-            scale = 0.25 * 10 * RECORDER_PIXEL_PER_MM / 2.0;
+            scale = 0.25 * 10 * RECORDER_PIXEL_PER_MM / 2.0 * 0.95;
             break;
 
         case ECG_GAIN_X05:
-            scale = 0.5 * 10 * RECORDER_PIXEL_PER_MM / 2.0;
+            scale = 0.5 * 10 * RECORDER_PIXEL_PER_MM / 2.0 * 0.95;
             break;
 
         case ECG_GAIN_X10:
-            scale = 1.0 * 10 * RECORDER_PIXEL_PER_MM / 2.0;
+            scale = 1.0 * 10 * RECORDER_PIXEL_PER_MM / 2.0 * 0.95;
             break;
 
         case ECG_GAIN_X20:
-            scale = 2.0 * 10 * RECORDER_PIXEL_PER_MM / 2.0;
+            scale = 2.0 * 10 * RECORDER_PIXEL_PER_MM / 2.0 * 0.95;
             break;
 
         case ECG_GAIN_X40:
-            scale = 4.0 * 10 * RECORDER_PIXEL_PER_MM / 2.0;
+            scale = 4.0 * 10 * RECORDER_PIXEL_PER_MM / 2.0 * 0.95;
             break;
 
         default:
