@@ -1189,11 +1189,11 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo &waveInfo, short wave)
             break;
 
         case ECG_GAIN_X20:
-            scale = 2.0 * 10 * RECORDER_PIXEL_PER_MM / 2.0 * 0.95;
+            scale = 2.0 * 10 * RECORDER_PIXEL_PER_MM / 2.0;
             break;
 
         case ECG_GAIN_X40:
-            scale = 4.0 * 10 * RECORDER_PIXEL_PER_MM / 2.0 * 0.95;
+            scale = 4.0 * 10 * RECORDER_PIXEL_PER_MM / 2.0;
             break;
 
         default:
