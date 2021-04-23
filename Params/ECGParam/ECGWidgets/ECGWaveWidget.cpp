@@ -27,6 +27,8 @@
 #include "ECGWaveRuler.h"
 #include "LayoutManager.h"
 #include "ECGDupParam.h"
+#include "ECGGainStandardRuler.h"
+
 
 int ECGWaveWidget::_paceHeight = 5;
 /**************************************************************************************************
@@ -800,6 +802,7 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
     , _filterMode(NULL)
     , _notchInfo(NULL)
     , _ruler(NULL)
+    , _gainStandard(NULL)
     , _p05mV(3185)
     , _n05mV(-3185)
     , _currentItemIndex(-1)
@@ -863,6 +866,15 @@ ECGWaveWidget::ECGWaveWidget(WaveformID id, const QString &widgetName, const QSt
     _ruler->setFont(fontManager.textFont(fontSize));
     addItem(_ruler);
 
+#if 0
+    // ECG Gain Standard Ruler  for Test!!!
+    _gainStandard = new ECGGainStandardRuler(this);
+    QPalette pal;
+    pal.setColor(QPalette::WindowText, Qt::red);
+    _gainStandard->setPalette(pal);
+    _gainStandard->setFont(fontManager.textFont(fontSize));
+    addItem(_gainStandard);
+#endif
     _12LGain = ECG_GAIN_X10;
     _adjustLabelLayout();
 }
@@ -1080,6 +1092,11 @@ void ECGWaveWidget::setWaveInfoVisible(bool isVisible)
     {
         _updateNotchInfo();
         _updateFilterMode();
+    }
+
+    if (_gainStandard)
+    {
+        _gainStandard->setVisible(isVisible);
     }
 }
 

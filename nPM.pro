@@ -444,6 +444,7 @@ SOURCES +=                                                                      
     Params/ECGParam/ECGParamInterface.cpp                                       \
     Params/ECGParam/ECGWidgets/ECGWaveWidget.cpp                                \
     Params/ECGParam/ECGWidgets/ECGWaveRuler.cpp                                 \
+    Params/ECGParam/ECGWidgets/ECGGainStandardRuler.cpp                         \
     Params/ECGParam/ECGWidgets/ECGTrendWidget.cpp                               \
     Params/ECGParam/ECGWidgets/ECGPVCSTrendWidget.cpp                           \
     Params/ECGParam/ECGWidgets/ECGSTTrendWidget.cpp                             \
@@ -894,6 +895,7 @@ HEADERS +=                                                                      
     Params/ECGParam/ECGSymbol.h                                                 \
     Params/ECGParam/ECGWidgets/ECGWaveWidget.h                                  \
     Params/ECGParam/ECGWidgets/ECGWaveRuler.h                                   \
+    Params/ECGParam/ECGWidgets/ECGGainStandardRuler.h                           \
     Params/ECGParam/ECGWidgets/ECGTrendWidget.h                                 \
     Params/ECGParam/ECGWidgets/ECGPVCSTrendWidget.h                             \
     Params/ECGParam/ECGWidgets/ECGSTTrendWidget.h                               \
