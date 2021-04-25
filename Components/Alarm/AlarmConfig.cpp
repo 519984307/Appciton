@@ -51,7 +51,8 @@ bool AlarmConfig::hasLimitAlarmDisable()
     LimitAlarmControlCache::iterator iter = _controlCache.begin();
     for (; iter != _controlCache.end(); ++iter)
     {
-        if (iter.value().enable == false && systemManager.isSupport(paramInfo.getParamID(iter.key())))
+        if (iter.value().enable == false && systemManager.isSupport(paramInfo.getParamID(iter.key()))
+                && systemManager.isSupport(iter.key()))
         {
             return true;
         }
