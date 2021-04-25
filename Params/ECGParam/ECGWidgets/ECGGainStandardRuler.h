@@ -11,6 +11,7 @@
 #pragma once
 #include <QPoint>
 #include "WaveWidgetItem.h"
+#include <QVector>
 
 class ECGWaveWidget;
 /***************************************************************************************************
@@ -30,4 +31,5 @@ public:
 
 private:
     QWidget *_waveWidget;
+    QVector<int> gainRuler;
 };

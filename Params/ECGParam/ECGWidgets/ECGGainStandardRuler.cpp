@@ -19,17 +19,16 @@
 #include "FontManager.h"
 
 #define START_X_OFFSET (160)
-#define GAIN_RULER     (10)
 
 void ECGGainStandardRuler::paintItem(QPainter &painter)
 {
     painter.setPen(QPen(palette().color(QPalette::Foreground).darker(150), 3, Qt::SolidLine));
     painter.setFont(font());
-    for (int i = 0; i < 8; ++i)
+    for (int i = 0; i < gainRuler.count(); ++i)
     {
         float pixelHPitch = systemManager.getScreenPixelHPitch();
         int rulerPos = START_X_OFFSET + i * 80;
-        int rulerHeight = GAIN_RULER + i * 2;
+        int rulerHeight = gainRuler.at(i);
         int middlePos = _waveWidget->height() / 2;
         int fontHeight = fontManager.textHeightInPixels(painter.font());
         QRect rulerRect(rulerPos + 5, middlePos + 10 , 100, middlePos + 10 + fontHeight);
@@ -45,6 +44,14 @@ ECGGainStandardRuler::ECGGainStandardRuler(ECGWaveWidget *wave) :
     WaveWidgetItem(wave, true),
     _waveWidget(wave)
 {
+    // user define.
+    gainRuler.append(10);
+    gainRuler.append(12);
+    gainRuler.append(13);
+    gainRuler.append(20);
+    gainRuler.append(21);
+    gainRuler.append(24);
+    gainRuler.append(25);
 }
 
 ECGGainStandardRuler::~ECGGainStandardRuler()
