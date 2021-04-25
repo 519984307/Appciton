@@ -30,7 +30,8 @@ class PowerMangerPrivate
 {
 public:
     explicit PowerMangerPrivate(PowerManger * const q_ptr)
-        : q_ptr(q_ptr), lowBattery(false), shutBattery(false),
+        : q_ptr(q_ptr), powerType(POWER_SUPLY_UNKOWN), hasHintLowBatteryMsg(false),
+          lowBattery(false), shutBattery(false),
           adcValue(AD_VALUE_FLOAT_RANGE), lastVolumeAdcValue(0),
           hasHintShutMessage(false), shutdownTimer(NULL), shutDownMessage(NULL),
           lowBatteryMessage(NULL)
@@ -40,10 +41,11 @@ public:
 
     PowerManger * const q_ptr;
     PowerSuplyType powerType;       // 电源类型
+    bool hasHintLowBatteryMsg;      // true: the low battery message has been prompted
     bool lowBattery;                // 低电量
     bool shutBattery;               // 关机电量
     short adcValue;                 // 电池电量
-    short lastVolumeAdcValue;             // last check volume adc value
+    short lastVolumeAdcValue;       // last check volume adc value
     bool hasHintShutMessage;        // 是否弹出过关机提示
     QTimer *shutdownTimer;
 
@@ -220,6 +222,11 @@ void PowerMangerPrivate::monitorRun()
         {
             lowBattery = true;
         }
+        else if (curVolume != BAT_VOLUME_NONE)
+        {
+            // reset status
+            hasHintLowBatteryMsg = false;
+        }
 
         batteryBarWidget.setIcon(curVolume);
         if (shutBattery)
@@ -231,10 +238,12 @@ void PowerMangerPrivate::monitorRun()
         {
             // 电量到达低电量，提示电量过低
             batteryBarWidget.setIconLow();  // 黄灯显示低电量
-            if (powerList.at(POWER_LIST_MAX_COUNT - 2) != curVolume)
+            if (powerList.at(POWER_LIST_MAX_COUNT - 2) != curVolume && !hasHintLowBatteryMsg
+                    && !lowBatteryMessage->isVisible())
             {
                 windowManager.showWindow(lowBatteryMessage, WindowManager::ShowBehaviorModal
                                          | WindowManager::ShowBehaviorNoAutoClose);
+                hasHintLowBatteryMsg = true;
             }
             shutdownTimer->stop();
             shutdownWarn(false);
