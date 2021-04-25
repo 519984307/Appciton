@@ -139,10 +139,10 @@ ECGMenu,ECG,ECG
 ECGSTSWitch,ST开关,ST SWitch
 ECGSTPoint,ST点,ST Point
 ECGISOPoint,ISO点,ISO Point
-ArrhythmiaAnalysisMenu,心律失常分析 ,Arrh.Analysis
-ArrhythmiaAnalysisMenuDesc,心律失常分析 ,Arrh.Analysis
-ArrhythmiaThresholdMenu,心律失常阈值,Arrh.Threshold
-ArrhythmiaThresholdMenuDesc,心律失常阈值,"Arrh,Threshold"
+ArrhythmiaAnalysisMenu,心律失常分析 ,Arrh. Analysis
+ArrhythmiaAnalysisMenuDesc,心律失常分析 ,Arrh. Analysis
+ArrhythmiaThresholdMenu,心律失常阈值,Arrh. Threshold
+ArrhythmiaThresholdMenuDesc,心律失常阈值,Arrh. Threshold
 Arrhythmia,心律失常 >>,Arrhythmia >>
 ECGPaceDetection,起搏检测,Pace Detection
 ECG12LPaceMarker,12导起搏标记,12L Pace maker
