@@ -148,10 +148,10 @@ ECGPaceDetection,起搏检测,Pace Detection
 ECG12LPaceMarker,12导起搏标记,12L Pace maker
 Asystole,停搏时间,Asystole
 HeartPause,暂停时间,Heart Pause
-Tachycardia,心动过速,Tachy cardia
-Bradycardia,心动过缓,Brady cardia
-Extachycardia,极度心动过速,Extachy cardia
-Exbradycardia,极度心动过缓,Exbrady cardia
+Tachycardia,心动过速,Tachy
+Bradycardia,心动过缓,Brady
+Extachycardia,极度心动过速,Extreme Tachy
+Exbradycardia,极度心动过缓,Extreme Brady
 VentTachy,室速心律,Vent Tachy
 VentBrady,室缓心律,Vent Brady
 TachyPVC,室速PVC,Tachy PVC
