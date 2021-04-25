@@ -205,19 +205,11 @@ public:
                 QString remarks = QString(QLatin1String(waveSeg->remarks));
                 QString filterMode = remarks.section(" ", 0, 0);
                 QString notchFilter = remarks.section(" ", 1);
-                if (filterMode == ECGSymbol::convert(ECG_FILTERMODE_DIAGNOSTIC))
-                {
-                    caption = QString("%1   %2   %3%4").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
-                                                                               ecgParam.getLeadConvention()))
-                            .arg(trs(filterMode)).arg(trs("Notch"))
-                            .arg(trs(notchFilter));
-                }
-                else
-                {
-                    caption = QString("%1   %2").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
-                                                     ecgParam.getLeadConvention()))
-                              .arg(trs(filterMode));
-                }
+                caption = QString("%1   %2   %3%4").arg(ECGSymbol::convert(ecgParam.waveIDToLeadID(id),
+                                                                           ecgParam.getLeadConvention()))
+                        .arg(trs(filterMode)).arg(trs("Notch"))
+                        .arg(trs(notchFilter));
+
                 info.waveInfo.ecg.in12LeadMode = layoutManager.getUFaceType() == UFACE_MONITOR_ECG_FULLSCREEN;
                 info.waveInfo.ecg._12LeadDisplayFormat = ecgParam.get12LDisplayFormat();
                 captionLength = fontManager.textWidthInPixels(caption, q_ptr->font());
@@ -423,11 +415,7 @@ RecordPage *EventPageGenerator::createPage()
                 && d_ptr->loadWaveData(d_ptr->curDrawWaveSegment)
                 && !recorderManager.isAbort())
         {
-            RecordPage *page = NULL;
-
-            page = createWaveSegments(&d_ptr->waveInfos, d_ptr->curDrawWaveSegment++, recorderManager.getPrintSpeed());
-
-            return page;
+            return createWaveSegments(&d_ptr->waveInfos, d_ptr->curDrawWaveSegment++, recorderManager.getPrintSpeed());
         }
     }
     // fall through
