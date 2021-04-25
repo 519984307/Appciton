@@ -160,7 +160,7 @@ double ECGWaveWidget::_calcRulerHeight(ECGGain gain)
         break;
 
     case ECG_GAIN_X10:
-        rulerHeight = 10 / pixelHPitch() * 0.95;
+        rulerHeight = 10 / pixelHPitch();
         break;
 
     case ECG_GAIN_X20:
