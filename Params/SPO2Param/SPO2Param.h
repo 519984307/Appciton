@@ -86,7 +86,7 @@ public:
     void setTrendWidget(SPOCTrendWidget *trendWidget);
     void setTrendWidget(SPMETTrendWidget *trendWidget);
     void setTrendWidget(PVITrendWidget *trendWidget);
-    void setTrendWidget(PITrendWidget *trendWidget);
+    void setTrendWidget(PITrendWidget *trendWidget, SubParamID subId = SUB_PARAM_PI);
     void setTrendWidget(SPCOTrendWidget *trendWidget);
     void setWaveWidget(SPO2WaveWidget *waveWidget, bool isPlugin = false);
     void setOxyCRGSPO2Trend(OxyCRGSPO2TrendWidget *trendWidget);
@@ -122,8 +122,11 @@ public:
     void setPR(short prValue);
 
     // 设置PI值
-    void setPI(short piValue);
+    void setPI(short piValue, bool isPlugin = false);
     short getPI();
+
+    // get plugin pi value
+    short getPluginPI();
 
     // 设置SpCO值
     void setSpCO(short spcoValue);

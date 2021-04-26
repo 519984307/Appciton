@@ -55,6 +55,7 @@ public:
     SPO2WaveWidget *waveWidget;
     SPO2WaveWidget *plugInWaveWidget;
     PITrendWidget *piTrendWidget;
+    PITrendWidget *pluginPITrendWidget;
     PVITrendWidget *pviTrendWidget;
     SPHBTrendWidget *sphbTrendWidget;
     SPOCTrendWidget *spocTrendWidget;
@@ -70,6 +71,7 @@ public:
     short prValue;
     short barValue;
     short piValue;
+    short pluginPIValue;
     short pviValue;
     short sphbValue;
     short spocValue;
@@ -140,6 +142,7 @@ SPO2ParamPrivate::SPO2ParamPrivate()
     , waveWidget(NULL)
     , plugInWaveWidget(NULL)
     , piTrendWidget(NULL)
+    , pluginPITrendWidget(NULL)
     , pviTrendWidget(NULL)
     , sphbTrendWidget(NULL)
     , spocTrendWidget(NULL)
@@ -153,6 +156,7 @@ SPO2ParamPrivate::SPO2ParamPrivate()
     , prValue(InvData())
     , barValue(InvData())
     , piValue(InvData())
+    , pluginPIValue(InvData())
     , pviValue(InvData())
     , sphbValue(InvData())
     , spocValue(InvData())
@@ -269,6 +273,7 @@ void SPO2Param::handDemoTrendData(void)
         d_ptr->spo2DValue = InvData();
     }
     d_ptr->piValue = 210;
+    d_ptr->pluginPIValue = 210;
     d_ptr->pviValue = 23;
     d_ptr->sphbValue = 180;
     d_ptr->spocValue = 20;
@@ -281,6 +286,7 @@ void SPO2Param::handDemoTrendData(void)
         d_ptr->trendWidget->setSPO2DeltaValue(d_ptr->spo2DValue);
         d_ptr->trendWidget->setPIValue(d_ptr->piValue);
         d_ptr->piTrendWidget->setPIValue(d_ptr->piValue);
+        d_ptr->pluginPITrendWidget->setPIValue(d_ptr->pluginPIValue);
         d_ptr->pviTrendWidget->setPVIValue(d_ptr->pviValue);
         d_ptr->sphbTrendWidget->setSPHBValue(d_ptr->sphbValue);
         d_ptr->spocTrendWidget->setSPOCValue(d_ptr->spocValue);
@@ -305,6 +311,7 @@ void SPO2Param::exitDemo()
     d_ptr->plugInSpo2Value = InvData();
     d_ptr->spo2DValue = InvData();
     d_ptr->piValue = InvData();
+    d_ptr->pluginPIValue = InvData();
     d_ptr->pviValue = InvData();
     d_ptr->sphbValue = InvData();
     d_ptr->spocValue = InvData();
@@ -317,6 +324,7 @@ void SPO2Param::exitDemo()
         d_ptr->trendWidget->setSPO2DeltaValue(InvData());
         d_ptr->trendWidget->setPIValue(InvData());
         d_ptr->piTrendWidget->setPIValue(InvData());
+        d_ptr->pluginPITrendWidget->setPIValue(InvData());
         d_ptr->pviTrendWidget->setPVIValue(InvData());
         d_ptr->sphbTrendWidget->setSPHBValue(InvData());
         d_ptr->spocTrendWidget->setSPOCValue(InvData());
@@ -381,6 +389,8 @@ short SPO2Param::getSubParamValue(SubParamID id)
         return getPVI();
     case SUB_PARAM_PI:
         return getPI();
+    case SUB_PARAM_PLUGIN_PI:
+        return getPluginPI();
     case SUB_PARAM_SPCO:
         return getSpCO();
     default:
@@ -400,6 +410,10 @@ void SPO2Param::showSubParamValue()
     if (d_ptr->piTrendWidget)
     {
         d_ptr->piTrendWidget->showValue();
+    }
+    if (d_ptr->pluginPITrendWidget)
+    {
+        d_ptr->pluginPITrendWidget->showValue();
     }
     if (d_ptr->pviTrendWidget)
     {
@@ -632,13 +646,20 @@ void SPO2Param::setTrendWidget(PVITrendWidget *trendWidget)
     d_ptr->pviTrendWidget = trendWidget;
 }
 
-void SPO2Param::setTrendWidget(PITrendWidget *trendWidget)
+void SPO2Param::setTrendWidget(PITrendWidget *trendWidget, SubParamID subId)
 {
     if (trendWidget == NULL)
     {
         return;
     }
-    d_ptr->piTrendWidget = trendWidget;
+    if (subId == SUB_PARAM_PI)
+    {
+        d_ptr->piTrendWidget = trendWidget;
+    }
+    else if (subId == SUB_PARAM_PLUGIN_PI)
+    {
+        d_ptr->pluginPITrendWidget = trendWidget;
+    }
 }
 
 void SPO2Param::setTrendWidget(SPCOTrendWidget *trendWidget)
@@ -880,26 +901,46 @@ void SPO2Param::setPR(short prValue)
     ecgDupParam.updatePR(prValue);
 }
 
-void SPO2Param::setPI(short piValue)
+void SPO2Param::setPI(short piValue, bool isPlugin)
 {
-    if (d_ptr->piValue == piValue)
+    if (!isPlugin)
     {
-        return;
+        if (d_ptr->piValue == piValue)
+        {
+            return;
+        }
+        d_ptr->piValue = piValue;
+        if (NULL != d_ptr->piTrendWidget)
+        {
+            d_ptr->piTrendWidget->setPIValue(d_ptr->piValue);
+        }
+        if (NULL != d_ptr->trendWidget)
+        {
+            d_ptr->trendWidget->setPIValue(d_ptr->piValue);
+        }
     }
-    d_ptr->piValue = piValue;
-    if (NULL != d_ptr->piTrendWidget)
+    else
     {
-        d_ptr->piTrendWidget->setPIValue(d_ptr->piValue);
-    }
-    if (NULL != d_ptr->trendWidget)
-    {
-        d_ptr->trendWidget->setPIValue(d_ptr->piValue);
+        if (d_ptr->pluginPIValue == piValue)
+        {
+            return;
+        }
+        d_ptr->pluginPIValue = piValue;
+        if (d_ptr->pluginPITrendWidget)
+        {
+            d_ptr->pluginPITrendWidget->setPIValue(piValue);
+        }
     }
 }
 
 short SPO2Param::getPI()
 {
     return d_ptr->piValue;
+}
+
+short SPO2Param::getPluginPI()
+{
+    return d_ptr->pluginPIValue;
 }
 
 void SPO2Param::setSpCO(short spcoValue)
@@ -1159,6 +1200,12 @@ void SPO2Param::noticeLimitAlarm(SubParamID id, bool isAlarm)
             d_ptr->piTrendWidget->isAlarm(isAlarm);
         }
         break;
+    case SUB_PARAM_PLUGIN_PI:
+        if (d_ptr->pluginPITrendWidget)
+        {
+            d_ptr->pluginPITrendWidget->isAlarm(isAlarm);
+        }
+        break;
     case SUB_PARAM_PVI:
         if (NULL != d_ptr->pviTrendWidget)
         {
@@ -1307,6 +1354,7 @@ void SPO2Param::setConnected(bool isConnected, bool isPlugin)
             d_ptr->waveWidget->resetWave();
 
             d_ptr->piTrendWidget->setPIValue(InvData());
+            d_ptr->pluginPITrendWidget->setPIValue(InvData());
             d_ptr->pviTrendWidget->setPVIValue(InvData());
             d_ptr->sphbTrendWidget->setSPHBValue(InvData());
             d_ptr->spocTrendWidget->setSPOCValue(InvData());
@@ -1668,6 +1716,12 @@ void SPO2Param::updateSubParamLimit(SubParamID id)
         if (d_ptr->piTrendWidget)
         {
             d_ptr->piTrendWidget->updateLimit();
+        }
+        break;
+    case SUB_PARAM_PLUGIN_PI:
+        if (d_ptr->pluginPITrendWidget)
+        {
+            d_ptr->pluginPITrendWidget->updateLimit();
         }
         break;
     case SUB_PARAM_PVI:

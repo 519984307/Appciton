@@ -520,7 +520,7 @@ static void _initProviderParam(void)
         // plugin pi
         piTrendWidget = new PITrendWidget(SUB_PARAM_PLUGIN_PI);
         layoutManager.addLayoutWidget(piTrendWidget, LAYOUT_NODE_PARAM_PLUGIN_PI);
-//        spo2Param.setTrendWidget(piTrendWidget, SUB_PARAM_PLUGIN_PI);
+        spo2Param.setTrendWidget(piTrendWidget, SUB_PARAM_PLUGIN_PI);
 
         // pvi
         PVITrendWidget *pviTrendWidget = new PVITrendWidget();
