@@ -20,14 +20,15 @@
 class PITrendWidgetPrivate
 {
 public:
-    PITrendWidgetPrivate()
+    explicit PITrendWidgetPrivate(SubParamID subId)
         : piValue(NULL),
-          scale(1), isAlarm(false)
+          scale(1), subParamId(subId), isAlarm(false)
     {}
     ~PITrendWidgetPrivate(){}
 
     QLabel *piValue;
     short scale;
+    SubParamID subParamId;
     bool isAlarm;
     QString piString;
 };
@@ -77,11 +78,11 @@ void PITrendWidget::showValue()
     }
 }
 
-PITrendWidget::PITrendWidget()
+PITrendWidget::PITrendWidget(SubParamID subParamId)
     : TrendWidget("PITrendWidget"),
-      d_ptr(new PITrendWidgetPrivate)
+      d_ptr(new PITrendWidgetPrivate(subParamId))
 {
-    setName(trs(paramInfo.getSubParamName(SUB_PARAM_PI)));
+    setName(trs(paramInfo.getSubParamName(subParamId)));
     setUnit(trs(Unit::getSymbol(UNIT_PERCENT)));
 
     d_ptr->piValue = new QLabel();
@@ -102,7 +103,7 @@ PITrendWidget::~PITrendWidget()
 QList<SubParamID> PITrendWidget::getShortTrendSubParams() const
 {
     QList<SubParamID> list;
-    list.append(SUB_PARAM_PI);
+    list.append(d_ptr->subParamId);
     return list;
 }
 
