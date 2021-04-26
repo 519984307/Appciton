@@ -516,6 +516,12 @@ static void _initProviderParam(void)
         PITrendWidget *piTrendWidget = new PITrendWidget();
         layoutManager.addLayoutWidget(piTrendWidget, LAYOUT_NODE_PARAM_PI);
         spo2Param.setTrendWidget(piTrendWidget);
+
+        // plugin pi
+        piTrendWidget = new PITrendWidget(SUB_PARAM_PLUGIN_PI);
+        layoutManager.addLayoutWidget(piTrendWidget, LAYOUT_NODE_PARAM_PLUGIN_PI);
+//        spo2Param.setTrendWidget(piTrendWidget, SUB_PARAM_PLUGIN_PI);
+
         // pvi
         PVITrendWidget *pviTrendWidget = new PVITrendWidget();
         TrendWave *pviTrendWave = new TrendWave("PVITrendWave");
