@@ -61,6 +61,8 @@ static const char *_subParamNames(SubParamID paramID, bool ignoreModuleConfig)
         return "SPMET";
     case SUB_PARAM_PI:
         return "PI";
+    case SUB_PARAM_PLUGIN_PI:
+        return "PI_2";
     case SUB_PARAM_SPCO:
         return "SPCO";
 
@@ -290,6 +292,7 @@ ParamID ParamInfo::getParamID(SubParamID id)
     case SUB_PARAM_SPO2_2:
     case SUB_PARAM_SPO2_D:
     case SUB_PARAM_PI:
+    case SUB_PARAM_PLUGIN_PI:
     case SUB_PARAM_PVI:
     case SUB_PARAM_SPHB:
     case SUB_PARAM_SPOC:
@@ -619,7 +622,7 @@ int ParamInfo::getMultiOfSubParam(SubParamID id)
     {
         return 10;
     }
-    else if (id == SUB_PARAM_PI)
+    else if (id == SUB_PARAM_PI || id == SUB_PARAM_PLUGIN_PI)
     {
         return 100;
     }
@@ -693,6 +696,7 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id)
     case SUB_PARAM_SPO2_2:
     case SUB_PARAM_SPO2_D:
     case SUB_PARAM_PI:
+    case SUB_PARAM_PLUGIN_PI:
     case SUB_PARAM_PVI:
     case SUB_PARAM_SPMET:
     case SUB_PARAM_SPCO:
@@ -803,6 +807,7 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id, UnitType *t0, UnitType *t1)
     case SUB_PARAM_SPO2_2:
     case SUB_PARAM_SPO2_D:
     case SUB_PARAM_PI:
+    case SUB_PARAM_PLUGIN_PI:
     case SUB_PARAM_PVI:
     case SUB_PARAM_SPMET:
     case SUB_PARAM_SPCO:
