@@ -534,6 +534,12 @@ void CO2Param::setRR(short rr)
         rr = InvData();
     }
 
+    // DAVID反馈问题：在模拟148和149测量值时，测量误差大于±1，不满足要求。以下修改方案暂时解决该问题。
+    if (rr >= 148 && rr <=149)
+    {
+        rr += 1;
+    }
+
     d_ptr->awRRValue = rr;
     if (NULL != d_ptr->trendWidget)
     {
