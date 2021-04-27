@@ -122,8 +122,8 @@ public:
     void setPR(short prValue);
 
     // 设置PI值
-    void setPI(short piValue);
-    short getPI();
+    void setPI(short piValue, bool isPlugin = false);
+    short getPI(bool isPlugin = false);
 
     // 设置SpCO值
     void setSpCO(short spcoValue);

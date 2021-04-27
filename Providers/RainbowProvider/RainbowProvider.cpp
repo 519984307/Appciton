@@ -1005,23 +1005,20 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     break;
     case RB_PARAM_OF_PI:
     {
-        if (!isPlugin)
-        {
-            temp = (data[4] << 8) + data[5];
-            // SPO2 Low PI Confidence
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PI_CONFIDENCE, (temp & PI_LOW_CONFIDENCE), isPlugin);
+        temp = (data[4] << 8) + data[5];
+        // SPO2 Low PI Confidence
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PI_CONFIDENCE, (temp & PI_LOW_CONFIDENCE), isPlugin);
 
-            bool valid = !(temp & PI_INVAILD);
-            if (valid == true && !spo2BoardFailure)
-            {
-                temp = (data[0] << 8) + data[1];
-                // Solve the problem of PI value rounding error.
-                spo2Param.setPI((temp + 5) / 10);
-            }
-            else
-            {
-                spo2Param.setPI(InvData());
-            }
+        bool valid = !(temp & PI_INVAILD);
+        if (valid == true && !spo2BoardFailure)
+        {
+            temp = (data[0] << 8) + data[1];
+            // Solve the problem of PI value rounding error.
+            spo2Param.setPI((temp + 5) / 10, isPlugin);
+        }
+        else
+        {
+            spo2Param.setPI(InvData(), isPlugin);
         }
     }
     break;
