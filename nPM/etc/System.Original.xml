@@ -1149,17 +1149,16 @@
                 <ECG7Lead>ECGIWaveWidget,ECGIIWaveWidget,ECGIIIWaveWidget,ECGaVRWaveWidget,ECGaVLWaveWidget,ECGaVFWaveWidget,ECGV1WaveWidget</ECG7Lead>
 		<SPO2Double>
 		    <LayoutRow>
-			<LayoutNode pos="0" span="4" editable="0">SPO2Wave</LayoutNode>
+			<LayoutNode pos="0" span="6" editable="0">SPO2Wave</LayoutNode>
 			<LayoutNode pos="4" span="2" editable="0">SPO2</LayoutNode>
 		    </LayoutRow>
 		    <LayoutRow>
-			<LayoutNode pos="0" span="4" editable="0">OutsideSPO2Wave</LayoutNode>
+			<LayoutNode pos="0" span="6" editable="0">OutsideSPO2Wave</LayoutNode>
 			<LayoutNode pos="4" span="2" editable="0">ECG</LayoutNode>
 		    </LayoutRow>
 		    <LayoutRow>
 			<LayoutNode pos="0" span="4" editable="0">SpO2Trend</LayoutNode>
-			<LayoutNode pos="4" span="1" editable="0">PI</LayoutNode>
-			<LayoutNode pos="5" span="1" editable="0">PI_2</LayoutNode>
+			<LayoutNode pos="4" span="2" editable="0">PI</LayoutNode>
 		    </LayoutRow>
 		    <LayoutRow>
 			<LayoutNode pos="0" span="4" editable="0">PVITrend</LayoutNode>
@@ -1177,7 +1176,7 @@
 		</SPO2Double>
 		<SPO2Single>
 		    <LayoutRow>
-			<LayoutNode pos="0" span="4" editable="0">SPO2Wave</LayoutNode>
+			<LayoutNode pos="0" span="6" editable="0">SPO2Wave</LayoutNode>
 			<LayoutNode pos="4" span="2" editable="0">SPO2</LayoutNode>
 		    </LayoutRow>
 		    <LayoutRow>
