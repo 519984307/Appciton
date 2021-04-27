@@ -79,7 +79,7 @@ void PITrendWidget::showValue()
 }
 
 PITrendWidget::PITrendWidget(SubParamID subParamId)
-    : TrendWidget(paramInfo.getSubParamName(subParamId)),
+    : TrendWidget("PITrendWidget"),
       d_ptr(new PITrendWidgetPrivate(subParamId))
 {
     setName(trs(paramInfo.getSubParamName(subParamId)));
