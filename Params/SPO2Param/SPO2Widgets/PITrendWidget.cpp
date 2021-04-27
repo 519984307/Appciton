@@ -16,6 +16,7 @@
 #include "TrendWidgetLabel.h"
 #include "AlarmConfig.h"
 #include "MeasureSettingWindow.h"
+#include "SPO2Param.h"
 
 class PITrendWidgetPrivate
 {
@@ -61,7 +62,7 @@ void PITrendWidget::setPIValue(short pi, bool isPlugin)
     else
     {
         d_ptr->pluginPIString = valueStr;
-        d_ptr->pluginPiValue->setText(d_ptr->piString);
+        d_ptr->pluginPiValue->setText(d_ptr->pluginPIString);
     }
 }
 
@@ -137,6 +138,7 @@ PITrendWidget::PITrendWidget()
     connect(this, SIGNAL(released()), this, SLOT(onRelease()));
 
     updateLimit();
+    updateTrendWidget();
 }
 
 PITrendWidget::~PITrendWidget()
@@ -151,6 +153,21 @@ QList<SubParamID> PITrendWidget::getShortTrendSubParams() const
     return list;
 }
 
+void PITrendWidget::updateTrendWidget()
+{
+    if (spo2Param.isConnected(true))
+    {
+        d_ptr->pluginPiName->setVisible(true);
+        d_ptr->pluginPiValue->setVisible(true);
+    }
+    else
+    {
+        d_ptr->pluginPiName->setVisible(false);
+        d_ptr->pluginPiValue->setVisible(false);
+    }
+    setTextSize();
+}
+
 void PITrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc;
@@ -163,8 +180,9 @@ void PITrendWidget::setTextSize()
     QRect r = this->rect();
     if (d_ptr->pluginPiName->isVisible() && d_ptr->pluginPiValue->isVisible())
     {
-        r.adjust(nameLabel->width() * 3, 0, 0, 0);
-        r.setHeight(r.height() / 2);
+        r.adjust(nameLabel->width() * 2, 0, 0, 0);
+        r.setHeight(r.height() / 3);
+        r.setWidth(r.width() / 4);
     }
     else
     {

@@ -33,6 +33,10 @@ public:
 
     QList<SubParamID> getShortTrendSubParams() const;
 
+    /**
+     * @brief updateTrendWidget 更新控件
+     */
+    void updateTrendWidget();
 public:
     virtual void doRestoreNormalStatus();
 
