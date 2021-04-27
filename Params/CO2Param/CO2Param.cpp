@@ -517,6 +517,12 @@ void CO2Param::setBR(short br)
         br = InvData();
     }
 
+    // DAVID反馈问题：在模拟148和149测量值时，测量误差大于±1，不满足要求。以下修改方案暂时解决该问题。
+    if (br >= 148 && br <=149)
+    {
+        br += 1;
+    }
+
     respDupParam.updateBR(br);
 }
 
