@@ -27,7 +27,7 @@ public:
     // 显示参数值
     void showValue();
 
-    explicit PITrendWidget(SubParamID subParamId = SUB_PARAM_PI);
+    PITrendWidget();
     ~PITrendWidget();
 
     QList<SubParamID> getShortTrendSubParams() const;
