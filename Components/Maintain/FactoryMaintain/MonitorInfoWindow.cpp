@@ -132,6 +132,10 @@ void MonitorInfoWindow::layoutExec()
     layout->addWidget(labelRight, d_ptr->labs.count(), 1);
     d_ptr->labs.insert(MonitorInfoWindowPrivate
                        ::ITEM_LAB_BAT_CAPACITY, labelRight);
+#if 1
+    labelLeft->setVisible(false);
+    labelRight->setVisible(false);
+#endif
 
     labelLeft = new QLabel(trs("ProductModel"));
     layout->addWidget(labelLeft, d_ptr->labs.count(), 0);
