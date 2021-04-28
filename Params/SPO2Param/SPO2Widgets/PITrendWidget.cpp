@@ -122,17 +122,16 @@ PITrendWidget::PITrendWidget()
     QHBoxLayout *pluginLayout = new QHBoxLayout();
 
     d_ptr->pluginPiName = new QLabel(trs(paramInfo.getSubParamName(SUB_PARAM_PLUGIN_PI)));
-    d_ptr->pluginPiName->setAlignment(Qt::AlignCenter);
-    pluginLayout->addWidget(d_ptr->pluginPiName);
+    d_ptr->pluginPiName->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
+    pluginLayout->addWidget(d_ptr->pluginPiName, 1);
     d_ptr->pluginPiValue = new QLabel();
     d_ptr->pluginPiValue->setAlignment(Qt::AlignCenter);
     d_ptr->pluginPiValue->setText(InvStr());
-    pluginLayout->addWidget(d_ptr->pluginPiValue);
+    pluginLayout->addWidget(d_ptr->pluginPiValue, 3);
 
     QHBoxLayout *layout = new QHBoxLayout();
-    layout->setMargin(10);
-    layout->addWidget(d_ptr->piValue);
-    layout->addLayout(pluginLayout);
+    layout->addWidget(d_ptr->piValue, 3);
+    layout->addLayout(pluginLayout, 4);
 
     contentLayout->addLayout(layout, 7);
     connect(this, SIGNAL(released()), this, SLOT(onRelease()));
@@ -178,11 +177,10 @@ void PITrendWidget::doRestoreNormalStatus()
 void PITrendWidget::setTextSize()
 {
     QRect r = this->rect();
-    if (d_ptr->pluginPiName->isVisible() && d_ptr->pluginPiValue->isVisible())
+    if (spo2Param.isConnected(true))
     {
         r.adjust(nameLabel->width() * 2, 0, 0, 0);
-        r.setHeight(r.height() / 3);
-        r.setWidth(r.width() / 4);
+        r.setWidth(r.width() / 2);
     }
     else
     {
@@ -194,7 +192,7 @@ void PITrendWidget::setTextSize()
     d_ptr->piValue->setFont(font);
     d_ptr->pluginPiValue->setFont(font);
 
-    int fontSize = fontManager.getFontSize(3);
+    int fontSize = fontManager.getFontSize(4);
     font = fontManager.textFont(fontSize);
     d_ptr->pluginPiName->setFont(font);
 }
