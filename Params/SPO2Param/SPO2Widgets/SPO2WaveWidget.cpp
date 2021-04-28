@@ -232,7 +232,7 @@ void SPO2WaveWidget::setNotify(bool enable, QString str)
     }
     else
     {
-        if (_notify->text() == str || str == " ")
+        if (_notify->text() == str || str.isEmpty())
         {
             // 清空和当前字符串相同的，或者字符为空的情况
             _notify->setVisible(false);

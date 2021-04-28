@@ -21,7 +21,7 @@ class SPO2WaveWidget : public WaveWidget
     Q_OBJECT
 
 public:
-    void setNotify(bool enable, QString str = " ");
+    void setNotify(bool enable, QString str = "");
 
     SPO2WaveWidget(const QString &waveName, const QString &title);
     ~SPO2WaveWidget();

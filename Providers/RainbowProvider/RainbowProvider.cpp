@@ -700,7 +700,7 @@ void RainbowProvider::disconnected()
     }
     spo2Param.setConnected(false, d_ptr->isPlugin);
     /* clear then message on the wave widget when communication stop */
-    spo2Param.setNotify(false, " ", d_ptr->isPlugin);
+    spo2Param.setNotify(false, "", d_ptr->isPlugin);
 }
 
 void RainbowProvider::reconnected()

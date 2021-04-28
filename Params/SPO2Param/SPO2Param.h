@@ -157,7 +157,7 @@ public:
     SoundManager::VolumeLevel getBeatVol(void) const;
 
     // 设置波形上的提示信息。
-    void setNotify(bool enable, QString str = " ", bool isPlugin = false);
+    void setNotify(bool enable, QString str = "", bool isPlugin = false);
 
     // 设置搜索脉搏标志。
     void setSearchForPulse(bool pulse, bool isPlugin = false);
