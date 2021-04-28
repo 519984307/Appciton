@@ -42,7 +42,7 @@ static const char *_subParamNames(SubParamID paramID, bool ignoreModuleConfig)
             return "HR";
         }
     case SUB_PARAM_PLUGIN_PR:
-        return "PR";
+        return "PR_2";
     case SUB_PARAM_ECG_PVCS:
         return "ECG_PVCS";
 
