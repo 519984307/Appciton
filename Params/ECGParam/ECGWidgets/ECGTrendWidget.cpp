@@ -276,6 +276,7 @@ ECGTrendWidget::ECGTrendWidget()
     , _pluginPRName(NULL)
     , _pluginPRValue(NULL)
     , _stackedwidget(NULL)
+    , _hBoxLayout(NULL)
     , _hrString(InvStr())
     , _pluginPRString(InvStr())
     , _isAlarm(false)
@@ -305,14 +306,12 @@ ECGTrendWidget::ECGTrendWidget()
     QHBoxLayout *layout0 = new QHBoxLayout(groupBox0);
     layout0->setMargin(0);
     layout0->setSpacing(0);
-    layout0->addWidget(_hrValue, 3);
     layout0->addLayout(hLayout, 4);
 
     QWidget *groupBox1 = new QWidget();
     QHBoxLayout *layout1 = new QHBoxLayout(groupBox1);
     layout1->setMargin(0);
     layout1->setSpacing(0);
-    layout1->addWidget(_hrValue, 6);
     layout1->addWidget(_hrBeatIcon, 1);
 
     _stackedwidget = new QStackedWidget();
@@ -320,12 +319,13 @@ ECGTrendWidget::ECGTrendWidget()
     _stackedwidget->addWidget(groupBox1);
     _stackedwidget->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
 
-    QHBoxLayout *layout = new QHBoxLayout();
-    layout->setMargin(0);
-    layout->setSpacing(0);
-    layout->addWidget(_stackedwidget, 1);
+    _hBoxLayout = new QHBoxLayout();
+    _hBoxLayout->setMargin(0);
+    _hBoxLayout->setSpacing(0);
+    _hBoxLayout->addWidget(_hrValue, 6);
+    _hBoxLayout->addWidget(_stackedwidget);
 
-    contentLayout->addLayout(layout, 7);
+    contentLayout->addLayout(_hBoxLayout, 7);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
@@ -362,10 +362,14 @@ void ECGTrendWidget::updateTrendWidget(bool isPluginConnected)
     if (isPluginConnected)
     {
         setShowStacked(0);
+        _hBoxLayout->setStretch(0, 3);
+        _hBoxLayout->setStretch(1, 4);
     }
     else
     {
         setShowStacked(1);
+        _hBoxLayout->setStretch(0, 6);
+        _hBoxLayout->setStretch(1, 1);
     }
     setTextSize();
 }

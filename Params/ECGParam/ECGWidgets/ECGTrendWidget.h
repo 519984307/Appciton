@@ -83,6 +83,7 @@ private:
     QLabel *_pluginPRName;    // plugin PR name
     QLabel *_pluginPRValue;   // plugin PR value
     QStackedWidget *_stackedwidget;
+    QHBoxLayout *_hBoxLayout;
     QPixmap beatPixmap;
     QString _hrString;
     QString _pluginPRString;
