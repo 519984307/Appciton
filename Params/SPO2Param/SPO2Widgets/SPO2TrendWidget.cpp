@@ -337,9 +337,9 @@ QList<SubParamID> SPO2TrendWidget::getShortTrendSubParams() const
    return list;
 }
 
-void SPO2TrendWidget::updateTrendWidget()
+void SPO2TrendWidget::updateTrendWidget(bool isPluginConnected)
 {
-    if (spo2Param.isConnected(true))
+    if (isPluginConnected)
     {
         _spo2Name2->setVisible(true);
         _spo2Value2->setVisible(true);

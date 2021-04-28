@@ -394,6 +394,12 @@ public:
 signals:
     void clearTrendData();
 
+    /**
+     * @brief updatePluginConnected Update plugin connection status
+     * @param isConnected  whether is connected
+     */
+    void updatePluginConnected(bool isConnected);
+
 private slots:
     void checkSelftest();
     void onPaletteChanged(ParamID id);

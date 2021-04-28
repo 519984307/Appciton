@@ -361,6 +361,7 @@ static void _initProviderParam(void)
     ECGTrendWidget *ecgTrendWidget = new ECGTrendWidget();
     ecgDupParam.setTrendWidget(ecgTrendWidget);
     layoutManager.addLayoutWidget(ecgTrendWidget, LAYOUT_NODE_PARAM_ECG);
+    QObject::connect(&spo2Param, SIGNAL(updatePluginConnected(bool)), ecgTrendWidget, SLOT(updateTrendWidget(bool)));
 #ifndef HIDE_ECG_ST_PVCS_SUBPARAM
     ECGPVCSTrendWidget *ecgPVCSTrendWidget = new ECGPVCSTrendWidget();
     ecgParam.setECGPVCSTrendWidget(ecgPVCSTrendWidget);
@@ -508,6 +509,9 @@ static void _initProviderParam(void)
         layoutManager.addLayoutWidget(spo2WaveWidget, LAYOUT_NODE_WAVE_SPO2);
         layoutManager.addLayoutWidget(outsideSpo2WaveWidget, LAYOUT_NODE_WAVE_SPO2_2);
         layoutManager.addLayoutWidget(spo2TrendWidget, LAYOUT_NODE_PARAM_SPO2);
+        QObject::connect(&spo2Param, SIGNAL(updatePluginConnected(bool)),
+                         spo2TrendWidget, SLOT(updateTrendWidget(bool)));
+
         TrendWave *spo2TrendWave = new TrendWave("SpO2TrendWave");
         spo2TrendWave->addSubParam(SUB_PARAM_SPO2);
         spo2TrendWave->addSubParam(SUB_PARAM_SPO2_2);
@@ -516,6 +520,7 @@ static void _initProviderParam(void)
         PITrendWidget *piTrendWidget = new PITrendWidget();
         layoutManager.addLayoutWidget(piTrendWidget, LAYOUT_NODE_PARAM_PI);
         spo2Param.setTrendWidget(piTrendWidget);
+        QObject::connect(&spo2Param, SIGNAL(updatePluginConnected(bool)), piTrendWidget, SLOT(updateTrendWidget(bool)));
         // pvi
         PVITrendWidget *pviTrendWidget = new PVITrendWidget();
         TrendWave *pviTrendWave = new TrendWave("PVITrendWave");

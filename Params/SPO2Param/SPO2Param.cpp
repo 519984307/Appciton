@@ -1283,10 +1283,12 @@ void SPO2Param::setConnected(bool isConnected, bool isPlugin)
     else
     {
         d_ptr->connectedPluginProvider = isConnected;
+
+        // Update plugin connection status
+        emit updatePluginConnected(isConnected);
     }
     QString wave = getWaveWindow(isPlugin);
-    d_ptr->trendWidget->updateTrendWidget();
-    d_ptr->piTrendWidget->updateTrendWidget();
+
     int needUpdate = 0;
     if (isConnected)
     {

@@ -33,12 +33,14 @@ public:
 
     QList<SubParamID> getShortTrendSubParams() const;
 
+public:
+    virtual void doRestoreNormalStatus();
+
+public slots:
     /**
      * @brief updateTrendWidget 更新控件
      */
-    void updateTrendWidget();
-public:
-    virtual void doRestoreNormalStatus();
+    void updateTrendWidget(bool isPluginConnected = false);
 
 protected:
     /*reimplment*/

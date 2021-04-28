@@ -52,13 +52,14 @@ public:
 
     QList<SubParamID> getShortTrendSubParams() const;
 
-    /**
-     * @brief updateTrendWidget 更新控件
-     */
-    void updateTrendWidget();
 public:
     virtual void doRestoreNormalStatus();
 
+public slots:
+    /**
+     * @brief updateTrendWidget 更新控件
+     */
+    void updateTrendWidget(bool isPluginConnected = false);
 protected:
     void showEvent(QShowEvent *e);
     virtual void setTextSize(void);

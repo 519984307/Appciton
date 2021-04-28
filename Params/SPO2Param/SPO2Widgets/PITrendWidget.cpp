@@ -16,14 +16,13 @@
 #include "TrendWidgetLabel.h"
 #include "AlarmConfig.h"
 #include "MeasureSettingWindow.h"
-#include "SPO2Param.h"
 
 class PITrendWidgetPrivate
 {
 public:
     PITrendWidgetPrivate()
         : piValue(NULL), pluginPiName(NULL), pluginPiValue(NULL),
-          scale(1), isAlarm(false), isPluginPIAlarm(false)
+          scale(1), isAlarm(false), isPluginPIAlarm(false), isPluginConnected(false)
     {}
     ~PITrendWidgetPrivate(){}
 
@@ -33,6 +32,7 @@ public:
     short scale;
     bool isAlarm;
     bool isPluginPIAlarm;
+    bool isPluginConnected;
     QString piString;
     QString pluginPIString;
 };
@@ -152,9 +152,16 @@ QList<SubParamID> PITrendWidget::getShortTrendSubParams() const
     return list;
 }
 
-void PITrendWidget::updateTrendWidget()
+void PITrendWidget::updateTrendWidget(bool isPluginConnected)
 {
-    if (spo2Param.isConnected(true))
+    if (d_ptr->isPluginConnected == isPluginConnected)
+    {
+        return;
+    }
+
+    d_ptr->isPluginConnected = isPluginConnected;
+
+    if (isPluginConnected)
     {
         d_ptr->pluginPiName->setVisible(true);
         d_ptr->pluginPiValue->setVisible(true);
@@ -177,7 +184,7 @@ void PITrendWidget::doRestoreNormalStatus()
 void PITrendWidget::setTextSize()
 {
     QRect r = this->rect();
-    if (spo2Param.isConnected(true))
+    if (d_ptr->isPluginConnected)
     {
         r.adjust(nameLabel->width() * 2, 0, 0, 0);
         r.setWidth(r.width() / 2);

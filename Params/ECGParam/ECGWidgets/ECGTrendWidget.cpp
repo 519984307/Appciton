@@ -357,9 +357,9 @@ QList<SubParamID> ECGTrendWidget::getShortTrendSubParams() const
     return list;
 }
 
-void ECGTrendWidget::updateTrendWidget()
+void ECGTrendWidget::updateTrendWidget(bool isPluginConnected)
 {
-    if (spo2Param.isConnected(true))
+    if (isPluginConnected)
     {
         setShowStacked(0);
     }
