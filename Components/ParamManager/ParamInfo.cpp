@@ -41,7 +41,8 @@ static const char *_subParamNames(SubParamID paramID, bool ignoreModuleConfig)
         {
             return "HR";
         }
-
+    case SUB_PARAM_PLUGIN_PR:
+        return "PR";
     case SUB_PARAM_ECG_PVCS:
         return "ECG_PVCS";
 
@@ -268,6 +269,7 @@ ParamID ParamInfo::getParamID(SubParamID id)
     switch (id)
     {
     case SUB_PARAM_HR_PR:
+    case SUB_PARAM_PLUGIN_PR:
 #ifndef HIDE_ECG_ST_PVCS_SUBPARAM
     case SUB_PARAM_ECG_PVCS:
     case SUB_PARAM_ST_I:
@@ -378,6 +380,7 @@ QList<SubParamID> ParamInfo::getSubParams(ParamID id)
     {
     case PARAM_DUP_ECG:
         ids += SUB_PARAM_HR_PR;
+        ids += SUB_PARAM_PLUGIN_PR;
         ids += SUB_PARAM_ECG_PVCS;
         ids += SUB_PARAM_ST_I;
         ids += SUB_PARAM_ST_II;
@@ -664,6 +667,7 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id)
     switch (id)
     {
     case SUB_PARAM_HR_PR:
+    case SUB_PARAM_PLUGIN_PR:
     case SUB_PARAM_ECG_PVCS:
     case SUB_PARAM_NIBP_PR:
     case SUB_PARAM_ART_PR:
@@ -776,6 +780,7 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id, UnitType *t0, UnitType *t1)
     switch (id)
     {
     case SUB_PARAM_HR_PR:
+    case SUB_PARAM_PLUGIN_PR:
     case SUB_PARAM_ECG_PVCS:
     case SUB_PARAM_ART_PR:
     case SUB_PARAM_PA_PR:

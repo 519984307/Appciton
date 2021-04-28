@@ -40,6 +40,7 @@ enum SubParamID
     SUB_PARAM_NONE = -1,
 
     SUB_PARAM_HR_PR,
+    SUB_PARAM_PLUGIN_PR,
     SUB_PARAM_ECG_PVCS,
     // spo2
     SUB_PARAM_SPO2,
