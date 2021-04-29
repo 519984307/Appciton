@@ -245,8 +245,9 @@ void ECGTrendWidget::setTextSize(void)
     }
 
     // 字体。
-    int fontsize = fontManager.adjustNumFontSize(r, true, "99999");
+    int fontsize = fontManager.adjustNumFontSize(r, true, "9999");
     QFont font = fontManager.numFont(fontsize, true);
+    font.setWeight(QFont::Black);
 
     _hrValue->setFont(font);
     _pluginPRValue->setFont(font);
