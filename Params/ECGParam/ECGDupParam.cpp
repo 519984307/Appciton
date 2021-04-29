@@ -447,16 +447,26 @@ bool ECGDupParam::isHRValid(void)
 /**************************************************************************************************
  * 是否报警。
  *************************************************************************************************/
-void ECGDupParam::isAlarm(bool isAlarm, bool isLimit)
+void ECGDupParam::isAlarm(bool isAlarm, int subId)
 {
-    Q_UNUSED(isLimit)
-
-    _isAlarm |= isAlarm;
-
-    if (NULL != _trendWidget)
+    switch (subId)
     {
-        _trendWidget->isAlarm(_isAlarm);
-        _isAlarm = false;
+    case SUB_PARAM_HR_PR:
+        _isAlarm |= isAlarm;
+        if (NULL != _trendWidget)
+        {
+            _trendWidget->isAlarm(_isAlarm);
+            _isAlarm = false;
+        }
+        break;
+    case SUB_PARAM_PLUGIN_PR:
+        if (NULL != _trendWidget)
+        {
+            _trendWidget->isPluginPRAlarm(isAlarm);
+        }
+        break;
+    default:
+        break;
     }
 }
 

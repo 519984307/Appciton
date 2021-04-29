@@ -99,7 +99,7 @@ public:
     void updatePRBeatIcon();
 
     // 是否发生报警
-    void isAlarm(bool isAlarm, bool isLimit);
+    void isAlarm(bool isAlarm, int subId);
 
     /**
      * @brief getCurHRSource

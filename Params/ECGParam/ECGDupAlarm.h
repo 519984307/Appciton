@@ -63,4 +63,5 @@ public:
 
 private:
     bool _isAlarmLimit;
+    bool _isPluginAlarm;
 };
