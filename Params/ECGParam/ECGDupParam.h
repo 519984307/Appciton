@@ -156,6 +156,7 @@ private:
     short _prValueFromIBP;
     bool _hrBeatFlag;
     bool _isAlarm;
+    bool _isPluginPRAlarm;
     bool _isAutoHrSource;
     HRSourceType _hrSource;
     PRSourceType _prSource;

@@ -460,9 +460,11 @@ void ECGDupParam::isAlarm(bool isAlarm, int subId)
         }
         break;
     case SUB_PARAM_PLUGIN_PR:
+        _isPluginPRAlarm |= isAlarm;
         if (NULL != _trendWidget)
         {
-            _trendWidget->isPluginPRAlarm(isAlarm);
+            _trendWidget->isPluginPRAlarm(_isPluginPRAlarm);
+            _isPluginPRAlarm = false;
         }
         break;
     default:
@@ -638,6 +640,7 @@ ECGDupParam::ECGDupParam()
       _prValueFromIBP(InvData()),
       _hrBeatFlag(true),
       _isAlarm(false),
+      _isPluginPRAlarm(false),
       _currentHRSource(HR_SOURCE_AUTO)
 {
     // 初始化hr/pr来源

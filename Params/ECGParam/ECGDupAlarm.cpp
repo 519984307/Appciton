@@ -71,7 +71,7 @@ SubParamID ECGDupLimitAlarm::getSubParamID(int id)
             break;
         case ECG_DUP_LIMIT_ALARM_PLUGIN_PR_LOW:
         case ECG_DUP_LIMIT_ALARM_PLUGIN_PR_HIGH:
-            return SUB_PARAM_HR_PR;
+            return SUB_PARAM_PLUGIN_PR;
             break;
         default:
             break;
@@ -211,6 +211,7 @@ void ECGDupLimitAlarm::notifyAlarm(int id, bool isAlarm)
             _isAlarmLimit |= isAlarm;
             break;
         case ECG_DUP_LIMIT_ALARM_PR_HIGH:
+            _isAlarmLimit |= isAlarm;
             ecgDupParam.isAlarm(_isAlarmLimit, getSubParamID(id));
             _isAlarmLimit = false;
             break;
@@ -218,7 +219,9 @@ void ECGDupLimitAlarm::notifyAlarm(int id, bool isAlarm)
             _isPluginAlarm |= isAlarm;
             break;
         case ECG_DUP_LIMIT_ALARM_PLUGIN_PR_HIGH:
+            _isPluginAlarm |= isAlarm;
             ecgDupParam.isAlarm(_isPluginAlarm, getSubParamID(id));
+            _isPluginAlarm = false;
             break;
         default:
             break;
