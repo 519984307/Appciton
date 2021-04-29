@@ -123,10 +123,12 @@ PITrendWidget::PITrendWidget()
 
     d_ptr->pluginPiName = new QLabel(trs(paramInfo.getSubParamName(SUB_PARAM_PLUGIN_PI)));
     d_ptr->pluginPiName->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
+    d_ptr->pluginPiName->setVisible(false);
     pluginLayout->addWidget(d_ptr->pluginPiName, 1);
     d_ptr->pluginPiValue = new QLabel();
     d_ptr->pluginPiValue->setAlignment(Qt::AlignCenter);
     d_ptr->pluginPiValue->setText(InvStr());
+    d_ptr->pluginPiValue->setVisible(false);
     pluginLayout->addWidget(d_ptr->pluginPiValue, 3);
 
     QHBoxLayout *layout = new QHBoxLayout();
