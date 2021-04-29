@@ -383,6 +383,7 @@ void TrendWaveWidget::loadTrendData(SubParamID subID)
     switch (subID)
     {
     case SUB_PARAM_HR_PR:
+    case SUB_PARAM_PLUGIN_PR:
     case SUB_PARAM_RR_BR:
     case SUB_PARAM_CVP_MAP:
     case SUB_PARAM_LAP_MAP:
@@ -1137,6 +1138,7 @@ TrendGraphType TrendWaveWidget::getTrendGraphType(SubParamID id)
     switch (id)
     {
     case SUB_PARAM_HR_PR:
+    case SUB_PARAM_PLUGIN_PR:
     case SUB_PARAM_RR_BR:
     case SUB_PARAM_CVP_MAP:
     case SUB_PARAM_LAP_MAP:
