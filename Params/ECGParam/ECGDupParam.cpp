@@ -52,6 +52,8 @@ short ECGDupParam::getSubParamValue(SubParamID id)
     case SUB_PARAM_HR_PR:
         return getHR();
 
+    case SUB_PARAM_PLUGIN_PR:
+        return getPluginPR();
     default:
         return InvData();
     }
@@ -253,6 +255,23 @@ void ECGDupParam::updatePR(short pr, PRSourceType type, bool isUpdatePr)
     }
 }
 
+void ECGDupParam::updatePluginPR(short pr)
+{
+    // PR为负数时,置为无效值
+    if (pr < 0)
+    {
+        pr = InvData();
+    }
+
+    if (_pluginPRValue == pr)
+    {
+        return;
+    }
+
+    _pluginPRValue = pr;
+    _trendWidget->setPluginPR(pr);
+}
+
 /**************************************************************************************************
  * 更新VFVT数值。
  *************************************************************************************************/
@@ -400,6 +419,11 @@ short ECGDupParam::getHR(bool isGetOriginalHR) const
     }
 
     return InvData();
+}
+
+short ECGDupParam::getPluginPR() const
+{
+    return _pluginPRValue;
 }
 
 /**************************************************************************************************
@@ -599,6 +623,7 @@ ECGDupParam::ECGDupParam()
       _trendWidget(NULL),
       _hrValue(InvData()),
       _prValue(InvData()),
+      _pluginPRValue(InvData()),
       _prValueFromSPO2(InvData()),
       _prValueFromIBP(InvData()),
       _hrBeatFlag(true),

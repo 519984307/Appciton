@@ -66,6 +66,12 @@ public:
      */
     void updatePR(short pr, PRSourceType type = PR_SOURCE_SPO2, bool isUpdatePr = true);
 
+    /**
+     * @brief updatePluginPR
+     * @param pr
+     */
+    void updatePluginPR(short pr);
+
     // 更新/读取HR的值。
     void updateHR(short hr);
 
@@ -75,6 +81,12 @@ public:
      * @return  返回hr值
      */
     short getHR(bool isGetOriginalHR = false) const;
+
+    /**
+     * @brief getPluginPR get plugin module pr value
+     * @return
+     */
+    short getPluginPR() const;
 
     // 是否为HR有效。
     bool isHRValid(void);
@@ -139,6 +151,7 @@ private:
 
     short _hrValue;
     short _prValue;
+    short _pluginPRValue;
     short _prValueFromSPO2;
     short _prValueFromIBP;
     bool _hrBeatFlag;

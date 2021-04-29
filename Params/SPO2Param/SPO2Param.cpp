@@ -301,6 +301,7 @@ void SPO2Param::handDemoTrendData(void)
 
     int prValue = 60;
     setPR(prValue);
+    setPluginPR(prValue);
 }
 
 void SPO2Param::exitDemo()
@@ -886,6 +887,11 @@ void SPO2Param::setPR(short prValue)
     d_ptr->isForceUpdatingPR = false;
     d_ptr->prValue = prValue;
     ecgDupParam.updatePR(prValue);
+}
+
+void SPO2Param::setPluginPR(short prValue)
+{
+    ecgDupParam.updatePluginPR(prValue);
 }
 
 void SPO2Param::setPI(short piValue, bool isPlugin)

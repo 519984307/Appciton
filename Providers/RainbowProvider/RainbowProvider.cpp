@@ -984,22 +984,19 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
     break;
     case RB_PARAM_OF_PR:
     {
-        if (!isPlugin)
-        {
-            temp = (data[4] << 8) + data[5];
-            // SPO2 Low PR Confidence
-            spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PR_CONFIDENCE, (temp & PR_LOW_CONFIDENCE), isPlugin);
+        temp = (data[4] << 8) + data[5];
+        // SPO2 Low PR Confidence
+        spo2Param.setOneShotAlarm(SPO2_ONESHOT_ALARM_LOW_PR_CONFIDENCE, (temp & PR_LOW_CONFIDENCE), isPlugin);
 
-            bool valid = !(temp & PR_INVAILD);
-            if (valid == true && !spo2BoardFailure)
-            {
-                temp = (data[0] << 8) + data[1];
-                prValue = temp;
-            }
-            else
-            {
-                prValue = InvData();
-            }
+        bool valid = !(temp & PR_INVAILD);
+        if (valid == true && !spo2BoardFailure)
+        {
+            temp = (data[0] << 8) + data[1];
+            prValue = temp;
+        }
+        else
+        {
+            prValue = InvData();
         }
     }
     break;
@@ -1220,6 +1217,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         else
         {
             spo2Param.setPluginSPO2(spo2Value);
+            spo2Param.setPluginPR(prValue);
         }
     }
     break;
