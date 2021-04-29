@@ -30,6 +30,7 @@
 #include "ConfigManager.h"
 #include <QBitmap>
 #include "SPO2Param.h"
+#include <QStackedWidget>
 
 #define beatIconPath "/usr/local/nPM/icons/beat.png"
 
@@ -105,10 +106,22 @@ void ECGTrendWidget::loadConfig()
     TrendWidget::loadConfig();
 }
 
+void ECGTrendWidget::setShowStacked(int num)
+{
+    if (num >= _stackedwidget->count())
+    {
+        return;
+    }
+    if (_stackedwidget)
+    {
+        _stackedwidget->setCurrentIndex(num);
+    }
+}
+
 /**************************************************************************************************
  * 设置HR的值。
  *************************************************************************************************/
-void ECGTrendWidget::setHRValue(int16_t hr, HRSourceType type)
+void ECGTrendWidget::setHRValue(short hr, HRSourceType type)
 {
     if (type == HR_SOURCE_ECG || type == HR_SOURCE_AUTO)
     {
@@ -138,6 +151,23 @@ void ECGTrendWidget::setHRValue(int16_t hr, HRSourceType type)
     _hrValue->setText(_hrString);
 }
 
+void ECGTrendWidget::setPluginPR(short pr)
+{
+    if (pr >= 0 && spo2Param.getPerfusionStatus())
+    {
+        _pluginPRString = QString("%1?").arg(QString::number(pr));
+    }
+    else if (pr >= 0)
+    {
+        _pluginPRString = QString::number(pr);
+    }
+    else
+    {
+        _pluginPRString = InvStr();
+    }
+    _pluginPRValue->setText(_pluginPRString);
+}
+
 void ECGTrendWidget::updateLimit()
 {
     UnitType unitType = paramManager.getSubParamUnit(PARAM_ECG, SUB_PARAM_HR_PR);
@@ -155,22 +185,38 @@ void ECGTrendWidget::isAlarm(bool isAlarm)
     updateAlarm(isAlarm);
 }
 
+void ECGTrendWidget::isPluginPRAlarm(bool isAlarm)
+{
+    _ispluginPRAlarm = isAlarm;
+
+    updateAlarm(isAlarm);
+}
+
 /**************************************************************************************************
  * 是否显示。
  *************************************************************************************************/
 void ECGTrendWidget::showValue(void)
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
-    if (_isAlarm)
+    if (_isAlarm || _ispluginPRAlarm)
     {
-        showAlarmStatus(_hrValue);
-        showAlarmParamLimit(_hrValue, _hrString, psrc);
+        if (_isAlarm)
+        {
+            showAlarmStatus(_hrValue);
+            showAlarmParamLimit(_hrValue, _hrString, psrc);
+        }
+
+        if (_ispluginPRAlarm)
+        {
+            showAlarmStatus(_pluginPRValue);
+        }
         restoreNormalStatusLater();
     }
     else
     {
+        QLayout *lay = _stackedwidget->currentWidget()->layout();
+        showNormalStatus(lay, psrc);
         showNormalStatus(psrc);
-        _drawBeatIcon(psrc.windowText().color());
     }
 }
 
@@ -188,13 +234,27 @@ void ECGTrendWidget::showEvent(QShowEvent *e)
 void ECGTrendWidget::setTextSize(void)
 {
     QRect r = this->rect();
-    r.adjust(nameLabel->width(), 0, -_hrBeatIcon->width(), 0);
+    if (spo2Param.isConnected(true))
+    {
+        r.adjust(nameLabel->width() * 2, 0, 0, 0);
+        r.setWidth(r.width() / 2);
+    }
+    else
+    {
+        r.adjust(nameLabel->width(), 0, -_hrBeatIcon->width(), 0);
+    }
+
     // 字体。
     int fontsize = fontManager.adjustNumFontSize(r, true, "9999");
     QFont font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);
 
     _hrValue->setFont(font);
+    _pluginPRValue->setFont(font);
+
+    fontsize = fontManager.getFontSize(4);
+    font = fontManager.textFont(fontsize);
+    _pluginPRName->setFont(font);
 }
 
 /**************************************************************************************************
@@ -209,8 +269,18 @@ void ECGTrendWidget::blinkBeatPixmap()
 /**************************************************************************************************
  * 构造。
  *************************************************************************************************/
-ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
-    _hrString(InvStr()), _isAlarm(false)
+ECGTrendWidget::ECGTrendWidget()
+    : TrendWidget("ECGTrendWidget")
+    , _hrBeatIcon(NULL)
+    , _hrValue(NULL)
+    , _pluginPRName(NULL)
+    , _pluginPRValue(NULL)
+    , _stackedwidget(NULL)
+    , _hBoxLayout(NULL)
+    , _hrString(InvStr())
+    , _pluginPRString(InvStr())
+    , _isAlarm(false)
+    , _ispluginPRAlarm(false)
 {
     // 开始布局。
     _hrBeatIcon = new QLabel();
@@ -220,13 +290,42 @@ ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
     _hrValue->setAlignment(Qt::AlignCenter);
     _hrValue->setText(InvStr());
 
-    QHBoxLayout *hlayout = new QHBoxLayout();
-    hlayout->setMargin(0);
-    hlayout->setSpacing(0);
-    hlayout->addWidget(_hrValue, 6);
-    hlayout->addWidget(_hrBeatIcon, 1);
+    // plugin RR layout
+    QHBoxLayout *hLayout = new QHBoxLayout();
+    _pluginPRName = new QLabel();
+    _pluginPRName->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
+    _pluginPRName->setText(trs(paramInfo.getSubParamName(SUB_PARAM_PLUGIN_PR)));
+    hLayout->addWidget(_pluginPRName, 1);
 
-    contentLayout->addLayout(hlayout, 7);
+    _pluginPRValue = new QLabel();
+    _pluginPRValue->setAlignment(Qt::AlignCenter);
+    _pluginPRValue->setText(InvStr());
+    hLayout->addWidget(_pluginPRValue, 3);
+
+    QWidget *groupBox0 = new QWidget();
+    QHBoxLayout *layout0 = new QHBoxLayout(groupBox0);
+    layout0->setMargin(0);
+    layout0->setSpacing(0);
+    layout0->addLayout(hLayout, 4);
+
+    QWidget *groupBox1 = new QWidget();
+    QHBoxLayout *layout1 = new QHBoxLayout(groupBox1);
+    layout1->setMargin(0);
+    layout1->setSpacing(0);
+    layout1->addWidget(_hrBeatIcon, 1);
+
+    _stackedwidget = new QStackedWidget();
+    _stackedwidget->addWidget(groupBox0);
+    _stackedwidget->addWidget(groupBox1);
+    _stackedwidget->setSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored);
+
+    _hBoxLayout = new QHBoxLayout();
+    _hBoxLayout->setMargin(0);
+    _hBoxLayout->setSpacing(0);
+    _hBoxLayout->addWidget(_hrValue, 6);
+    _hBoxLayout->addWidget(_stackedwidget);
+
+    contentLayout->addLayout(_hBoxLayout, 7);
 
     // 释放事件。
     connect(this, SIGNAL(released(IWidget *)), this, SLOT(_releaseHandle(IWidget *)));
@@ -236,6 +335,7 @@ ECGTrendWidget::ECGTrendWidget() : TrendWidget("ECGTrendWidget"),
     connect(_timer, SIGNAL(timeout()), this, SLOT(_timeOut()));
 
     loadConfig();
+    updateTrendWidget();
 }
 
 /**************************************************************************************************
@@ -257,9 +357,27 @@ QList<SubParamID> ECGTrendWidget::getShortTrendSubParams() const
     return list;
 }
 
+void ECGTrendWidget::updateTrendWidget(bool isPluginConnected)
+{
+    if (isPluginConnected)
+    {
+        setShowStacked(0);
+        _hBoxLayout->setStretch(0, 3);
+        _hBoxLayout->setStretch(1, 4);
+    }
+    else
+    {
+        setShowStacked(1);
+        _hBoxLayout->setStretch(0, 6);
+        _hBoxLayout->setStretch(1, 1);
+    }
+    setTextSize();
+}
+
 void ECGTrendWidget::doRestoreNormalStatus()
 {
     QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_ECG));
+    QLayout *lay = _stackedwidget->currentWidget()->layout();
+    showNormalStatus(lay, psrc);
     showNormalStatus(psrc);
-    _drawBeatIcon(psrc.windowText().color());
 }

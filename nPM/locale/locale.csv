@@ -98,11 +98,13 @@ TB,TB,TB
 SPO2,SpO₂,SpO₂
 SPO2_2,SpO₂ 2,SpO₂ 2
 SPO2_D,ΔSpO₂,ΔSpO₂
+PI_2,PI 2,PI 2
 SPHB,SpHb,SpHb
 SPOC,SpOC,SpOC
 SPCO,SpCO,SpCO
 SPMET,SpMet,SpMet
 PR,PR,PR
+PR_2,PR 2,PR 2
 PLETH,Pleth,Pleth
 PLETH2,Pleth 2,Pleth 2
 SpO2TrendWave,SpO₂,SpO₂
@@ -627,6 +629,8 @@ SPCOLow,SpCO低,SpCO Low
 SPCOHigh,SpCO高,SpCO High
 SPO2PRLow,PR低,PR Low
 SPO2PRHigh,PR高,PR High
+PluginPRLow,PR 2 低,PR 2 Low
+PluginPRHigh,PR 2 高,PR 2 High
 SPO2Initializing,SpO₂初始化,SpO₂ initializing
 SPO2PulseSearch,SpO₂搜索脉搏,SpO₂ Pulse Search
 SPO2PulseSearchTooLong,SpO₂脉搏搜索时间过长,SpO₂ Pulse Search Too Long

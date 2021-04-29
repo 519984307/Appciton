@@ -1195,6 +1195,8 @@ void LayoutManagerPrivate::performTrendLayout()
 
 void LayoutManagerPrivate::performSPO2Layout()
 {
+#if 0
+    // Vertical layout
     QVBoxLayout *layout = new QVBoxLayout();
     QWidget *spo2WaveContainter = createContainter();
     layout->addWidget(spo2WaveContainter);
@@ -1205,7 +1207,19 @@ void LayoutManagerPrivate::performSPO2Layout()
     hLayout->addWidget(trendWaveContainter);
     hLayout->addWidget(paramContainter);
     contentLayout->addLayout(layout);
-
+#else
+    // Horizontal layout
+    QHBoxLayout *hLayout = new QHBoxLayout();
+    QVBoxLayout *layout = new QVBoxLayout();
+    QWidget *spo2WaveContainter = createContainter();
+    layout->addWidget(spo2WaveContainter);
+    QWidget *trendWaveContainter = createContainter();
+    layout->addWidget(trendWaveContainter);
+    hLayout->addLayout(layout);
+    QWidget *paramContainter = createContainter();
+    hLayout->addWidget(paramContainter);
+    contentLayout->addLayout(hLayout);
+#endif
     QVBoxLayout *spo2WaveLayout = new QVBoxLayout(spo2WaveContainter);
     QGridLayout *trendWaveLayout = new QGridLayout(trendWaveContainter);
     QGridLayout *paramLayout = new QGridLayout(paramContainter);

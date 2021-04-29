@@ -188,7 +188,7 @@ public:
     {
         static const char *symbol[ECG_DUP_LIMIT_ALARM_NR] =
         {
-            "HRLow", "HRHigh", "SPO2PRLow", "SPO2PRHigh"
+            "HRLow", "HRHigh", "SPO2PRLow", "SPO2PRHigh", "PluginPRLow", "PluginPRHigh"
         };
 
         return symbol[index];

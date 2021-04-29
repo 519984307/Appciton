@@ -41,7 +41,8 @@ static const char *_subParamNames(SubParamID paramID, bool ignoreModuleConfig)
         {
             return "HR";
         }
-
+    case SUB_PARAM_PLUGIN_PR:
+        return "PR_2";
     case SUB_PARAM_ECG_PVCS:
         return "ECG_PVCS";
 
@@ -61,6 +62,8 @@ static const char *_subParamNames(SubParamID paramID, bool ignoreModuleConfig)
         return "SPMET";
     case SUB_PARAM_PI:
         return "PI";
+    case SUB_PARAM_PLUGIN_PI:
+        return "PI_2";
     case SUB_PARAM_SPCO:
         return "SPCO";
 
@@ -266,6 +269,7 @@ ParamID ParamInfo::getParamID(SubParamID id)
     switch (id)
     {
     case SUB_PARAM_HR_PR:
+    case SUB_PARAM_PLUGIN_PR:
 #ifndef HIDE_ECG_ST_PVCS_SUBPARAM
     case SUB_PARAM_ECG_PVCS:
     case SUB_PARAM_ST_I:
@@ -290,6 +294,7 @@ ParamID ParamInfo::getParamID(SubParamID id)
     case SUB_PARAM_SPO2_2:
     case SUB_PARAM_SPO2_D:
     case SUB_PARAM_PI:
+    case SUB_PARAM_PLUGIN_PI:
     case SUB_PARAM_PVI:
     case SUB_PARAM_SPHB:
     case SUB_PARAM_SPOC:
@@ -375,6 +380,7 @@ QList<SubParamID> ParamInfo::getSubParams(ParamID id)
     {
     case PARAM_DUP_ECG:
         ids += SUB_PARAM_HR_PR;
+        ids += SUB_PARAM_PLUGIN_PR;
         ids += SUB_PARAM_ECG_PVCS;
         ids += SUB_PARAM_ST_I;
         ids += SUB_PARAM_ST_II;
@@ -619,7 +625,7 @@ int ParamInfo::getMultiOfSubParam(SubParamID id)
     {
         return 10;
     }
-    else if (id == SUB_PARAM_PI)
+    else if (id == SUB_PARAM_PI || id == SUB_PARAM_PLUGIN_PI)
     {
         return 100;
     }
@@ -661,6 +667,7 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id)
     switch (id)
     {
     case SUB_PARAM_HR_PR:
+    case SUB_PARAM_PLUGIN_PR:
     case SUB_PARAM_ECG_PVCS:
     case SUB_PARAM_NIBP_PR:
     case SUB_PARAM_ART_PR:
@@ -693,6 +700,7 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id)
     case SUB_PARAM_SPO2_2:
     case SUB_PARAM_SPO2_D:
     case SUB_PARAM_PI:
+    case SUB_PARAM_PLUGIN_PI:
     case SUB_PARAM_PVI:
     case SUB_PARAM_SPMET:
     case SUB_PARAM_SPCO:
@@ -772,6 +780,7 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id, UnitType *t0, UnitType *t1)
     switch (id)
     {
     case SUB_PARAM_HR_PR:
+    case SUB_PARAM_PLUGIN_PR:
     case SUB_PARAM_ECG_PVCS:
     case SUB_PARAM_ART_PR:
     case SUB_PARAM_PA_PR:
@@ -803,6 +812,7 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id, UnitType *t0, UnitType *t1)
     case SUB_PARAM_SPO2_2:
     case SUB_PARAM_SPO2_D:
     case SUB_PARAM_PI:
+    case SUB_PARAM_PLUGIN_PI:
     case SUB_PARAM_PVI:
     case SUB_PARAM_SPMET:
     case SUB_PARAM_SPCO:

@@ -605,6 +605,7 @@ void TrendSubWaveWidget::paintEvent(QPaintEvent *e)
         switch (_id)
         {
         case SUB_PARAM_PI:
+        case SUB_PARAM_PLUGIN_PI:
             dataStr = QString::number(((value * 1.0) / 100), 'f', 2);
             break;
         case SUB_PARAM_SPHB:

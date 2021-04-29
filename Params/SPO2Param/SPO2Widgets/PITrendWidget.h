@@ -16,13 +16,14 @@ class PITrendWidget : public TrendWidget
 {
     Q_OBJECT
 public:
-    void setPIValue(int16_t pi);
+    void setPIValue(short pi, bool isPlugin = false);
 
     /*reimplment*/
     void updateLimit();
 
     // 是否报警
     void isAlarm(bool flag);
+    void isPluginPIAlarm(bool flag);
 
     // 显示参数值
     void showValue();
@@ -34,6 +35,12 @@ public:
 
 public:
     virtual void doRestoreNormalStatus();
+
+public slots:
+    /**
+     * @brief updateTrendWidget 更新控件
+     */
+    void updateTrendWidget(bool isPluginConnected = false);
 
 protected:
     /*reimplment*/

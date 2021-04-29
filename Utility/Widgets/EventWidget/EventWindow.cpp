@@ -1004,7 +1004,7 @@ void EventWindowPrivate::eventTrendUpdate()
                 dataStr = Unit::convert(type, paramInfo.getUnitOfSubParam(subId),
                                         ctx.trendSegment->values[i].value / 10.0);
             }
-            else if (subId == SUB_PARAM_PI)
+            else if (subId == SUB_PARAM_PI || subId == SUB_PARAM_PLUGIN_PI)
             {
                 dataStr = QString::number(ctx.trendSegment->values[i].value * 1.0 / 100, 'f', 2);
             }

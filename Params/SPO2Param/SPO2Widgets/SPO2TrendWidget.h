@@ -46,11 +46,6 @@ public:
     QList<SubParamID> getShortTrendSubParams() const;
 
     /**
-     * @brief updateTrendWidget 更新控件
-     */
-    void updateTrendWidget();
-
-    /**
      * @brief setBarValue 设置棒图值
      * @param value
      */
@@ -58,6 +53,12 @@ public:
 
 public:
     virtual void doRestoreNormalStatus();
+
+public slots:
+    /**
+     * @brief updateTrendWidget 更新控件
+     */
+    void updateTrendWidget(bool isPluginConnected = false);
 
 protected:
     virtual void setTextSize(void);

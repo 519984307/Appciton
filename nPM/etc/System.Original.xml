@@ -179,6 +179,14 @@
                     <Scale>1</Scale>
                 </bpm>
             </HR_PR>
+            <PR_2 Enable="1" Prio="2" Auto="1">
+                <bpm>
+                    <Low Min="20" Max="299">50</Low>
+                    <High Min="21" Max="300">120</High>
+                    <Step>1</Step>
+                    <Scale>1</Scale>
+                </bpm>
+            </PR_2>
             <RR_BR Enable="0" Prio="2" Auto="1">
                 <rpm>
                         <Low Min="2" Max="149">5</Low>
@@ -219,6 +227,14 @@
                 <Scale>100</Scale>
             </percent>
             </PI>
+            <PI_2 Enable="1" Prio="2" Auto="1">
+            <percent>
+                <Low Min="2" Max="1999">100</Low>
+                <High Min="3" Max="2000">500</High>
+                <Step>1</Step>
+                <Scale>100</Scale>
+            </percent>
+            </PI_2>
             <PVI Enable="1" Prio="2" Auto="1">
             <percent>
                 <Low Min="0" Max="99">5</Low>
@@ -1150,16 +1166,19 @@
 		<SPO2Double>
 		    <LayoutRow>
 			<LayoutNode pos="0" span="6" editable="0">SPO2Wave</LayoutNode>
-			<LayoutNode pos="0" span="6" editable="0">OutsideSPO2Wave</LayoutNode>
-		    </LayoutRow>
-		    <LayoutRow>
-			<LayoutNode pos="0" span="4" editable="0">SpO2Trend</LayoutNode>
 			<LayoutNode pos="4" span="2" editable="0">SPO2</LayoutNode>
 		    </LayoutRow>
 		    <LayoutRow>
+			<LayoutNode pos="0" span="6" editable="0">OutsideSPO2Wave</LayoutNode>
+			<LayoutNode pos="4" span="2" editable="0">ECG</LayoutNode>
+		    </LayoutRow>
+		    <LayoutRow>
+			<LayoutNode pos="0" span="4" editable="0">SpO2Trend</LayoutNode>
+			<LayoutNode pos="4" span="2" editable="0">PI</LayoutNode>
+		    </LayoutRow>
+		    <LayoutRow>
 			<LayoutNode pos="0" span="4" editable="0">PVITrend</LayoutNode>
-			<LayoutNode pos="4" span="1" editable="0">PI</LayoutNode>
-			<LayoutNode pos="5" span="1" editable="0">PVI</LayoutNode>
+			<LayoutNode pos="4" span="2" editable="0">PVI</LayoutNode>
 		    </LayoutRow>
 		    <LayoutRow>
 			<LayoutNode pos="0" span="4" editable="0">SpHbTrend</LayoutNode>
@@ -1169,25 +1188,24 @@
 		    <LayoutRow>
 			<LayoutNode pos="0" span="4" editable="0">SpMetTrend</LayoutNode>
 			<LayoutNode pos="4" span="1" editable="0">SpMet</LayoutNode>
-			<LayoutNode pos="5" span="1" editable="0">ECG</LayoutNode>
 		    </LayoutRow>
 		</SPO2Double>
 		<SPO2Single>
 		    <LayoutRow>
 			<LayoutNode pos="0" span="6" editable="0">SPO2Wave</LayoutNode>
-		    </LayoutRow>
-		    <LayoutRow>
-			<LayoutNode pos="0" span="4" editable="0">SpO2Trend</LayoutNode>
 			<LayoutNode pos="4" span="2" editable="0">SPO2</LayoutNode>
 		    </LayoutRow>
 		    <LayoutRow>
-			<LayoutNode pos="0" span="4" editable="0">PRTrend</LayoutNode>
+			<LayoutNode pos="0" span="4" editable="0">SpO2Trend</LayoutNode>
 			<LayoutNode pos="4" span="2" editable="0">ECG</LayoutNode>
 		    </LayoutRow>
 		    <LayoutRow>
+			<LayoutNode pos="0" span="4" editable="0">PRTrend</LayoutNode>
+			<LayoutNode pos="4" span="2" editable="0">PI</LayoutNode>
+		    </LayoutRow>
+		    <LayoutRow>
 			<LayoutNode pos="0" span="4" editable="0">PVITrend</LayoutNode>
-			<LayoutNode pos="4" span="1" editable="0">PI</LayoutNode>
-			<LayoutNode pos="5" span="1" editable="0">PVI</LayoutNode>
+			<LayoutNode pos="4" span="2" editable="0">PVI</LayoutNode>
 		    </LayoutRow>
 		    <LayoutRow>
 			<LayoutNode pos="0" span="4" editable="0">SpHbTrend</LayoutNode>

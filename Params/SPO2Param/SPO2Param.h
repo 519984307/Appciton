@@ -121,9 +121,12 @@ public:
     // 设置/获取PR的值。
     void setPR(short prValue);
 
+    // 设置 plugin PR的值。
+    void setPluginPR(short prValue);
+
     // 设置PI值
-    void setPI(short piValue);
-    short getPI();
+    void setPI(short piValue, bool isPlugin = false);
+    short getPI(bool isPlugin = false);
 
     // 设置SpCO值
     void setSpCO(short spcoValue);
@@ -393,6 +396,12 @@ public:
 
 signals:
     void clearTrendData();
+
+    /**
+     * @brief updatePluginConnected Update plugin connection status
+     * @param isConnected  whether is connected
+     */
+    void updatePluginConnected(bool isConnected);
 
 private slots:
     void checkSelftest();

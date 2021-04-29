@@ -70,6 +70,7 @@ public:
     short prValue;
     short barValue;
     short piValue;
+    short pluginPIValue;
     short pviValue;
     short sphbValue;
     short spocValue;
@@ -153,6 +154,7 @@ SPO2ParamPrivate::SPO2ParamPrivate()
     , prValue(InvData())
     , barValue(InvData())
     , piValue(InvData())
+    , pluginPIValue(InvData())
     , pviValue(InvData())
     , sphbValue(InvData())
     , spocValue(InvData())
@@ -269,6 +271,7 @@ void SPO2Param::handDemoTrendData(void)
         d_ptr->spo2DValue = InvData();
     }
     d_ptr->piValue = 210;
+    d_ptr->pluginPIValue = 210;
     d_ptr->pviValue = 23;
     d_ptr->sphbValue = 180;
     d_ptr->spocValue = 20;
@@ -281,6 +284,7 @@ void SPO2Param::handDemoTrendData(void)
         d_ptr->trendWidget->setSPO2DeltaValue(d_ptr->spo2DValue);
         d_ptr->trendWidget->setPIValue(d_ptr->piValue);
         d_ptr->piTrendWidget->setPIValue(d_ptr->piValue);
+        d_ptr->piTrendWidget->setPIValue(d_ptr->pluginPIValue, true);
         d_ptr->pviTrendWidget->setPVIValue(d_ptr->pviValue);
         d_ptr->sphbTrendWidget->setSPHBValue(d_ptr->sphbValue);
         d_ptr->spocTrendWidget->setSPOCValue(d_ptr->spocValue);
@@ -295,6 +299,7 @@ void SPO2Param::handDemoTrendData(void)
 
     int prValue = 60;
     setPR(prValue);
+    setPluginPR(prValue);
 }
 
 void SPO2Param::exitDemo()
@@ -303,6 +308,7 @@ void SPO2Param::exitDemo()
     d_ptr->plugInSpo2Value = InvData();
     d_ptr->spo2DValue = InvData();
     d_ptr->piValue = InvData();
+    d_ptr->pluginPIValue = InvData();
     d_ptr->pviValue = InvData();
     d_ptr->sphbValue = InvData();
     d_ptr->spocValue = InvData();
@@ -315,6 +321,7 @@ void SPO2Param::exitDemo()
         d_ptr->trendWidget->setSPO2DeltaValue(InvData());
         d_ptr->trendWidget->setPIValue(InvData());
         d_ptr->piTrendWidget->setPIValue(InvData());
+        d_ptr->piTrendWidget->setPIValue(InvData(), true);
         d_ptr->pviTrendWidget->setPVIValue(InvData());
         d_ptr->sphbTrendWidget->setSPHBValue(InvData());
         d_ptr->spocTrendWidget->setSPOCValue(InvData());
@@ -379,6 +386,8 @@ short SPO2Param::getSubParamValue(SubParamID id)
         return getPVI();
     case SUB_PARAM_PI:
         return getPI();
+    case SUB_PARAM_PLUGIN_PI:
+        return getPI(true);
     case SUB_PARAM_SPCO:
         return getSpCO();
     default:
@@ -878,25 +887,46 @@ void SPO2Param::setPR(short prValue)
     ecgDupParam.updatePR(prValue);
 }
 
-void SPO2Param::setPI(short piValue)
+void SPO2Param::setPluginPR(short prValue)
 {
-    if (d_ptr->piValue == piValue)
+    ecgDupParam.updatePluginPR(prValue);
+}
+
+void SPO2Param::setPI(short piValue, bool isPlugin)
+{
+    if (!isPlugin)
     {
-        return;
+        if (d_ptr->piValue == piValue)
+        {
+            return;
+        }
+        d_ptr->piValue = piValue;
+        if (NULL != d_ptr->trendWidget)
+        {
+            d_ptr->trendWidget->setPIValue(piValue);
+        }
     }
-    d_ptr->piValue = piValue;
+    else
+    {
+        if (d_ptr->pluginPIValue == piValue)
+        {
+            return;
+        }
+        d_ptr->pluginPIValue = piValue;
+    }
     if (NULL != d_ptr->piTrendWidget)
     {
-        d_ptr->piTrendWidget->setPIValue(d_ptr->piValue);
-    }
-    if (NULL != d_ptr->trendWidget)
-    {
-        d_ptr->trendWidget->setPIValue(d_ptr->piValue);
+        d_ptr->piTrendWidget->setPIValue(piValue, isPlugin);
     }
 }
 
-short SPO2Param::getPI()
+short SPO2Param::getPI(bool isPlugin)
 {
+    if (isPlugin)
+    {
+        return d_ptr->pluginPIValue;
+    }
+
     return d_ptr->piValue;
 }
 
@@ -1157,6 +1187,12 @@ void SPO2Param::noticeLimitAlarm(SubParamID id, bool isAlarm)
             d_ptr->piTrendWidget->isAlarm(isAlarm);
         }
         break;
+    case SUB_PARAM_PLUGIN_PI:
+        if (NULL != d_ptr->piTrendWidget)
+        {
+            d_ptr->piTrendWidget->isPluginPIAlarm(isAlarm);
+        }
+        break;
     case SUB_PARAM_PVI:
         if (NULL != d_ptr->pviTrendWidget)
         {
@@ -1251,6 +1287,9 @@ void SPO2Param::setConnected(bool isConnected, bool isPlugin)
     else
     {
         d_ptr->connectedPluginProvider = isConnected;
+
+        // Update plugin connection status
+        emit updatePluginConnected(isConnected);
     }
     QString wave = getWaveWindow(isPlugin);
 
@@ -1266,7 +1305,6 @@ void SPO2Param::setConnected(bool isConnected, bool isPlugin)
                 layoutManager.updateLayout();
             }
         }
-        d_ptr->trendWidget->updateTrendWidget();
     }
     else
     {
@@ -1285,8 +1323,6 @@ void SPO2Param::setConnected(bool isConnected, bool isPlugin)
                 layoutManager.updateLayout();
             }
         }
-
-        d_ptr->trendWidget->updateTrendWidget();
 
         // SPO2 param is disconnected, we set value to invalid.
         if (!isPlugin)

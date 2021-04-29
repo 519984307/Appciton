@@ -60,8 +60,23 @@ WaveformID ECGDupLimitAlarm::getWaveformID(int id)
  *************************************************************************************************/
 SubParamID ECGDupLimitAlarm::getSubParamID(int id)
 {
-    Q_UNUSED(id);
-    return SUB_PARAM_HR_PR;
+    ECGDupLimitAlarmType alarmID = static_cast<ECGDupLimitAlarmType> (id);
+    switch (alarmID)
+    {
+        case ECG_DUP_LIMIT_ALARM_HR_LOW:
+        case ECG_DUP_LIMIT_ALARM_HR_HIGH:
+        case ECG_DUP_LIMIT_ALARM_PR_LOW:
+        case ECG_DUP_LIMIT_ALARM_PR_HIGH:
+            return SUB_PARAM_HR_PR;
+            break;
+        case ECG_DUP_LIMIT_ALARM_PLUGIN_PR_LOW:
+        case ECG_DUP_LIMIT_ALARM_PLUGIN_PR_HIGH:
+            return SUB_PARAM_PLUGIN_PR;
+            break;
+        default:
+            break;
+    }
+    return SUB_PARAM_NONE;
 }
 
 /**************************************************************************************************
@@ -69,17 +84,22 @@ SubParamID ECGDupLimitAlarm::getSubParamID(int id)
  *************************************************************************************************/
 AlarmPriority ECGDupLimitAlarm::getAlarmPriority(int paramID)
 {
-    Q_UNUSED(paramID);
-    return alarmConfig.getLimitAlarmPriority(SUB_PARAM_HR_PR);
+    return alarmConfig.getLimitAlarmPriority(getSubParamID(paramID));
 }
 
 /**************************************************************************************************
  * 获取指定的生理参数测量数据。
  *************************************************************************************************/
-int ECGDupLimitAlarm::getValue(int paramIndex)
+int ECGDupLimitAlarm::getValue(int id)
 {
-    Q_UNUSED(paramIndex);
-    return ecgDupParam.getHR();
+    switch (id)
+    {
+        case ECG_DUP_LIMIT_ALARM_PLUGIN_PR_LOW:
+        case ECG_DUP_LIMIT_ALARM_PLUGIN_PR_HIGH:
+            return ecgDupParam.getPluginPR();
+        default:
+            return ecgDupParam.getHR();
+    }
 }
 
 /**************************************************************************************************
@@ -87,8 +107,7 @@ int ECGDupLimitAlarm::getValue(int paramIndex)
  *************************************************************************************************/
 bool ECGDupLimitAlarm::isAlarmEnable(int paramID)
 {
-    Q_UNUSED(paramID);
-    return alarmConfig.isLimitAlarmEnable(SUB_PARAM_HR_PR);
+    return alarmConfig.isLimitAlarmEnable(getSubParamID(paramID));
 }
 
 /**************************************************************************************************
@@ -96,9 +115,9 @@ bool ECGDupLimitAlarm::isAlarmEnable(int paramID)
  *************************************************************************************************/
 int ECGDupLimitAlarm::getUpper(int paramID)
 {
-    Q_UNUSED(paramID);
-    UnitType unit = ecgDupParam.getCurrentUnit(SUB_PARAM_HR_PR);
-    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_HR_PR, unit);
+    SubParamID subId = getSubParamID(paramID);
+    UnitType unit = ecgDupParam.getCurrentUnit(subId);
+    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subId, unit);
     return config.highLimit;
 }
 
@@ -107,9 +126,9 @@ int ECGDupLimitAlarm::getUpper(int paramID)
  *************************************************************************************************/
 int ECGDupLimitAlarm::getLower(int paramID)
 {
-    Q_UNUSED(paramID);
-    UnitType unit = ecgDupParam.getCurrentUnit(SUB_PARAM_HR_PR);
-    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(SUB_PARAM_HR_PR, unit);
+    SubParamID subId = getSubParamID(paramID);
+    UnitType unit = ecgDupParam.getCurrentUnit(subId);
+    LimitAlarmConfig config = alarmConfig.getLimitAlarmConfig(subId, unit);
     return config.lowLimit;
 }
 
@@ -154,6 +173,20 @@ int ECGDupLimitAlarm::getCompare(int value, int id)
         }
     }
 
+    if (id == ECG_DUP_LIMIT_ALARM_PLUGIN_PR_HIGH)
+    {
+        if (value > getUpper(id))
+        {
+            return 1;
+        }
+    }
+    else if (id == ECG_DUP_LIMIT_ALARM_PLUGIN_PR_LOW)
+    {
+        if (value < getLower(id))
+        {
+            return -1;
+        }
+    }
     return 0;
 }
 
@@ -170,11 +203,28 @@ const char *ECGDupLimitAlarm::toString(int id)
  *************************************************************************************************/
 void ECGDupLimitAlarm::notifyAlarm(int id, bool isAlarm)
 {
-    _isAlarmLimit |= isAlarm;
-    if (id == ECG_DUP_LIMIT_ALARM_PR_HIGH)
+    switch (id)
     {
-        ecgDupParam.isAlarm(_isAlarmLimit, true);
-        _isAlarmLimit = false;
+        case ECG_DUP_LIMIT_ALARM_HR_LOW:
+        case ECG_DUP_LIMIT_ALARM_HR_HIGH:
+        case ECG_DUP_LIMIT_ALARM_PR_LOW:
+            _isAlarmLimit |= isAlarm;
+            break;
+        case ECG_DUP_LIMIT_ALARM_PR_HIGH:
+            _isAlarmLimit |= isAlarm;
+            ecgDupParam.isAlarm(_isAlarmLimit, getSubParamID(id));
+            _isAlarmLimit = false;
+            break;
+        case ECG_DUP_LIMIT_ALARM_PLUGIN_PR_LOW:
+            _isPluginAlarm |= isAlarm;
+            break;
+        case ECG_DUP_LIMIT_ALARM_PLUGIN_PR_HIGH:
+            _isPluginAlarm |= isAlarm;
+            ecgDupParam.isAlarm(_isPluginAlarm, getSubParamID(id));
+            _isPluginAlarm = false;
+            break;
+        default:
+            break;
     }
 }
 
@@ -184,6 +234,7 @@ void ECGDupLimitAlarm::notifyAlarm(int id, bool isAlarm)
 ECGDupLimitAlarm::ECGDupLimitAlarm()
 {
     _isAlarmLimit = false;
+    _isPluginAlarm = false;
 }
 
 /**************************************************************************************************

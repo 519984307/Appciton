@@ -15,6 +15,7 @@
 
 class QLabel;
 class QTimer;
+class QStackedWidget;
 class ECGTrendWidget: public TrendWidget
 {
     Q_OBJECT
@@ -25,13 +26,20 @@ public:
      * @param hr  and hr value
      * @param type
      */
-    void setHRValue(int16_t hr, HRSourceType type = HR_SOURCE_AUTO);
+    void setHRValue(short hr, HRSourceType type = HR_SOURCE_AUTO);
+
+    /**
+     * @brief setPluginPR
+     * @param pr
+     */
+    void setPluginPR(short pr);
 
     // 刷新趋势参数上下限
     void updateLimit(void);
 
     // 是否发生报警
     void isAlarm(bool isAlarm);
+    void isPluginPRAlarm(bool isAlarm);
 
     // 显示参数值
     void showValue(void);
@@ -43,15 +51,27 @@ public:
     ~ECGTrendWidget();
 
     QList<SubParamID> getShortTrendSubParams() const;
+
 public:
     virtual void doRestoreNormalStatus();
 
+public slots:
+    /**
+     * @brief updateTrendWidget 更新控件
+     */
+    void updateTrendWidget(bool isPluginConnected = false);
 protected:
     void showEvent(QShowEvent *e);
     virtual void setTextSize(void);
 
     /* reimplment */
     void loadConfig();
+
+    /**
+     * @brief setShowStacked set HR/PR stacked show
+     * @param num
+     */
+    void setShowStacked(int num);
 
 private slots:
     void _releaseHandle(IWidget *);
@@ -60,9 +80,15 @@ private slots:
 private:
     QLabel *_hrBeatIcon;
     QLabel *_hrValue;
+    QLabel *_pluginPRName;    // plugin PR name
+    QLabel *_pluginPRValue;   // plugin PR value
+    QStackedWidget *_stackedwidget;
+    QHBoxLayout *_hBoxLayout;
     QPixmap beatPixmap;
     QString _hrString;
+    QString _pluginPRString;
     bool _isAlarm;
+    bool _ispluginPRAlarm;
     void _drawBeatIcon(QColor color);
     QColor lastIconColor;
 private:
