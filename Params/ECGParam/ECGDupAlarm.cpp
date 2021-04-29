@@ -173,14 +173,14 @@ int ECGDupLimitAlarm::getCompare(int value, int id)
         }
     }
 
-    if (id == ECG_DUP_LIMIT_ALARM_PLUGIN_PR_LOW)
+    if (id == ECG_DUP_LIMIT_ALARM_PLUGIN_PR_HIGH)
     {
         if (value > getUpper(id))
         {
             return 1;
         }
     }
-    else if (id == ECG_DUP_LIMIT_ALARM_PLUGIN_PR_HIGH)
+    else if (id == ECG_DUP_LIMIT_ALARM_PLUGIN_PR_LOW)
     {
         if (value < getLower(id))
         {
