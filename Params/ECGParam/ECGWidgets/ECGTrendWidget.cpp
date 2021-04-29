@@ -245,14 +245,13 @@ void ECGTrendWidget::setTextSize(void)
     }
 
     // 字体。
-    int fontsize = fontManager.adjustNumFontSize(r, true, "9999");
+    int fontsize = fontManager.adjustNumFontSize(r, true, "99999");
     QFont font = fontManager.numFont(fontsize, true);
-    font.setWeight(QFont::Black);
 
     _hrValue->setFont(font);
     _pluginPRValue->setFont(font);
 
-    fontsize = fontManager.getFontSize(3);
+    fontsize = fontManager.getFontSize(4);
     font = fontManager.textFont(fontsize);
     _pluginPRName->setFont(font);
 }
@@ -293,7 +292,7 @@ ECGTrendWidget::ECGTrendWidget()
     // plugin RR layout
     QHBoxLayout *hLayout = new QHBoxLayout();
     _pluginPRName = new QLabel();
-    _pluginPRName->setAlignment(Qt::AlignRight | Qt::AlignTop);
+    _pluginPRName->setAlignment(Qt::AlignHCenter | Qt::AlignTop);
     _pluginPRName->setText(trs(paramInfo.getSubParamName(SUB_PARAM_PLUGIN_PR)));
     hLayout->addWidget(_pluginPRName, 1);
 
