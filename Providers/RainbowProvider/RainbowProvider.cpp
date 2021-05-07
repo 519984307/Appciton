@@ -1033,7 +1033,7 @@ void RainbowProviderPrivate::handleParamInfo(unsigned char *data, RBParamIDType 
         if (valid && !spo2BoardFailure)
         {
             temp = (data[0] << 8) + data[1];
-            float value = (temp % 10) > 5 ? (temp / 10 + 1) : (temp / 10);
+            float value = (temp % 10) < 5 ? (temp / 10) : (temp / 10 + 1);
             spo2Param.setSpCO(value);
         }
         else
