@@ -177,7 +177,7 @@ void S5Provider::handlePacket(unsigned char *data, int len)
 
     // 原始数据0x5D
     case S5_NOTIFY_DATA:
-        rawDataCollector.collectData(RawDataCollector::SPO2_DATA, data, len);
+        rawDataCollector.collectData(RawDataCollector::SPO2_DATA, data + 1, len - 1);
         break;
 
     // 错误警告帧0x76
@@ -482,11 +482,13 @@ bool S5Provider::isStatus(unsigned char *packet)
     {
         spo2Param.setValidStatus(true);
         spo2Param.setNotify(false, trs("SPO2CheckSensor"));
+        rawDataCollector.setLeadOffStatus(RawDataCollector::SPO2_DATA, false);
     }
     else
     {
         spo2Param.setValidStatus(false);
         spo2Param.setNotify(true, trs("SPO2CheckSensor"));
+        rawDataCollector.setLeadOffStatus(RawDataCollector::SPO2_DATA, true);
     }
 
     // 算法状态
