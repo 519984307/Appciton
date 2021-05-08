@@ -537,6 +537,13 @@ void SPO2Param::setProvider(SPO2ProviderIFace *provider, bool isPlugin)
             p->setSmartTone(false);
         }
     }
+    else if (str == "BLM_S5"  && systemManager.getCurWorkMode() != WORK_MODE_DEMO)
+    {
+        // Turn on the raw data storage function.
+        int recordStatus = 0;
+        machineConfig.getNumValue("Record|SPO2", recordStatus);
+        enableRawDataSend(recordStatus);
+    }
 
     if (systemManager.getCurWorkMode() == WORK_MODE_DEMO)
     {

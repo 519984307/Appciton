@@ -319,6 +319,16 @@ void NIBPParam::setProvider(NIBPProviderIFace *provider)
         _oldState = _activityMachine->curStatusType();
         switchState(NIBP_MONITOR_STANDBY_STATE);
     }
+
+    QString str;
+    machineConfig.getStrValue("NIBP", str);
+    if (str == "BLM_N5" && systemManager.getCurWorkMode() != WORK_MODE_DEMO)
+    {
+        // Turn on the raw data storage function.
+        int recordStatus = 0;
+        machineConfig.getNumValue("Record|NIBP", recordStatus);
+        enableRawDataSend(recordStatus);
+    }
 }
 
 /**************************************************************************************************
