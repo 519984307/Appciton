@@ -21,6 +21,7 @@
 #include <QTimerEvent>
 #include "USBManager.h"
 #include "Framework/TimeDate/TimeDate.h"
+#include <QTimer>
 
 struct StoreDataType
 {
@@ -37,6 +38,18 @@ public:
     RawDataCollectorPrivate()
         : timerId(-1)
     {
+        for (int i = RawDataCollector::ECG_DATA; i < RawDataCollector::DATA_TYPE_NR; ++i)
+        {
+            files[i] = NULL;
+            leadOffStatus[i] = true;
+            startCollection[i] = false;
+            leadOffTimer[i] = new QTimer();
+            leadOffTimer[i]->setSingleShot(true);
+            leadOffTimer[i]->setInterval(10 * 1000);   // 10 s
+            fileTimer[i] = new QTimer();
+            fileTimer[i]->setSingleShot(true);
+            fileTimer[i]->setInterval(24 * 3600 * 1000);    // 24 hour
+        }
         int v = 0;
         machineConfig.getNumValue("Record|ECG", v);
         collectionStatus[RawDataCollector::ECG_DATA] = v;
@@ -46,17 +59,14 @@ public:
         v = 0;
         machineConfig.getNumValue("Record|NIBP", v);
         collectionStatus[RawDataCollector::NIBP_DATA] = v;
+        startCollection[RawDataCollector::NIBP_DATA] = true;
         v = 0;
         machineConfig.getNumValue("Record|TEMP", v);
         collectionStatus[RawDataCollector::TEMP_DATA] = v;
         v = 0;
         machineConfig.getNumValue("Record|CO2", v);
         collectionStatus[RawDataCollector::CO2_DATA] = v;
-
-        for (int i = RawDataCollector::ECG_DATA; i < RawDataCollector::DATA_TYPE_NR; ++i)
-        {
-            files[i] = 0;
-        }
+        startCollection[RawDataCollector::CO2_DATA] = true;
     }
 
     /**
@@ -88,39 +98,36 @@ public:
      */
     void handleCO2RawData(const unsigned char *data, int len, bool stop);
 
-    void handleTempRawData(const unsigned char *data, int len, bool stop);
     /**
-     * @brief saveEcgRawData and the ecg raw data to file
-     * @param data the data struct contain data need to store
+     * @brief handleTempRawData  handle the temp raw data
+     * @param data  pointer to the data
+     * @param len the data length
+     * @param stop stop collectting data
      */
-    void saveEcgRawData(const StoreDataType *data);
+    void handleTempRawData(const unsigned char *data, int len, bool stop,
+                           RawDataCollector::CollectDataType type);
 
     /**
-     * @brief saveSPO2RawData and the spo2 raw data to file
-     * @param data the data struct contain data need to store
+     * @brief saveParamRawData  save the param raw data to file
+     * @param data  the data struct contain data need to store
      */
-    void saveSPO2RawData(const StoreDataType *data);
+    void saveParamRawData(const StoreDataType *data);
 
     /**
-     * @brief saveNIBPRawData and the NIBP raw data to file
-     * @param data the data struct contain data need to store
+     * @brief createNewFile  create new file by CollectDataType
+     * @param type  Collect Data Type
      */
-    void saveNIBPRawData(const StoreDataType *data);
-
-    /**
-     * @brief saveCO2RawData and the CO2 raw data to file
-     * @param data the data struct contain data need to store
-     */
-    void saveCO2RawData(const StoreDataType *data);
-
-    void saveTempRawData(const StoreDataType *data);
+    QFile *createNewFile(RawDataCollector::CollectDataType type);
 
     bool collectionStatus[RawDataCollector::DATA_TYPE_NR];
+    bool leadOffStatus[RawDataCollector::DATA_TYPE_NR];    // lead status
+    bool startCollection[RawDataCollector::DATA_TYPE_NR];  // true :start collectting raw data
 
     QLinkedList<StoreDataType *> dataBuffer;
 
     QFile *files[RawDataCollector::DATA_TYPE_NR];
-
+    QTimer *leadOffTimer[RawDataCollector::DATA_TYPE_NR];  // ECG,SPO2,TEMP lead off timer
+    QTimer *fileTimer[RawDataCollector::DATA_TYPE_NR];     // Close raw files every 24 hours.
     QMutex mutex;
 
     int timerId;
@@ -137,36 +144,15 @@ void RawDataCollectorPrivate::handleECGRawData(const unsigned char *data, int le
     }
     else
     {
-        Q_UNUSED(len)
-        QTextStream stream(&content);
-        for (int i = 0; i < 10; i++)
+        /*
+         * 1 Byte                                        + (3 Byte)         + (3 Byte)
+         * IPACE(1bit) + RESP Calc(2bit)+ ECG Calc(4bit) + ECG data(3 Byte) + RESP data(3 Byte)
+         */
+        QDataStream stream(&content, QIODevice::WriteOnly);
+        for (int i = 0; i < len; ++i)
         {
-            // 4 Byte IPACE
-            unsigned int ipace = data[0] | (data[1] << 8) | (data[2] << 16) | (data[3] << 24);
-            // 3 Byte ecg
-            data += 4;
-            unsigned int rawEcgData = (data[0] << 8) | (data[1] << 16) | (data[2] << 24);
-            int ecgData = rawEcgData;
-            ecgData >>= 8;
-            data += 3;
-            // 3 Byte resp
-            unsigned int rawRespData = (data[0] << 8) | (data[1] << 16) | (data[2] << 24);
-            int respData = rawRespData;
-            respData >>= 8;
-            data +=3;
-            // 2 bit resp calc
-            int respCalc = data[0] >> 6;
-            stream << ipace << ',';
-            stream << 0 << ',';
-            stream << 256 << ',';
-            stream << ecgData << ',';
-            stream << respData << ',';
-            stream << respCalc;
-            stream << endl;
-            // 2 byte lead status
-            data += 2;
+            stream << data[i];
         }
-        stream.flush();
 
         mutex.lock();
         dataBuffer.append(new StoreDataType(RawDataCollector::ECG_DATA, content, stop));
@@ -185,23 +171,14 @@ void RawDataCollectorPrivate::handleSPO2RawData(const unsigned char *data, int l
     }
     else
     {
-        Q_UNUSED(len)
-        Q_ASSERT(len == 16);
-        QTextStream stream(&content);
-
-        data += 1;
-        for (int n = 0; n < 5; n++)
+        /*
+         * 红光(3Byte) + 红外光(3Byte) + 背景光(3Byte )
+         */
+        QDataStream stream(&content, QIODevice::WriteOnly);
+        for (int i = 0; i < len; ++i)
         {
-            int v = data[0] | (data[1] << 8) | (data[2] << 16);
-            data += 3;
-            stream << v;
-            if (n != 4)
-            {
-                stream << ",";
-            }
+            stream << data[i];
         }
-        stream << endl;
-        stream.flush();
 
         mutex.lock();
         dataBuffer.append(new StoreDataType(RawDataCollector::SPO2_DATA, content, stop));
@@ -221,26 +198,14 @@ void RawDataCollectorPrivate::handleNIBPRawData(const unsigned char *data, int l
     }
     else
     {
-        Q_UNUSED(len)
-        Q_ASSERT(len == 50);
-        QTextStream stream(&content);
-        // 10个AD值,每个占3个字节
-        for (int n = 0; n < 10; n ++)
+        /*
+         * 10个AD值,每个占3个字节  + 10个压力值, 每个占2个字节
+         */
+        QDataStream stream(&content, QIODevice::WriteOnly);
+        for (int i = 0; i < len; ++i)
         {
-            unsigned int adVal = (data[n * 3]) | (data[n * 3 + 1] << 8) | (data[n * 3 + 2] << 16);
-            stream << adVal << endl;
+            stream << data[i];
         }
-
-        data += 10 * 3;
-
-        // 10个压力值, 每个占2个字节
-        for (int n = 0; n < 10; n++)
-        {
-            unsigned short pressureVal = (data[n * 2]) | (data[n * 2 + 1] << 8);
-            stream << pressureVal << endl;
-        }
-        stream.flush();
-
         mutex.lock();
         dataBuffer.append(new StoreDataType(RawDataCollector::NIBP_DATA, content, stop));
         mutex.unlock();
@@ -259,14 +224,11 @@ void RawDataCollectorPrivate::handleCO2RawData(const unsigned char *data, int le
     }
     else
     {
-        Q_UNUSED(len)
-        QTextStream stream(&content);
-        unsigned int tar = (data[0]) | (data[1] << 8) | (data[2] << 16);
-        unsigned int ref = (data[3]) | (data[4] << 8) | (data[5] << 16);
-        QString time = timeDate->getTime(true);
-        stream << tar << "," << ref << "," << time << endl;
-
-        stream.flush();
+        QDataStream stream(&content, QIODevice::WriteOnly);
+        for (int i = 0; i < len; ++i)
+        {
+            stream << data[i];
+        }
 
         mutex.lock();
         dataBuffer.append(new StoreDataType(RawDataCollector::CO2_DATA, content, stop));
@@ -274,40 +236,45 @@ void RawDataCollectorPrivate::handleCO2RawData(const unsigned char *data, int le
     }
 }
 
-void RawDataCollectorPrivate::handleTempRawData(const unsigned char *data, int len, bool stop)
+void RawDataCollectorPrivate::handleTempRawData(const unsigned char *data, int len, bool stop,
+                                                RawDataCollector::CollectDataType type)
 {
     QByteArray content;
 
     if (stop)
     {
         mutex.lock();
-        dataBuffer.append(new StoreDataType(RawDataCollector::TEMP_DATA, content, stop));
+        dataBuffer.append(new StoreDataType(type, content, stop));
         mutex.unlock();
     }
     else
     {
-        QTextStream stream(&content);
-        uchar channel = data[0];
-        len--;
-        for (int i = 0; i < len / 2; i++)
+        // collect temp raw data
+        QDataStream stream(&content, QIODevice::WriteOnly);
+        for (int i = 0; i < len; ++i)
         {
-            unsigned int tempData = data[1 + 2 * i] | (data[2 + 2 * i] << 8);
-            QString time = timeDate->getTime(true);
-            stream << channel << "," << tempData << "," << time << endl;
+            stream << data[i];
         }
 
-        stream.flush();
-
         mutex.lock();
-        dataBuffer.append(new StoreDataType(RawDataCollector::TEMP_DATA, content, stop));
+        dataBuffer.append(new StoreDataType(type, content, stop));
         mutex.unlock();
     }
 }
 
-void RawDataCollectorPrivate::saveEcgRawData(const StoreDataType *data)
+void RawDataCollectorPrivate::saveParamRawData(const StoreDataType *data)
 {
-    QFile *f = files[RawDataCollector::ECG_DATA];
+    if (data == NULL)
+    {
+        return;
+    }
+    RawDataCollector::CollectDataType type = data->type;
+    if (type >= RawDataCollector::DATA_TYPE_NR)
+    {
+        return;
+    }
 
+    QFile *f = files[type];
     if (f == NULL && data->stop)
     {
         // do nothing
@@ -319,31 +286,16 @@ void RawDataCollectorPrivate::saveEcgRawData(const StoreDataType *data)
         fsync(f->handle());
         f->close();
         delete f;
-        files[RawDataCollector::ECG_DATA] = NULL;
+        files[type] = NULL;
         return;
     }
     else if (f == NULL)
     {
-        QString dirname = usbManager.getUdiskMountPoint() + "/ECG_DATA/";
-        if (!QDir(dirname).exists())
+        f = createNewFile(type);
+        if (f == NULL)
         {
-            if (!QDir().mkpath(dirname))
-            {
-                qDebug() << "Fail to create directory " << dirname;
-                return;
-            }
-        }
-        QString name = dirname + QDateTime::currentDateTime().toString("yyyy.MM.dd-HH.mm.ss") + ".txt";
-
-        // not open the file yet, open now
-        f = new QFile(name);
-        if (!f->open(QIODevice::WriteOnly))
-        {
-            qDebug() << "Fail to create file " << name;
-            delete f;
             return;
         }
-        files[RawDataCollector::ECG_DATA] = f;
     }
 
     f->write(data->data);
@@ -354,221 +306,70 @@ void RawDataCollectorPrivate::saveEcgRawData(const StoreDataType *data)
         fsync(f->handle());
         f->close();
         delete f;
-        files[RawDataCollector::ECG_DATA] = NULL;
+        files[type] = NULL;
     }
 }
 
-void RawDataCollectorPrivate::saveSPO2RawData(const StoreDataType *data)
+QFile *RawDataCollectorPrivate::createNewFile(RawDataCollector::CollectDataType type)
 {
-    QFile *f = files[RawDataCollector::SPO2_DATA];
+    QString dirName = usbManager.getUdiskMountPoint();
+    QString fileName;
+    QString curTime = QDateTime::currentDateTime().toString("yyyyMMddHHmmss");
+    switch (type)
+    {
+    case RawDataCollector::ECG_DATA:
+        dirName += "/ECG_DATA/";
+        fileName = dirName + QString("ECG_%1.dat").arg(curTime);
+        break;
+    case RawDataCollector::SPO2_DATA:
+        dirName += "/SPO2_DATA/";
+        fileName = dirName + QString("SPO2_%1.dat").arg(curTime);
+        break;
+    case RawDataCollector::NIBP_DATA:
+        dirName += "/NIBP_DATA/";
+        fileName = dirName + QString("NIBP_%1.dat").arg(curTime);
+        break;
+    case RawDataCollector::TEMP_DATA:
+        dirName += "/TEMP_DATA/";
+        fileName = dirName + QString("TEMP1_%1.dat").arg(curTime);
+        break;
+    case RawDataCollector::TEMP2_DATA:
+        dirName += "/TEMP_DATA/";
+        fileName = dirName + QString("TEMP2_%1.dat").arg(curTime);
+        break;
+    case RawDataCollector::CO2_DATA:
+        dirName += "/CO2_DATA/";
+        fileName = dirName + QString("CO2_%1.dat").arg(curTime);
+        break;
+    default:
+        qWarning("Raw data collect type error!");
+        return NULL;
+        break;
+    }
 
-    if (f == NULL && data->stop)
+    if (!QDir(dirName).exists())
     {
-        // do nothing
-        return;
-    }
-    else if (f && data->stop)
-    {
-        // close the file and delete the file descriptor
-        fsync(f->handle());
-        f->close();
-        delete f;
-        files[RawDataCollector::SPO2_DATA] = NULL;
-        return;
-    }
-    else if (f == NULL)
-    {
-        QString dirname = usbManager.getUdiskMountPoint() + "/SPO2_DATA/";
-        if (!QDir(dirname).exists())
+        if (!QDir().mkpath(dirName))
         {
-            if (!QDir().mkpath(dirname))
-            {
-                qDebug() << "Fail to create directory " << dirname;
-                return;
-            }
+            qDebug() << "Fail to create directory " << dirName;
+            return NULL;
         }
-        QString name = dirname + QDateTime::currentDateTime().toString("yyyy.MM.dd-HH.mm.ss") + ".txt";
-
-        // not open the file yet, open now
-        f = new QFile(name);
-        if (!f->open(QIODevice::WriteOnly))
-        {
-            qDebug() << "Fail to create file " << name;
-            delete f;
-            return;
-        }
-        files[RawDataCollector::SPO2_DATA] = f;
     }
 
-    f->write(data->data);
-
-    if (f->size() > 10 * 1024 * 1024)
+    // not open the file yet, open now
+    QFile *f = new QFile(fileName);
+    if (!f->open(QIODevice::WriteOnly))
     {
-        // store 10 M data in each file
-        fsync(f->handle());
-        f->close();
+        qDebug() << "Fail to create file " << fileName;
         delete f;
-        files[RawDataCollector::SPO2_DATA] = NULL;
+        return NULL;
     }
-}
-
-void RawDataCollectorPrivate::saveNIBPRawData(const StoreDataType *data)
-{
-    QFile *f = files[RawDataCollector::NIBP_DATA];
-    if (f == NULL && data->stop)
+    files[type] = f;
+    if (fileTimer[type])
     {
-        // do nothing
-        return;
+        fileTimer[type]->start();
     }
-    else if (f && data->stop)
-    {
-        // close the file and delete the file descriptor
-        fsync(f->handle());
-        f->close();
-        delete f;
-        files[RawDataCollector::NIBP_DATA] = NULL;
-        return;
-    }
-    else if (f == NULL)
-    {
-        QString dirname = usbManager.getUdiskMountPoint() + "/BLM_N5/";
-        if (!QDir(dirname).exists())
-        {
-            if (!QDir().mkpath(dirname))
-            {
-                qDebug() << "Fail to create directory " << dirname;
-                return;
-            }
-        }
-        QString name = dirname + QString("N5_%1.txt").arg(QDateTime::currentDateTime().toString("yyyyMMddHHmmss"));
-
-        // not open the file yet, open now
-        f = new QFile(name);
-        if (!f->open(QIODevice::WriteOnly))
-        {
-            qDebug() << "Fail to create file " << name;
-            delete f;
-            return;
-        }
-        files[RawDataCollector::NIBP_DATA] = f;
-    }
-
-    f->write(data->data);
-
-    if (f->size() > 10 * 1024 * 1024)
-    {
-        // store 10 M data in each file
-        fsync(f->handle());
-        f->close();
-        delete f;
-        files[RawDataCollector::NIBP_DATA] = NULL;
-    }
-}
-
-void RawDataCollectorPrivate::saveCO2RawData(const StoreDataType *data)
-{
-    QFile *f = files[RawDataCollector::CO2_DATA];
-    if (f == NULL && data->stop)
-    {
-        // do nothing
-        return;
-    }
-    else if (f && data->stop)
-    {
-        // close the file and delete the file descriptor
-        fsync(f->handle());
-        f->close();
-        delete f;
-        files[RawDataCollector::CO2_DATA] = NULL;
-        return;
-    }
-    else if (f == NULL)
-    {
-        QString dirname = usbManager.getUdiskMountPoint() + "/BLM_CO2/";
-        if (!QDir(dirname).exists())
-        {
-            if (!QDir().mkpath(dirname))
-            {
-                qDebug() << "Fail to create directory " << dirname;
-                return;
-            }
-        }
-        QString name = dirname + QString("CO2_%1.txt").arg(QDateTime::currentDateTime().toString("yyyyMMddHHmmss"));
-
-        // not open the file yet, open now
-        f = new QFile(name);
-        if (!f->open(QIODevice::WriteOnly))
-        {
-            qDebug() << "Fail to create file " << name;
-            delete f;
-            return;
-        }
-        files[RawDataCollector::CO2_DATA] = f;
-    }
-
-    f->write(data->data);
-
-    if (f->size() > 10 * 1024 * 1024)
-    {
-        // store 10 M data in each file
-        fsync(f->handle());
-        f->close();
-        delete f;
-        files[RawDataCollector::CO2_DATA] = NULL;
-    }
-}
-
-void RawDataCollectorPrivate::saveTempRawData(const StoreDataType *data)
-{
-    QFile *f = files[RawDataCollector::TEMP_DATA];
-    if (f == NULL && data->stop)
-    {
-        // do nothing
-        return;
-    }
-    else if (f && data->stop)
-    {
-        // close the file and delete the file descriptor
-        fsync(f->handle());
-        f->close();
-        delete f;
-        files[RawDataCollector::TEMP_DATA] = NULL;
-        return;
-    }
-    else if (f == NULL)
-    {
-        QString dirname = usbManager.getUdiskMountPoint() + "/BLM_T5/";
-        if (!QDir(dirname).exists())
-        {
-            if (!QDir().mkpath(dirname))
-            {
-                qDebug() << "Fail to create directory " << dirname;
-                return;
-            }
-        }
-        QString name = dirname + QString("TEMP_%1.txt").arg(QDateTime::currentDateTime().toString("yyyyMMddHHmmss"));
-
-        // not open the file yet, open now
-        f = new QFile(name);
-        if (!f->open(QIODevice::WriteOnly))
-        {
-            qDebug() << "Fail to create file " << name;
-            delete f;
-            return;
-        }
-        files[RawDataCollector::TEMP_DATA] = f;
-    }
-
-    f->write(data->data);
-
-    if (f->size() > 10 * 1024 * 1024)
-    {
-        // store 10 M data in each file
-        fsync(f->handle());
-        f->close();
-        delete f;
-        files[RawDataCollector::TEMP_DATA] = NULL;
-    }
+    return f;
 }
 
 RawDataCollector &RawDataCollector::getInstance()
@@ -609,26 +410,9 @@ void RawDataCollector::run()
         StoreDataType *data = d_ptr->dataBuffer.takeFirst();
         d_ptr->mutex.unlock();
 
-        switch (data->type)
-        {
-        case ECG_DATA:
-            d_ptr->saveEcgRawData(data);
-            break;
-        case SPO2_DATA:
-            d_ptr->saveSPO2RawData(data);
-            break;
-        case NIBP_DATA:
-            d_ptr->saveNIBPRawData(data);
-            break;
-        case CO2_DATA:
-            d_ptr->saveCO2RawData(data);
-            break;
-        case TEMP_DATA:
-            d_ptr->saveTempRawData(data);
-            break;
-        default:
-            break;
-        }
+        // save param raw data to file
+        d_ptr->saveParamRawData(data);
+
         delete data;
 
         d_ptr->mutex.lock();
@@ -640,7 +424,7 @@ void RawDataCollector::startCollectData()
 {
     if (d_ptr->timerId == -1)
     {
-        d_ptr->timerId = startTimer(300);
+        d_ptr->timerId = startTimer(1000);  // 1s
     }
 }
 
@@ -660,6 +444,16 @@ void RawDataCollector::stopCollectData()
             d_ptr->files[i]->close();
             delete d_ptr->files[i];
             d_ptr->files[i] = NULL;
+        }
+
+        // stop timer
+        if (d_ptr->fileTimer[i])
+        {
+            d_ptr->fileTimer[i]->stop();
+        }
+        if (d_ptr->leadOffTimer[i])
+        {
+            d_ptr->leadOffTimer[i]->stop();
         }
     }
     d_ptr->mutex.lock();
@@ -685,15 +479,51 @@ void RawDataCollector::timerEvent(QTimerEvent *e)
     }
 }
 
+void RawDataCollector::_onTimeOut()
+{
+    QTimer *timer = qobject_cast<QTimer *>(sender());
+    if (timer == NULL)
+    {
+        return;
+    }
+
+    for (int i = RawDataCollector::ECG_DATA; i < RawDataCollector::DATA_TYPE_NR; ++i)
+    {
+        if (d_ptr->leadOffTimer[i] == timer)
+        {
+            d_ptr->startCollection[i] = false;
+        }
+        else if (d_ptr->fileTimer[i] == timer && d_ptr->files[i])
+        {
+            // The raw data file can store data for up to 24 hours.
+            fsync(d_ptr->files[i]->handle());
+            d_ptr->files[i]->close();
+            delete d_ptr->files[i];
+            d_ptr->files[i] = NULL;
+        }
+    }
+}
+
 RawDataCollector::RawDataCollector()
     : d_ptr(new RawDataCollectorPrivate())
 {
+    for (int i = RawDataCollector::ECG_DATA; i < RawDataCollector::DATA_TYPE_NR; ++i)
+    {
+        if (d_ptr->leadOffTimer[i])
+        {
+            connect(d_ptr->leadOffTimer[i], SIGNAL(timeout()), this, SLOT(_onTimeOut()));
+        }
+        if (d_ptr->fileTimer[i])
+        {
+            connect(d_ptr->fileTimer[i], SIGNAL(timeout()), this, SLOT(_onTimeOut()));
+        }
+    }
 }
 
 void RawDataCollector::collectData(RawDataCollector::CollectDataType type, const unsigned char *data, int len,
                                    bool stop)
 {
-    if (!d_ptr->collectionStatus[type] || !usbManager.isUSBExist())
+    if (!d_ptr->collectionStatus[type] || !usbManager.isUSBExist() || !d_ptr->startCollection[type])
     {
         // not enable yet
         return;
@@ -714,7 +544,8 @@ void RawDataCollector::collectData(RawDataCollector::CollectDataType type, const
         d_ptr->handleCO2RawData(data, len, stop);
         break;
     case RawDataCollector::TEMP_DATA:
-        d_ptr->handleTempRawData(data, len, stop);
+    case RawDataCollector::TEMP2_DATA:
+        d_ptr->handleTempRawData(data, len, stop, type);
         break;
 
     default:
@@ -725,6 +556,34 @@ void RawDataCollector::collectData(RawDataCollector::CollectDataType type, const
 void RawDataCollector::setCollectStatus(RawDataCollector::CollectDataType type, bool enable)
 {
     d_ptr->collectionStatus[type] = enable;
+    if (type == RawDataCollector::TEMP_DATA)
+    {
+        d_ptr->collectionStatus[TEMP2_DATA] = enable;
+    }
+}
+
+void RawDataCollector::setLeadOffStatus(RawDataCollector::CollectDataType type, bool status)
+{
+    if (d_ptr->leadOffStatus[type] == status || d_ptr->leadOffTimer[type] == NULL)
+    {
+        return;
+    }
+
+    d_ptr->leadOffStatus[type] = status;
+
+    // After ECG, SPO2, TEMP lead off, the raw data were only stored for 10s.
+    if (status)
+    {
+        // ECG, SPO2, TEMP lead off, start timer to stop collectting data.
+        d_ptr->leadOffTimer[type]->start();
+    }
+    else
+    {
+        // ECG, SPO2, TEMP lead on, stop timer and start collect raw data.
+        d_ptr->leadOffTimer[type]->stop();
+        // start collectting raw data.
+        d_ptr->startCollection[type] = true;
+    }
 }
 
 RawDataCollector::~RawDataCollector()
