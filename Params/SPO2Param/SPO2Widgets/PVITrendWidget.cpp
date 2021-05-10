@@ -89,7 +89,7 @@ PVITrendWidget::PVITrendWidget()
     d_ptr->pviValue->setText(InvStr());
     d_ptr->pviValue->setAlignment(Qt::AlignCenter);
 
-    contentLayout->addWidget(d_ptr->pviValue, 3);
+    contentLayout->addWidget(d_ptr->pviValue, 7);
     connect(this, SIGNAL(released()), this, SLOT(onRelease()));
     loadConfig();
 }
