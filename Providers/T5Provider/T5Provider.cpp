@@ -127,7 +127,8 @@ void T5Provider::handlePacket(unsigned char *data, int len)
         break;
 
     case T5_CYCLE_DATA:
-        rawDataCollector.collectData(RawDataCollector::TEMP_DATA, data + 1, len - 1);
+        // T5 module does not upload temp data.
+//        rawDataCollector.collectData(RawDataCollector::TEMP_DATA, data + 1, len - 1);
         break;
 
     case T5_OHM_DATA:
@@ -422,6 +423,9 @@ void T5Provider::_result(unsigned char *packet)
     }
 
     tempParam.setTEMP(_temp1, _temp2, _tempd);
+    // collect temp data
+    rawDataCollector.collectData(RawDataCollector::TEMP_DATA, &packet[1], 2);
+    rawDataCollector.collectData(RawDataCollector::TEMP2_DATA, &packet[3], 2);
 }
 
 void T5Provider::ohmResult(unsigned char *packet)
@@ -465,6 +469,7 @@ void T5Provider::_sensorOff(unsigned char *packet)
     {
         _sensorOff1 = false;
     }
+    rawDataCollector.setLeadOffStatus(RawDataCollector::TEMP_DATA, (temp1 == TEMP_SENSOR_OFF_VALUE));
 
     if (temp2 == TEMP_SENSOR_OFF_VALUE && _hasBeenConnected2)
     {
@@ -474,6 +479,7 @@ void T5Provider::_sensorOff(unsigned char *packet)
     {
         _sensorOff2 = false;
     }
+    rawDataCollector.setLeadOffStatus(RawDataCollector::TEMP2_DATA, (temp2 == TEMP_SENSOR_OFF_VALUE));
 }
 
 /**************************************************************************************************
