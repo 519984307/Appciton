@@ -818,6 +818,9 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id, UnitType *t0, UnitType *t1)
     case SUB_PARAM_SPMET:
     case SUB_PARAM_SPCO:
         return UNIT_PERCENT;
+    case SUB_PARAM_SPOC:
+        return UNIT_MLDL;
+
     case SUB_PARAM_SPHB:
         *t0 = UNIT_MMOL_L;
         return UNIT_GDL;
