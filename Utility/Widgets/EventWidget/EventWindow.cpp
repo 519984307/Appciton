@@ -1137,9 +1137,6 @@ void EventWindowPrivate::eventTrendUpdate()
 
         item->setData(EventTrendItemDelegate::TrendAlarmRole, subParamAlarm);
 
-        subParamAlarm = false;
-        multiSubParamAlarm = false;   // 每次设置报警之后清零。
-
         if (paramInfo.getParamID(subId) == PARAM_SPO2)
         {
             color = colorManager.getColor(paramInfo.getSubParamName(subId));
@@ -1156,9 +1153,20 @@ void EventWindowPrivate::eventTrendUpdate()
         }
         else
         {
-            item->setTextColor(Qt::white);
+            // Sub-parameter alarm, set the color of the alarm text to red.
+            if (subParamAlarm)
+            {
+                item->setTextColor(Qt::red);
+            }
+            else
+            {
+                item->setTextColor(Qt::white);
+            }
         }
         item->setFlags(Qt::NoItemFlags);
+
+        subParamAlarm = false;
+        multiSubParamAlarm = false;   // 每次设置报警之后清零。
     }
 }
 
