@@ -1354,6 +1354,14 @@ void SPO2Param::setConnected(bool isConnected, bool isPlugin)
             d_ptr->spmetTrendWidget->setSpMetValue(InvData());
             d_ptr->spcoTrendWidget->setSPCOValue(InvData());
         }
+        else
+        {
+            d_ptr->plugInSpo2Value = InvData();
+            d_ptr->pluginPIValue = InvData();
+            d_ptr->trendWidget->setPluginSPO2Value(InvData());
+            d_ptr->piTrendWidget->setPIValue(InvData(), true);
+            setPluginPR(InvData());
+        }
         setPR(InvData());
     }
 }
