@@ -355,6 +355,8 @@ bool SystemManager::isSupport(SubParamID subID) const
         }
         break;
     case SUB_PARAM_SPO2_2:
+    case SUB_PARAM_PLUGIN_PR:
+    case SUB_PARAM_PLUGIN_PI:
     case SUB_PARAM_SPO2_D:
         // spo2 plugin is not connected
         if (!spo2Param.isConnected(true))

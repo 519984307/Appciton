@@ -1255,11 +1255,6 @@ void TrendWaveWidget::_initAllParamData()
             continue;
         }
         SubParamID subID = static_cast<SubParamID>(i);
-        // check sub param is support
-        if (!systemManager.isSupport(subID))
-        {
-            continue;
-        }
         if (getTrendGraphType(subID) == TREND_GRAPH_TYPE_NR)
         {
             continue;
@@ -1322,6 +1317,11 @@ void TrendWaveWidget::_updateDisplaySubParams()
     for (int i = 0; i < _allSubParams.count(); i ++)
     {
         SubParamID subId = _allSubParams.at(i);
+        // check sub param is support
+        if (!systemManager.isSupport(subId))
+        {
+            continue;
+        }
         ParamID paramId = paramInfo.getParamID(subId);
         if (paramId == PARAM_IBP)
         {

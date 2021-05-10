@@ -768,11 +768,6 @@ TrendTableModelPrivate::TrendTableModelPrivate()
     for (int i = 0; i < SUB_PARAM_NR; i ++)
     {
         SubParamID subId = static_cast<SubParamID>(i);
-        // check sub param is support
-        if (!systemManager.isSupport(subId))
-        {
-            continue;
-        }
         ParamID paramID = paramInfo.getParamID(subId);
         if (-1 == paramIDList.indexOf(paramID))
         {
@@ -1349,6 +1344,11 @@ void TrendTableModelPrivate::loadTableTitle()
     for (int i = 0; i < curList.length(); i ++)
     {
         SubParamID id = curList.at(i);
+        // check sub param is support
+        if (!systemManager.isSupport(id))
+        {
+            continue;
+        }
         switch (id)
         {
         case SUB_PARAM_ART_SYS:
