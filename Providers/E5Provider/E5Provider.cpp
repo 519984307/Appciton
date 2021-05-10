@@ -262,9 +262,10 @@ void E5Provider::_handleECGRawData(const unsigned char *data, unsigned len)
             ecgParam.setLeadOff((ECGLead)i, leadOff[i]);
         }
 
-        if (ecgParam.getCalcLead() != ECG_LEAD_NR)
+        if (ecgParam.getCalcLead() < ECG_LEAD_NR)
         {
             ecgParam.setOverLoad(overLoad);
+            rawDataCollector.setLeadOffStatus(RawDataCollector::ECG_DATA, leadOff[ecgParam.getCalcLead()]);
         }
         ecgParam.updateWaveform(leadData, leadOff, ipaceMark, epaceMark, qrsTone);
 

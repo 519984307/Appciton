@@ -21,7 +21,8 @@ public:
         ECG_DATA,
         SPO2_DATA,
         NIBP_DATA,
-        TEMP_DATA,
+        TEMP_DATA,   // temp 1 channel raw data
+        TEMP2_DATA,  // temp 2 channel raw data
         CO2_DATA,
         DATA_TYPE_NR,
     };
@@ -46,6 +47,13 @@ public:
      */
     void setCollectStatus(CollectDataType type, bool enable);
 
+    /**
+     * @brief setLeadOffStatus  set lead off status
+     * @param type    collect data type
+     * @param status  lead status
+     */
+    void setLeadOffStatus(CollectDataType type, bool status);
+
     // 循环运行
     void run();
 
@@ -56,7 +64,11 @@ public slots:
 
 protected:
     void timerEvent(QTimerEvent *e);
-
+private slots:
+    /**
+     * @brief _onTimeOut handle lead off timer time out
+     */
+    void _onTimeOut();
 private:
     RawDataCollector();
     RawDataCollector(const RawDataCollector &other);    // stop the cppcheck complain

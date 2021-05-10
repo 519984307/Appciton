@@ -383,6 +383,14 @@ void ECGParam::setProvider(ECGProviderIFace *provider)
     _provider->getSelfTestStatus();
 //    <Gain>1</Gain>
     // todo：其他设置。
+
+    // Turn on the raw data storage function.
+    if (systemManager.getCurWorkMode() != WORK_MODE_DEMO)
+    {
+        int recordStatus = 0;
+        machineConfig.getNumValue("Record|ECG", recordStatus);
+        setRawDataOnOff(recordStatus);
+    }
 }
 
 /**************************************************************************************************
