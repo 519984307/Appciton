@@ -502,6 +502,7 @@ static void _initProviderParam(void)
 
         SPO2WaveWidget *spo2WaveWidget = new SPO2WaveWidget("SPO2WaveWidget", trs("PLETH"));
         SPO2WaveWidget *outsideSpo2WaveWidget = new SPO2WaveWidget("OutsideSpo2WaveWidget", trs("PLETH2"));
+        outsideSpo2WaveWidget->setID(WAVE_SPO2_2);
         SPO2TrendWidget *spo2TrendWidget = new SPO2TrendWidget();
         spo2Param.setTrendWidget(spo2TrendWidget);
         spo2Param.setWaveWidget(spo2WaveWidget);

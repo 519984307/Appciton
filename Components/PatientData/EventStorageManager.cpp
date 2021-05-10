@@ -76,6 +76,11 @@ QList<WaveformID> EventStorageManagerPrivate::getStoreWaveList(WaveformID paramW
             // 如果时PR时，第一条波形为pleth
             paramWave = WAVE_SPO2;
         }
+        else if (subID == SUB_PARAM_PLUGIN_PR || subID == SUB_PARAM_SPO2_2)
+        {
+            // 如果时PR时，第一条波形为pleth
+            paramWave = WAVE_SPO2_2;
+        }
         storeWaves.append(paramWave);
     }
 

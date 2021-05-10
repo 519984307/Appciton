@@ -586,6 +586,7 @@ ParamID ParamInfo::getParamID(WaveformID id)
         paramID = PARAM_RESP;
         break;
     case WAVE_SPO2:
+    case WAVE_SPO2_2:
         paramID = PARAM_SPO2;
         break;
     case WAVE_CO2:
