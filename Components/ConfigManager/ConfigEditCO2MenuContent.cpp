@@ -178,12 +178,14 @@ void ConfigEditCO2MenuContent::layoutExec()
     label = new QLabel(trs("CO2SweepSpeed"));
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
+    /*
+     * disable 50mm/s for CO2 wave, because the CO2 wave sample rate is too low
+     * and the scan gap is too large when in 50mm/s
+     */
     comboBox->addItems(QStringList()
                        << CO2Symbol::convert(CO2_SWEEP_SPEED_62_5)
                        << CO2Symbol::convert(CO2_SWEEP_SPEED_125)
-                       << CO2Symbol::convert(CO2_SWEEP_SPEED_250)
-                       << CO2Symbol::convert(CO2_SWEEP_SPEED_500));
-
+                       << CO2Symbol::convert(CO2_SWEEP_SPEED_250));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     itemID = ConfigEditCO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED;
