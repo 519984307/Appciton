@@ -41,7 +41,7 @@ public:
     };
 
     OthersMaintainMenuContentPrivate()
-        : nurseCallBtn(NULL), waveLineLabel(NULL)
+        : nurseCallBtn(NULL)
     {
         combos.clear();
     }
@@ -49,9 +49,8 @@ public:
     void loadOptions();
 
     QMap<MenuItem, ComboBox *> combos;
-
+    QMap<MenuItem, QLabel *> labels;
     Button *nurseCallBtn;
-    QLabel *waveLineLabel;
 };
 
 void OthersMaintainMenuContentPrivate::loadOptions()
@@ -80,6 +79,12 @@ void OthersMaintainMenuContentPrivate::loadOptions()
     {
         combos[ITEM_CBO_WAVE_DRAW_MODE]->setCurrentIndex(tmpStr.toInt());
     }
+    // DAVID说明书要求，不显示此项
+    if (labels[ITEM_CBO_WAVE_DRAW_MODE])
+    {
+        labels[ITEM_CBO_WAVE_DRAW_MODE]->hide();
+    }
+    combos[ITEM_CBO_WAVE_DRAW_MODE]->hide();
     tmpStr.clear();
 
     systemConfig.getStrValue("Others|WaveLine", tmpStr);
@@ -92,10 +97,10 @@ void OthersMaintainMenuContentPrivate::loadOptions()
     {
         combos[ITEM_CBO_WAVE_LINE]->setCurrentIndex(lineIndex);
     }
-    // DAVID提出要求，不允许切换波形线条，隐藏设置项
-    if (waveLineLabel)
+    // DAVID提出要求，不允许切换波形线条，隐藏设置项, DAVID说明书要求，不显示此项
+    if (labels[ITEM_CBO_WAVE_LINE])
     {
-        waveLineLabel->hide();
+        labels[ITEM_CBO_WAVE_LINE]->hide();
     }
     combos[ITEM_CBO_WAVE_LINE]->hide();
     tmpStr.clear();
@@ -167,6 +172,7 @@ void OthersMaintainMenuContent::layoutExec()
 
     // wave draw mode setup
     label = new QLabel(trs("WaveDrawMode"));
+    d_ptr->labels[OthersMaintainMenuContentPrivate::ITEM_CBO_WAVE_DRAW_MODE] = label;
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
@@ -181,7 +187,7 @@ void OthersMaintainMenuContent::layoutExec()
 
     // waveline setup
     label = new QLabel(trs("WaveLine"));
-    d_ptr->waveLineLabel = label;
+    d_ptr->labels[OthersMaintainMenuContentPrivate::ITEM_CBO_WAVE_LINE] = label;
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
