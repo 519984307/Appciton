@@ -1650,4 +1650,4 @@ SpO2Configure,Rainbow SpO₂配置,Rainbow SpO₂ Configuration
 LowConfigure,低配,Low Configuration
 HighConfigure,高配,High Configuration
 SystemBoardSendCommunicationStop,系统板发送通讯中断,System Board Send Communicaiton Stop
-NetworkDebug,网络调试,Network Debug,Debug di rete,Depuración de red
+NetworkDebug,网络调试,Network Debug
