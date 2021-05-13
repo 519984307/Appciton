@@ -328,8 +328,8 @@ CO2Setting,CO₂设置,CO₂ Setting
 PatientManager,病人管理,Patient Setup
 PatientManagerDesc,病人管理,Patient Setup
 PatientInfo,病人信息,Patient Info
-AdmitPatient,接收病人,Admit Patient
-Admit,接收病人,Admit
+AdmitPatient,新建病人,Admit Patient
+Admit,新建病人,Admit
 NormalFunctionMenu,常规功能,Normal Function
 NormalFunctionMenuDesc,常规功能,Normal Function
 Calculate,计算,Calculate
@@ -1423,7 +1423,7 @@ ConfigEditCodeMarkerMenuDesc,Code Marker,Code Marker
 ConfigEditIBPMenuDesc,有创血压设置,IBP
 ConfigEditSpO2MenuDesc,SpO₂设置,SpO₂
 DeleteSelectedWifiProfile,确定删除选择的wifi配置？,Confirm delete selected wifi profile ?
-ToneVolume,提示音量,Tone Volume
+ToneVolume,按键音量,Tone Volume
 SoftKeyPatientInfo,病人信息,Patient Info.
 Dose,剂量,Dose
 Blood,血型,Blood
