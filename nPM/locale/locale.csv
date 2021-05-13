@@ -502,8 +502,8 @@ _120min,120 分钟,120 min
 min,分,min
 Parameter,参数,Parameter
 AlarmStatus,状态,Status
-LowerLimit,低限,Low
-UpperLimit,高限,High
+LowerLimit,下限,Low
+UpperLimit,上限,High
 NIBP_SYS,收缩压,SYS
 NIBP_DIA,舒张压,DIA
 NIBP_MAP,平均压,MAP
