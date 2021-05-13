@@ -152,9 +152,9 @@
 
     <ConfigManager>
         <Default>
-            <Adult type="Current" name="" >AdultConfig.xml</Adult>
-            <Pediatric type="Current" name="" >PedConfig.xml</Pediatric>
-            <Neonate type="Current" name="" >NeoConfig.xml</Neonate>
+            <Adult type="Original" name="" >AdultConfig.Original.xml</Adult>
+            <Pediatric type="Original" name="" >PedConfig.Original.xml</Pediatric>
+            <Neonate type="Original" name="" >NeoConfig.Original.xml</Neonate>
         </Default>
 	<Original>
 	    <Adult>AdultConfig.Original.xml</Adult>
