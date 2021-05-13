@@ -1209,8 +1209,8 @@ ErrorLogExport,导出,Export
 ErrorLogInfo,信息,Info
 ServiceUpdateEntrance,更新,Service Update
 ServiceUpdateEntranceDesc,更新,Service Update
-SoftwareVersion,软件版本,Software Version
-SoftwareVersionMenu,软件版本,Software Version
+SoftwareVersion,机器版本,Software Version
+SoftwareVersionMenu,机器版本,Software Version
 ReleaseVersion,发布版本,Release Version
 Uboot,系统引导文件,Uboot
 Kernel,内核,Kernel
@@ -1300,16 +1300,16 @@ AlarmLevel,报警级别,Alarm Level
 AlarmType,报警类型,Alarm Type 
 Technology,技术,Technology
 Physiology,生理,Physiology
-UserMaintainPassword,监护仪维护密码,Monitor Maintain Password
+UserMaintainPassword,用户维护系统密码,Monitor Maintain Password
 Department,科室,Department
-UserMaintain,监护仪维护,Monitor Maintain
+UserMaintain,用户维护系统,Monitor Maintain
 BedNumber,床号,Bed No.
 ModifyPassword,密码,Password
 ChangeBedNumberRight,更改床号权限,Changing Bed Number
 Language,语言,Language
 ChangeLanguageTip,切换语言将在重启后生效,Language will take effect after reboot.
 EditMonitorName,监护仪名称,Monitor Name
-UserMaintainModifyConfig,监护仪维护修改配置,Monitor Maintain Modify Config
+UserMaintainModifyConfig,用户维护系统修改配置,Monitor Maintain Modify Config
 ProfileConflict,配置冲突,Profile Conflict
 WiredWorkMaintainMenu,有线网络,Wired Network
 WiredWorkMaintainMenuDesc,有线网络,Wired Network
