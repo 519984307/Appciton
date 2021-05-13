@@ -20,7 +20,7 @@ public:
     {
         English = 0,
         ChineseSimplified,
-        Language_NR
+        Language_NR = 10,
     };
 
     static LanguageManager *getInstance();
