@@ -144,12 +144,12 @@ RunningStatusBar::RunningStatusBar()
     mainLayout->setContentsMargins(0, 0, 0, 0);
     mainLayout->setSpacing(0);
 
-    d_ptr->icons[PACER_STATUS] = new QLabel();
-    mainLayout->addWidget(d_ptr->icons[PACER_STATUS], 1);
-    d_ptr->icons[NIGHT_MODE_STATUS] = new QLabel();
-    mainLayout->addWidget(d_ptr->icons[NIGHT_MODE_STATUS], 1);
     d_ptr->icons[TOUCH_STATUS] = new QLabel();
     mainLayout->addWidget(d_ptr->icons[TOUCH_STATUS], 1);
     d_ptr->icons[SHAKING_STATUS] = new QLabel();
     mainLayout->addWidget(d_ptr->icons[SHAKING_STATUS], 1);
+    d_ptr->icons[PACER_STATUS] = new QLabel();
+    mainLayout->addWidget(d_ptr->icons[PACER_STATUS], 1);
+    d_ptr->icons[NIGHT_MODE_STATUS] = new QLabel();
+    mainLayout->addWidget(d_ptr->icons[NIGHT_MODE_STATUS], 1);
 }
