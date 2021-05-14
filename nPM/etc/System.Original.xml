@@ -1068,7 +1068,7 @@
             <AutoInterval>5</AutoInterval>
             <StatFunction>1</StatFunction>
             <AutomaticRetry>0</AutomaticRetry>
-	    <CompleteTone>1</CompleteTone>
+	    <CompleteTone>0</CompleteTone>
         </NIBP>
         <AG>
             <AGModule>0</AGModule>
