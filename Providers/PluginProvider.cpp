@@ -34,7 +34,7 @@
 #define PACKET_BUFF_SIZE 64
 #define RING_BUFFER_LENGTH 4096
 #define READ_PLUGIN_PIN_INTERVAL        (200)   // 200ms读一次插件管脚
-#define CONNECTION_DELAY_INTERVAL      (600)    // plugin connection delay interval
+#define CONNECTION_DELAY_INTERVAL      (1800)    // plugin connection delay interval
 #define CHECK_CONNECT_TIMER_PERIOD         (200)   // 检查连接定时器周期
 #define MODULE_RESET_DURATION          (500)
 #define BAUDRATE_SWITCH_DURATION       (500)
