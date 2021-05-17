@@ -712,40 +712,40 @@
                 </TB>
 		<ETCO2 Enable="1" Prio="2">
 		<percent>
-		    <Low Min="0" Max="249">10</Low>
-		    <High Min="1" Max="250">80</High>
+                    <Low Min="0" Max="196">10</Low>
+                    <High Min="1" Max="197">80</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</percent>
 		<mmHg>
-		    <Low Min="0" Max="189">7</Low>
-		    <High Min="1" Max="190">60</High>
+                    <Low Min="0" Max="149">7</Low>
+                    <High Min="1" Max="150">60</High>
 		    <Step>1</Step>
 		    <Scale>1</Scale>
 		</mmHg>
 		<kPa>
-		    <Low Min="0" Max="249">10</Low>
-		    <High Min="1" Max="250">80</High>
+                    <Low Min="0" Max="199">10</Low>
+                    <High Min="1" Max="200">80</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</kPa>
 		</ETCO2>
                 <FICO2 Enable="0" Prio="2">
 		<percent>
-		    <Low Min="0" Max="249">0</Low>
-                    <High Min="1" Max="250">80</High>
+                    <Low Min="0" Max="196">0</Low>
+                    <High Min="1" Max="197">80</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</percent>
 		<mmHg>
-		    <Low Min="0" Max="189">0</Low>
-                    <High Min="1" Max="190">60</High>
+                    <Low Min="0" Max="149">0</Low>
+                    <High Min="1" Max="150">60</High>
 		    <Step>1</Step>
 		    <Scale>1</Scale>
 		</mmHg>
 		<kPa>
-		    <Low Min="0" Max="249">0</Low>
-                    <High Min="1" Max="250">80</High>
+                    <Low Min="0" Max="199">0</Low>
+                    <High Min="1" Max="200">80</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</kPa>
