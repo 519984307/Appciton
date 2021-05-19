@@ -16,7 +16,6 @@
 #include <QVBoxLayout>
 #include <QEvent>
 #include "ConfigManager.h"
-#include "IConfig.h"
 
 class ConfigEditCodeMarkerMenuContentPrivate
 {
@@ -28,8 +27,7 @@ public:
     };
 
     explicit ConfigEditCodeMarkerMenuContentPrivate(Config *const config)
-        : languageIndex(-1),
-          config(config)
+        : config(config)
         , codeMarkerFirst(NULL)
         , codeMarkerLast(NULL)
     {
@@ -37,7 +35,6 @@ public:
     void loadOptions();
 
     QMap <MenuItem, ComboBox *> combos;
-    int languageIndex;
     QStringList allCodeMarkers;  // all codemarker types
     QStringList selectedCodeMarkers;  // current selected codemarker types
     Config *const config;
@@ -65,20 +62,12 @@ void ConfigEditCodeMarkerMenuContent::hideEvent(QHideEvent *ev)
 
 void ConfigEditCodeMarkerMenuContentPrivate::loadOptions()
 {
-    languageIndex = 0;
-    systemConfig.getNumAttr("General|Language", "CurrentOption", languageIndex);
-
     QString codemarkerStr;
-    QString indexStr = "CodeMarker|Marker";
-    indexStr += QString::number(languageIndex, 10);
-
-    config->getStrValue(indexStr, codemarkerStr);
+    config->getStrValue("CodeMarker|Marker", codemarkerStr);
     allCodeMarkers = codemarkerStr.split(',');
 
     codemarkerStr.clear();
-    QString markerStr = "CodeMarker|SelectMarker|Language";
-    markerStr += QString::number(languageIndex, 10);
-    config->getStrValue(markerStr, codemarkerStr);
+    config->getStrValue("CodeMarker|SelectMarker|Language", codemarkerStr);
     selectedCodeMarkers = codemarkerStr.split(',');
 
     int totalSize = allCodeMarkers.size();
@@ -220,9 +209,6 @@ void ConfigEditCodeMarkerMenuContent::onComboBoxIndexChanged(int index)
     }
     QStringList tmpList(d_ptr->selectedCodeMarkers);
     QString strValue = tmpList.join(",");
-    int num = 0;
-    systemConfig.getNumAttr("General|Language", "CurrentOption", num);
-    QString markerStr = "CodeMarker|SelectMarker|Language";
-    markerStr += QString::number(num, 10);
-    d_ptr->config->setStrValue(markerStr, strValue);
+
+    d_ptr->config->setStrValue("CodeMarker|SelectMarker|Language", strValue);
 }

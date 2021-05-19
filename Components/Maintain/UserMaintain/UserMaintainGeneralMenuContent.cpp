@@ -152,9 +152,14 @@ void UserMaintainGeneralMenuContent::layoutExec()
     label = new QLabel(trs("Language"));
     layout->addWidget(label, d_ptr->combos.count() + d_ptr->buttons.count(), 0);
     comboBox = new ComboBox();
-    comboBox->addItems(QStringList()
-                       << trs("English")
-                       << trs("Chinese"));
+    // get language options list
+    QVector<QString> languageList;
+    systemConfig.getOptionList("General|Language", languageList);
+    // add language item
+    for (int i = 0; i < languageList.count(); ++i)
+    {
+        comboBox->addItem(languageList.at(i));
+    }
     itemID = static_cast<int>(UserMaintainGeneralMenuContentPrivate::ITEM_CBO_LANGUAGE);
     comboBox->setProperty("Item", qVariantFromValue(itemID));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
