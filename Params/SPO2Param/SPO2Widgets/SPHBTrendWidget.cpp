@@ -17,6 +17,7 @@
 #include "AlarmConfig.h"
 #include "MeasureSettingWindow.h"
 #include "ParamManager.h"
+#include "SPO2Param.h"
 
 class SPHBTrendWidgetPrivate
 {
@@ -127,6 +128,14 @@ void SPHBTrendWidget::setTextSize()
     int fontsize = fontManager.adjustNumFontSize(r, true, "9999");
     QFont font = fontManager.numFont(fontsize, true);
     d_ptr->sphbValue->setFont(font);
+}
+
+void SPHBTrendWidget::loadConfig()
+{
+    SpHbUnitType unit = spo2Param.getSpHbUnit();
+    UnitType u = unit == SPHB_UNIT_G_DL ? UNIT_GDL : UNIT_MMOL_L;
+    setUnit(trs(Unit::getSymbol(u)));
+    TrendWidget::loadConfig();
 }
 
 void SPHBTrendWidget::onRelease()
