@@ -764,11 +764,11 @@ static void _initProviderParam(void)
     }
 
 #ifdef ENABLE_O2_APNEASTIMULATION
+    // DAVID要求不打开O2参数模块，也可以支持新生儿窒息唤醒功能
+    paramManager.addProvider(new NeonateProvider());
+    paramManager.addParam(&o2Param.getInstance());
     if (systemManager.isSupport(CONFIG_O2))
     {
-         paramManager.addProvider(new NeonateProvider());
-         paramManager.addParam(&o2Param.getInstance());
-
          limitAlarmSource = new O2LimitAlarm();
          alarmSourceManager.registerLimitAlarmSource(limitAlarmSource, LIMIT_ALARMSOURCE_O2);
          alertor.addLimtSource(limitAlarmSource);

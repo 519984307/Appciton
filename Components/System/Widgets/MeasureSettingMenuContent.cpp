@@ -211,18 +211,19 @@ void MeasureSettingMenuContent::layoutExec()
         connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
         item = MeasureSettingMenuContentPrivate::ITEM_BTN_O2;
         btn->setProperty("Item", qVariantFromValue(item));
-
-        btn = new Button(QString("%1 >>").arg(trs("ApneaStimulationSetup")));
-        hl = new QHBoxLayout;
-        hl->addStretch(1);
-        hl->addWidget(btn, 1);
-        vlayout->addLayout(hl);
-        btn->setButtonStyle(Button::ButtonTextOnly);
-        connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
-        item = MeasureSettingMenuContentPrivate::ITEM_BTN_APNEA_STIMULATION;
-        btn->setProperty("Item", qVariantFromValue(item));
-        d_ptr->apneaStimulationBtn = btn;
     }
+
+    // DAVID要求不打开O2参数模块，也可以支持新生儿窒息唤醒功能
+    btn = new Button(QString("%1 >>").arg(trs("ApneaStimulationSetup")));
+    hl = new QHBoxLayout;
+    hl->addStretch(1);
+    hl->addWidget(btn, 1);
+    vlayout->addLayout(hl);
+    btn->setButtonStyle(Button::ButtonTextOnly);
+    connect(btn, SIGNAL(released()), this, SLOT(onBtnReleasd()));
+    item = MeasureSettingMenuContentPrivate::ITEM_BTN_APNEA_STIMULATION;
+    btn->setProperty("Item", qVariantFromValue(item));
+    d_ptr->apneaStimulationBtn = btn;
 #endif
     vlayout->addStretch();
 }
@@ -287,16 +288,14 @@ void MeasureSettingMenuContent::onBtnReleasd()
 void MeasureSettingMenuContentPrivate::loadOptions()
 {
 #ifdef ENABLE_O2_APNEASTIMULATION
-    if (systemManager.isSupport(CONFIG_O2))
+    // DAVID要求不打开O2参数模块，也可以支持新生儿窒息唤醒功能
+    if (patientManager.getType() == PATIENT_TYPE_NEO)
     {
-        if (patientManager.getType() == PATIENT_TYPE_NEO)
-        {
-            apneaStimulationBtn->setVisible(true);
-        }
-        else
-        {
-            apneaStimulationBtn->setVisible(false);
-        }
+        apneaStimulationBtn->setVisible(true);
+    }
+    else
+    {
+        apneaStimulationBtn->setVisible(false);
     }
 #endif
 }

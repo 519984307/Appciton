@@ -67,8 +67,8 @@ MeasureSettingWindow *MeasureSettingWindow::getInstance()
         if (systemManager.isSupport(CONFIG_O2))
         {
             instance->addMenuContent(new O2MenuContent);
-            instance->addMenuContent(new ApneaStimulationMenuContent());
         }
+        instance->addMenuContent(new ApneaStimulationMenuContent());
 #endif
     }
     return instance;
