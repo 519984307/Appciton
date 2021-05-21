@@ -544,6 +544,8 @@ void XmlParser::setCurrentFilePath(const QString &path)
         return;
     }
    _fileName = path;
+   // 切换配置文件名时，重置设置结点路径，解决不同文件设置同一个配置项时，保存配置异常的问题。
+   _lastSettingIndexStr = "";
 }
 
 /*******************************************************************************
