@@ -226,8 +226,8 @@
                 </SPO2_D>
 		<PVI Enable="0" Prio="1">
 		<percent>
-		    <Low Min="0" Max="99">5</Low>
-		    <High Min="1" Max="100">40</High>
+                    <Low Min="1" Max="98">5</Low>
+                    <High Min="2" Max="99">40</High>
 		    <Step>1</Step>
 		    <Scale>1</Scale>
 		</percent>
@@ -248,16 +248,16 @@
 		</SPHB>
 		<SPOC Enable="0" Prio="1">
 		<mLdL>
-		    <Low Min="0" Max="34">10</Low>
-		    <High Min="1" Max="35">25</High>
+                    <Low Min="1" Max="33">10</Low>
+                    <High Min="2" Max="34">25</High>
 		    <Step>1</Step>
 		    <Scale>1</Scale>
 		</mLdL>
 		</SPOC>
 		<SPMET Enable="0" Prio="1">
 		<percent>
-		    <Low Min="0" Max="999">0</Low>
-		    <High Min="1" Max="1000">30</High>
+                    <Low Min="1" Max="994">0</Low>
+                    <High Min="2" Max="995">30</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</percent>
@@ -912,28 +912,28 @@
 		</FIO2>
 		<T1 Enable="1" Prio="2">
 		<celsius>
-		    <Low Min="0" Max="499">350</Low>
-		    <High Min="1" Max="500">378</High>
+                    <Low Min="150" Max="499">350</Low>
+                    <High Min="151" Max="500">378</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</celsius>
 		<fahrenheit>
-		    <Low Min="320" Max="1219">950</Low>
-		    <High Min="321" Max="1220">1000</High>
+                    <Low Min="590" Max="1219">950</Low>
+                    <High Min="591" Max="1220">1000</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</fahrenheit>
 		</T1>
 		<T2 Enable="1" Prio="2">
 		<celsius>
-		    <Low Min="0" Max="499">350</Low>
-		    <High Min="1" Max="500">378</High>
+                    <Low Min="150" Max="499">350</Low>
+                    <High Min="151" Max="500">378</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</celsius>
 		<fahrenheit>
-		    <Low Min="320" Max="1219">950</Low>
-		    <High Min="321" Max="1220">1000</High>
+                    <Low Min="590" Max="1219">950</Low>
+                    <High Min="591" Max="1220">1000</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</fahrenheit>
