@@ -108,8 +108,8 @@
     <NIBP>
         <StatFunction>1</StatFunction>
         <AutomaticRetry>0</AutomaticRetry>
-        <InitialCuffInflation>4</InitialCuffInflation>
-	<SUNTECHInitialCuffInflation>4</SUNTECHInitialCuffInflation>
+        <InitialCuffInflation>3</InitialCuffInflation>
+        <SUNTECHInitialCuffInflation>3</SUNTECHInitialCuffInflation>
 	<CompleteTone>0</CompleteTone>
 	<SysHighLimit>130</SysHighLimit>
 	<SysLowLimit>40</SysLowLimit>
