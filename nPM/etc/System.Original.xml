@@ -76,7 +76,7 @@
         <PressureUnit>5</PressureUnit>
         <TemperatureUnit>1</TemperatureUnit>
         <IBPUnit>5</IBPUnit>
-        <CO2Unit>5</CO2Unit>
+        <CO2Unit>7</CO2Unit>
     </Unit>
     <SelectStarterLogo>2</SelectStarterLogo>
     <MonitorInfo>
