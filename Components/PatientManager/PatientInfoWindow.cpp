@@ -387,9 +387,9 @@ PatientInfoWindow::PatientInfoWindow()
                       , itemPos++ % 4);
     d_ptr->pacer = new ComboBox();
     d_ptr->pacer->setFixedWidth(itemWidth);
-    d_ptr->pacer->addItems(QStringList()
-                           << trs(PatientSymbol::convert(PATIENT_PACER_OFF))
-                           << trs(PatientSymbol::convert(PATIENT_PACER_ON)));
+    d_ptr->pacer->addItems(QStringList() << trs("Off") << trs("On"));
+//                           << trs(PatientSymbol::convert(PATIENT_PACER_OFF))
+//                           << trs(PatientSymbol::convert(PATIENT_PACER_ON)));
     itemId = static_cast<int>
              (PatientInfoWindowPrivate::ITEM_CBO_PACER_MARKER);
     d_ptr->pacer->setProperty("Item" , qVariantFromValue(itemId));
