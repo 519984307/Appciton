@@ -1273,8 +1273,8 @@ StopNIBPLeakageDetection,停止无创血压泄露检测,Stop NIBP Leakage Detect
 StopECGModuleCalibration,停止ECG模块校准,Stop ECG Module Calibration
 StopCO2ModuleMaintenance,停止CO₂模块维护,Stop CO₂ Module Maintenance
 StopTouchScreenCalibration,停止触摸屏校准,Stop Touch Screen Calibration
-OthersMaintainMenu,其他,Others
-OthersMaintainMenuDesc,其他,Others
+OthersMaintainMenu,其他维护菜单,Others
+OthersMaintainMenuDesc,其他维护菜单,Others
 WaveDrawMode,波形绘画方式,Wave Draw Mode
 Mono,阶梯,Mono
 Color,色阶,Color
@@ -1282,7 +1282,7 @@ WaveLine,波形线条,Wave Line
 Thick,粗,Thick
 Medium,中,Medium
 Thin,细,Thin
-ECGStandard,ECG标准,ECG Standard
+ECGStandard,心电标准,ECG Standard
 AHA,AHA,AHA
 IEC,IEC,IEC
 Protected,保护,Protected
