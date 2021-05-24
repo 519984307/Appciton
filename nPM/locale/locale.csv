@@ -226,6 +226,7 @@ OverpressureProtect,过压保护,Over Pressure Protect
 NIBPPressureControlModelEnterFail,进入压力控制模式失败,Enter Pressure Control Mode Failed
 NIBPModuleDisable,NIBP模块禁用,NIBP Module Disable
 CO2SweepSpeed,波形速度,Sweep Speed
+CO2FiCO2Display,FiCO₂显示,FiCO₂ Display
 CO2WaveMode,CO₂波形模式,CO₂ Wave Mode
 CO2Curve,曲线,Curve
 CO2Filled,填充,Filled
