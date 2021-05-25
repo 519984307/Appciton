@@ -1256,7 +1256,7 @@ Tbrain,大脑,T brain
 H2min,2分钟,2min
 H3min,3分钟,3min
 Defaults,默认,Defaults
-RestoreDefaults,恢复默认,Restore Defaults
+RestoreDefaults,默认覆盖,Restore Defaults
 ModuleMaintainMenu,模块维护,Module Maintain
 ModuleMaintainMenuDesc,模块维护,Module Maintain
 AnaesthesiaModuleCalibration,麻醉模块化校准,Anaesthesia Module Calibration
