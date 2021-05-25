@@ -22,6 +22,7 @@
 #include "ParamDefine.h"
 #include "SPO2Param.h"
 #include "Debug.h"
+#include "SystemManager.h"
 
 class ConfigEditSpO2MenuContentPrivate
 {
@@ -35,6 +36,14 @@ public:
         ITEM_CBO_SMART_TONE,
         ITEM_CBO_BEAT_VOL,
         ITEM_CBO_NIBP_SAME_SIDE,
+        ITEM_CBO_SIGNAL_IQ,
+        ITEM_CBO_SPO2_LINE_FREQ,
+        ITEM_CBO_SPHB_PRECISION_MODE,
+        ITEM_CBO_SPHB_VESSEL_MODE,
+        ITEM_CBO_SPHB_AVERAGING_MODE,
+        ITEM_CBO_SPHB_UNIT,
+        ITEM_CBO_PVI_AVERAGING_MODE,
+        ITEM_CBO_ALARM_AUDIO_DELAY,    // alarm audio delay
         ITEM_CBO_MAX,
     };
 
@@ -45,6 +54,7 @@ public:
     void loadOptions();
 
     QMap <MenuItem, ComboBox *> combos;
+    QMap<MenuItem, QLabel *> seniorParamLbl;
     Config *const config;
     SPO2ModuleType moduleType;
 
@@ -121,6 +131,72 @@ void ConfigEditSpO2MenuContentPrivate::loadOptions()
     index = 0;
     config->getNumValue("SPO2|NIBPSameSide", index);
     combos[ITEM_CBO_NIBP_SAME_SIDE]->setCurrentIndex(index);
+
+    // signal IQ
+    index = 0;
+    config->getNumValue("SPO2|SignalIQ", index);
+    combos[ITEM_CBO_SIGNAL_IQ]->setCurrentIndex(index);
+
+    // Alarm audio delay
+    index = 0;
+    config->getNumValue("SPO2|AlarmDelay", index);
+    combos[ITEM_CBO_ALARM_AUDIO_DELAY]->setCurrentIndex(index);
+
+    if (moduleType == MODULE_RAINBOW_SPO2)
+    {
+        bool isNeoMachine = systemManager.isNeonateMachine();  // Neonate machine status
+        combos[ITEM_CBO_SPO2_LINE_FREQ]->setVisible(true);
+        combos[ITEM_CBO_SPHB_PRECISION_MODE]->setVisible(!isNeoMachine);
+        combos[ITEM_CBO_SPHB_VESSEL_MODE]->setVisible(!isNeoMachine);
+        combos[ITEM_CBO_SPHB_AVERAGING_MODE]->setVisible(!isNeoMachine);
+        combos[ITEM_CBO_SPHB_UNIT]->setVisible(!isNeoMachine);
+        combos[ITEM_CBO_PVI_AVERAGING_MODE]->setVisible(true);
+        seniorParamLbl[ITEM_CBO_SPO2_LINE_FREQ]->setVisible(true);
+        seniorParamLbl[ITEM_CBO_SPHB_PRECISION_MODE]->setVisible(!isNeoMachine);
+        seniorParamLbl[ITEM_CBO_SPHB_VESSEL_MODE]->setVisible(!isNeoMachine);
+        seniorParamLbl[ITEM_CBO_SPHB_AVERAGING_MODE]->setVisible(!isNeoMachine);
+        seniorParamLbl[ITEM_CBO_SPHB_UNIT]->setVisible(!isNeoMachine);
+        seniorParamLbl[ITEM_CBO_PVI_AVERAGING_MODE]->setVisible(true);
+
+        index = 0;
+        config->getNumValue("SPO2|LineFrequency", index);
+        combos[ITEM_CBO_SPO2_LINE_FREQ]->setCurrentIndex(index);
+
+        index = 0;
+        config->getNumValue("SPO2|SpHbPrecision", index);
+        combos[ITEM_CBO_SPHB_PRECISION_MODE]->setCurrentIndex(index);
+
+        index = 0;
+        config->getNumValue("SPO2|SpHbBloodVessel", index);
+        combos[ITEM_CBO_SPHB_VESSEL_MODE]->setCurrentIndex(index);
+
+        index = 0;
+        config->getNumValue("SPO2|SpHbAveragingMode", index);
+        combos[ITEM_CBO_SPHB_AVERAGING_MODE]->setCurrentIndex(index);
+
+        index = 0;
+        config->getNumValue("SPO2|SpHbUnit", index);
+        combos[ITEM_CBO_SPHB_UNIT]->setCurrentIndex(index);
+
+        index = 0;
+        config->getNumValue("SPO2|PviAveragingMode", index);
+        combos[ITEM_CBO_PVI_AVERAGING_MODE]->setCurrentIndex(index);
+    }
+    else
+    {
+        combos[ITEM_CBO_SPO2_LINE_FREQ]->setVisible(false);
+        combos[ITEM_CBO_SPHB_PRECISION_MODE]->setVisible(false);
+        combos[ITEM_CBO_SPHB_VESSEL_MODE]->setVisible(false);
+        combos[ITEM_CBO_SPHB_AVERAGING_MODE]->setVisible(false);
+        combos[ITEM_CBO_SPHB_UNIT]->setVisible(false);
+        combos[ITEM_CBO_PVI_AVERAGING_MODE]->setVisible(false);
+        seniorParamLbl[ITEM_CBO_SPO2_LINE_FREQ]->setVisible(false);
+        seniorParamLbl[ITEM_CBO_SPHB_PRECISION_MODE]->setVisible(false);
+        seniorParamLbl[ITEM_CBO_SPHB_VESSEL_MODE]->setVisible(false);
+        seniorParamLbl[ITEM_CBO_SPHB_AVERAGING_MODE]->setVisible(false);
+        seniorParamLbl[ITEM_CBO_SPHB_UNIT]->setVisible(false);
+        seniorParamLbl[ITEM_CBO_PVI_AVERAGING_MODE]->setVisible(false);
+    }
 }
 
 void ConfigEditSpO2MenuContent::readyShow()
@@ -302,6 +378,123 @@ void ConfigEditSpO2MenuContent::layoutExec()
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     d_ptr->combos.insert(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_NIBP_SAME_SIDE, comboBox);
 
+    // 是否显示Signal IQ
+    label = new QLabel(trs("ShowSignalIQ"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                       << trs("Off")
+                       << trs("On"));
+    itemID = static_cast<int>(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SIGNAL_IQ);
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SIGNAL_IQ, comboBox);
+
+    // Line Frequency
+    label = new QLabel(trs("LineFrequency"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    d_ptr->seniorParamLbl.insert(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SPO2_LINE_FREQ, label);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList() << "50HZ" << "60HZ");
+    itemID = static_cast<int>(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SPO2_LINE_FREQ);
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SPO2_LINE_FREQ, comboBox);
+
+    // sphb precision mode
+    label = new QLabel();
+    label->setText(trs("SpHbPrecisionMode"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    d_ptr->seniorParamLbl.insert(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SPHB_PRECISION_MODE, label);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                   << trs(SPO2Symbol::convert(PRECISION_NEAREST_0_1))
+                   << trs(SPO2Symbol::convert(PRECISION_NEAREST_0_5))
+                   << trs(SPO2Symbol::convert(PRECISION_WHOLE_NUMBER)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    int item = static_cast<int>(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SPHB_PRECISION_MODE);
+    comboBox->setProperty("Item", qVariantFromValue(item));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    d_ptr->combos.insert(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SPHB_PRECISION_MODE, comboBox);
+
+    // sphb vessel mode
+    label = new QLabel();
+    label->setText(trs("SpHbVesselMode"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    d_ptr->seniorParamLbl.insert(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SPHB_VESSEL_MODE, label);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                    << trs(SPO2Symbol::convert(BLOOD_VESSEL_ARTERIAL))
+                    << trs(SPO2Symbol::convert(BLOOD_VESSEL_VENOUS)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    item = static_cast<int>(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SPHB_VESSEL_MODE);
+    comboBox->setProperty("Item", qVariantFromValue(item));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    d_ptr->combos.insert(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SPHB_VESSEL_MODE, comboBox);
+
+    // sphb averaging mode
+    label = new QLabel();
+    label->setText(trs("SpHbAveragingMode"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    d_ptr->seniorParamLbl.insert(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SPHB_AVERAGING_MODE, label);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                    << trs(SPO2Symbol::convert(SPHB_AVERAGING_MODE_LONG))
+                    << trs(SPO2Symbol::convert(SPHB_AVERAGING_MODE_MED))
+                    << trs(SPO2Symbol::convert(SPHB_AVERAGING_MODE_SHORT)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    item = static_cast<int>(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SPHB_AVERAGING_MODE);
+    comboBox->setProperty("Item", qVariantFromValue(item));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    d_ptr->combos.insert(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SPHB_AVERAGING_MODE, comboBox);
+
+    // sphb Unit
+    label = new QLabel();
+    label->setText(trs("SpHbUnit"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    d_ptr->seniorParamLbl.insert(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SPHB_UNIT, label);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                    << trs(Unit::getSymbol(UNIT_GDL))
+                    << trs(Unit::getSymbol(UNIT_MMOL_L)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    item = static_cast<int>(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SPHB_UNIT);
+    comboBox->setProperty("Item", qVariantFromValue(item));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    d_ptr->combos.insert(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SPHB_UNIT, comboBox);
+
+    // pvi averaging mode
+    label = new QLabel();
+    label->setText(trs("PviAveragingMode"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    d_ptr->seniorParamLbl.insert(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_PVI_AVERAGING_MODE, label);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList()
+                    << trs(SPO2Symbol::convert(AVERAGING_MODE_NORMAL))
+                    << trs(SPO2Symbol::convert(AVERAGING_MODE_FAST)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    item = static_cast<int>(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_PVI_AVERAGING_MODE);
+    comboBox->setProperty("Item", qVariantFromValue(item));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    d_ptr->combos.insert(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_PVI_AVERAGING_MODE, comboBox);
+
+    // spo2 alarm delay
+    label = new QLabel(trs("SPO2AlarmAudioDelay"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    d_ptr->seniorParamLbl.insert(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_ALARM_AUDIO_DELAY, label);
+    comboBox = new ComboBox();
+    comboBox->addItems(QStringList() << trs(SPO2Symbol::convert(SPO2_ALARM_AUDIO_DELAY_0S))
+                                     << trs(SPO2Symbol::convert(SPO2_ALARM_AUDIO_DELAY_5S))
+                                     << trs(SPO2Symbol::convert(SPO2_ALARM_AUDIO_DELAY_10S))
+                                     << trs(SPO2Symbol::convert(SPO2_ALARM_AUDIO_DELAY_15S)));
+    itemID = static_cast<int>(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_ALARM_AUDIO_DELAY);
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(ConfigEditSpO2MenuContentPrivate::ITEM_CBO_ALARM_AUDIO_DELAY, comboBox);
+
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
@@ -349,6 +542,30 @@ void ConfigEditSpO2MenuContent::onComboBoxIndexChanged(int index)
         break;
     case ConfigEditSpO2MenuContentPrivate::ITEM_CBO_NIBP_SAME_SIDE:
         str = "NIBPSameSide";
+        break;
+    case ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SIGNAL_IQ:
+        str = "SignalIQ";
+        break;
+    case ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SPO2_LINE_FREQ:
+        str = "LineFrequency";
+        break;
+    case ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SPHB_PRECISION_MODE:
+        str = "SpHbPrecision";
+        break;
+    case ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SPHB_VESSEL_MODE:
+        str = "SpHbBloodVessel";
+        break;
+    case ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SPHB_AVERAGING_MODE:
+        str = "SpHbAveragingMode";
+        break;
+    case ConfigEditSpO2MenuContentPrivate::ITEM_CBO_SPHB_UNIT:
+        str = "SpHbUnit";
+        break;
+    case ConfigEditSpO2MenuContentPrivate::ITEM_CBO_PVI_AVERAGING_MODE:
+        str = "PviAveragingMode";
+        break;
+    case ConfigEditSpO2MenuContentPrivate::ITEM_CBO_ALARM_AUDIO_DELAY:
+        str = "AlarmDelay";
         break;
     default :
         qdebug("Invalid combo id.");

@@ -46,6 +46,8 @@ public:
 protected:
     /*reimplment*/
     void setTextSize();
+    /* reimplment */
+    void loadConfig();
 
 private slots:
     void onRelease();

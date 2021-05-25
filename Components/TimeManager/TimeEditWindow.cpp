@@ -329,20 +329,21 @@ void TimeEditWindow::hideEvent(QHideEvent *ev)
     QDateTime dt = d_ptr->getSetupTime();
     if (d_ptr->oldTime != dt.toTime_t())
     {
-        MessageBox msg(trs("Prompt"), trs("ChangeTime"), true, true);
-        windowManager.showWindow(&msg, WindowManager::ShowBehaviorModal);
-        if (msg.result() == QDialog::Accepted)
-        {
+        // 根据DAVID要求，修改系统时间后，立即生效，不做提示。
+//        MessageBox msg(trs("Prompt"), trs("ChangeTime"), true, true);
+//        windowManager.showWindow(&msg, WindowManager::ShowBehaviorModal);
+//        if (msg.result() == QDialog::Accepted)
+//        {
             trendDataStorageManager.stopPeriodRun();
             d_ptr->setSysTime();
             systemTick.resetLastTime();
-            patientManager.newPatient();
+//            patientManager.newPatient();
             if (nibpParam.getMeasurMode() == NIBP_MODE_STAT)
             {
                 nibpCountdownTime.timeChange(true);
             }
             trendDataStorageManager.restartPeriodRun();
-        }
+//        }
     }
 }
 

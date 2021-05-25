@@ -79,4 +79,5 @@ private:
     QString _awRRStr;
     bool _etco2Alarm;
     bool _fico2Alarm;
+    bool _awrrAlarm;
 };

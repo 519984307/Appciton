@@ -64,6 +64,7 @@ public:
 private:
     bool _isEtco2Alarm;
     bool _isFico2Alarm;
+    bool _isAwrrAlarm;
 };
 
 // OneShor报警实现。

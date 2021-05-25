@@ -154,6 +154,9 @@ static const char *_subParamNames(SubParamID paramID, bool ignoreModuleConfig)
     case SUB_PARAM_FICO2:
         return "FICO2";
 
+    case SUB_PARAM_AWRR:
+        return "AWRR";
+
     case SUB_PARAM_ETN2O:
         return "ETN2O";
 
@@ -345,6 +348,7 @@ ParamID ParamInfo::getParamID(SubParamID id)
         break;
     case SUB_PARAM_ETCO2:
     case SUB_PARAM_FICO2:
+    case SUB_PARAM_AWRR:
         paramID = PARAM_CO2;
         break;
     case SUB_PARAM_ETN2O:
@@ -413,6 +417,7 @@ QList<SubParamID> ParamInfo::getSubParams(ParamID id)
     case PARAM_CO2:
         ids += SUB_PARAM_ETCO2;
         ids += SUB_PARAM_FICO2;
+        ids += SUB_PARAM_AWRR;
         break;
 
     case PARAM_TEMP:
@@ -679,6 +684,7 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id)
     case SUB_PARAM_ICP_PR:
     case SUB_PARAM_AUXP1_PR:
     case SUB_PARAM_AUXP2_PR:
+    case SUB_PARAM_AWRR:
         return UNIT_BPM;
 
     case SUB_PARAM_ST_I:
@@ -791,6 +797,7 @@ UnitType ParamInfo::getUnitOfSubParam(SubParamID id, UnitType *t0, UnitType *t1)
     case SUB_PARAM_ICP_PR:
     case SUB_PARAM_AUXP1_PR:
     case SUB_PARAM_AUXP2_PR:
+    case SUB_PARAM_AWRR:
         return UNIT_BPM;
 
     case SUB_PARAM_ST_I:

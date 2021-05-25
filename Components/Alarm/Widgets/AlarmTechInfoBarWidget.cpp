@@ -30,6 +30,7 @@ void AlarmTechInfoBarWidget::_drawBackground(void)
     QPainter painter(this);
     painter.setRenderHint(QPainter::Antialiasing, true);
     painter.setPen(Qt::transparent);
+    // 根据DAVID说明书要求, 在技术报警中高级报警：红底白字, 中级报警：黄底黑字, 低级报警：黑底白字
     if (_alarmPriority == ALARM_PRIO_HIGH)
     {
         painter.setBrush(QColor(255, 0, 0));
@@ -38,10 +39,10 @@ void AlarmTechInfoBarWidget::_drawBackground(void)
     {
         painter.setBrush(QColor(255, 255, 0));
     }
-    else if (_alarmPriority == ALARM_PRIO_LOW)
-    {
-        painter.setBrush(QColor(0, 175, 219));
-    }
+//    else if (_alarmPriority == ALARM_PRIO_LOW)
+//    {
+//        painter.setBrush(QColor(0, 175, 219));
+//    }
     else
     {
         painter.setBrush(QColor(30, 30, 30));
@@ -62,8 +63,10 @@ void AlarmTechInfoBarWidget::_drawText(void)
         return;
     }
 
+    // 根据DAVID说明书要求, 在技术报警中高级报警：红底白字, 中级报警：黄底黑字, 低级报警：黑底白字
     QPainter painter(this);
-    if (_alarmPriority == ALARM_PRIO_HIGH || _alarmPriority == ALARM_PRIO_PROMPT)
+    if (_alarmPriority == ALARM_PRIO_HIGH || _alarmPriority == ALARM_PRIO_PROMPT
+                                          || _alarmPriority == ALARM_PRIO_LOW)
     {
         painter.setPen(Qt::white);
     }

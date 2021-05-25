@@ -61,6 +61,11 @@ void ConfigEditAlarmLimitMenuContentPrivate::loadoptions()
         {
             continue;
         }
+        // check sub param is support
+        if (!systemManager.isSupport(subId))
+        {
+            continue;
+        }
         if (pid == PARAM_IBP && systemManager.isSupport(PARAM_IBP))
         {
             IBPLabel pressName1 = ibpParam.getEntitle(IBP_CHN_1);

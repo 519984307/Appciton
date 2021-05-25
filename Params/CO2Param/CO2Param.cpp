@@ -321,6 +321,8 @@ short CO2Param::getSubParamValue(SubParamID id)
     case SUB_PARAM_FICO2:
         return getFiCO2();
 
+    case SUB_PARAM_AWRR:
+        return getAWRR();
     default:
         return InvData();
     }
@@ -340,8 +342,17 @@ void CO2Param::showSubParamValue()
 /**************************************************************************************************
  * 获取当前的单位。
  *************************************************************************************************/
-UnitType CO2Param::getCurrentUnit(SubParamID /*id*/)
+UnitType CO2Param::getCurrentUnit(SubParamID id)
 {
+    switch (id)
+    {
+    case SUB_PARAM_AWRR:
+        return UNIT_BPM;
+        break;
+    default:
+        break;
+    }
+
     return getUnit();
 }
 
@@ -551,6 +562,11 @@ void CO2Param::setRR(short rr)
     {
         d_ptr->trendWidget->setawRRValue(rr);
     }
+}
+
+short CO2Param::getAWRR()
+{
+    return d_ptr->awRRValue;
 }
 
 /**************************************************************************************************

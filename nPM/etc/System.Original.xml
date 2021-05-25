@@ -37,7 +37,7 @@
     </General>
     <Alarms>
         <DefaultAlarmVolume>3</DefaultAlarmVolume>
-        <MinimumAlarmVolume>3</MinimumAlarmVolume>
+        <MinimumAlarmVolume>2</MinimumAlarmVolume>
         <AlarmPauseTime>1</AlarmPauseTime>
         <STAlarmDraly>1</STAlarmDraly>
         <PauseMaxAlarm15Min>1</PauseMaxAlarm15Min>
@@ -48,7 +48,7 @@
         <IBPLeadOffLev>1</IBPLeadOffLev>
         <LethalArrhOff>1</LethalArrhOff>
         <ExtendedArrh>1</ExtendedArrh>
-        <AlarmLightOnAlarmReset>1</AlarmLightOnAlarmReset>
+        <AlarmLightOnAlarmReset>0</AlarmLightOnAlarmReset>
         <AlarmDelay>1</AlarmDelay>
         <HighAlarmIntervals>3</HighAlarmIntervals>
         <MedAlarmIntervals>3</MedAlarmIntervals>
@@ -76,7 +76,7 @@
         <PressureUnit>5</PressureUnit>
         <TemperatureUnit>1</TemperatureUnit>
         <IBPUnit>5</IBPUnit>
-        <CO2Unit>5</CO2Unit>
+        <CO2Unit>7</CO2Unit>
     </Unit>
     <SelectStarterLogo>2</SelectStarterLogo>
     <MonitorInfo>
@@ -152,9 +152,9 @@
 
     <ConfigManager>
         <Default>
-            <Adult type="Current" name="" >AdultConfig.xml</Adult>
-            <Pediatric type="Current" name="" >PedConfig.xml</Pediatric>
-            <Neonate type="Current" name="" >NeoConfig.xml</Neonate>
+            <Adult type="Original" name="" >AdultConfig.Original.xml</Adult>
+            <Pediatric type="Original" name="" >PedConfig.Original.xml</Pediatric>
+            <Neonate type="Original" name="" >NeoConfig.Original.xml</Neonate>
         </Default>
 	<Original>
 	    <Adult>AdultConfig.Original.xml</Adult>
@@ -1068,7 +1068,7 @@
             <AutoInterval>5</AutoInterval>
             <StatFunction>1</StatFunction>
             <AutomaticRetry>0</AutomaticRetry>
-	    <CompleteTone>1</CompleteTone>
+	    <CompleteTone>0</CompleteTone>
         </NIBP>
         <AG>
             <AGModule>0</AGModule>

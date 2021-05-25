@@ -985,7 +985,7 @@ void EventWindowPrivate::eventTrendUpdate()
         }
         else
         {
-            if (paramInfo.getParamID(subId) == PARAM_CO2)
+            if (paramInfo.getParamID(subId) == PARAM_CO2 && subId != SUB_PARAM_AWRR)
             {
                 dataStr = Unit::convert(type, UNIT_PERCENT,
                                         ctx.trendSegment->values[i].value / 10.0, co2Param.getBaro());

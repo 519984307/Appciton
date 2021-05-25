@@ -146,7 +146,7 @@ public:
         {
             "CO2EtCO2Low", "CO2EtCO2High",
             "CO2FiCO2Low", "CO2FiCO2High",
-//            "CO2BRLow",    "CO2BRHigh"
+            "CO2awRRLow",  "CO2awRRHigh"
         };
         return symbol[index];
     }
