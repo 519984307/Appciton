@@ -37,7 +37,7 @@
     </General>
     <Alarms>
         <DefaultAlarmVolume>3</DefaultAlarmVolume>
-        <MinimumAlarmVolume>3</MinimumAlarmVolume>
+        <MinimumAlarmVolume>2</MinimumAlarmVolume>
         <AlarmPauseTime>1</AlarmPauseTime>
         <STAlarmDraly>1</STAlarmDraly>
         <PauseMaxAlarm15Min>1</PauseMaxAlarm15Min>
@@ -48,7 +48,7 @@
         <IBPLeadOffLev>1</IBPLeadOffLev>
         <LethalArrhOff>1</LethalArrhOff>
         <ExtendedArrh>1</ExtendedArrh>
-        <AlarmLightOnAlarmReset>1</AlarmLightOnAlarmReset>
+        <AlarmLightOnAlarmReset>0</AlarmLightOnAlarmReset>
         <AlarmDelay>1</AlarmDelay>
         <HighAlarmIntervals>3</HighAlarmIntervals>
         <MedAlarmIntervals>3</MedAlarmIntervals>
