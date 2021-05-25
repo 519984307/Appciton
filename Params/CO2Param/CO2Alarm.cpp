@@ -54,9 +54,14 @@ SubParamID CO2LimitAlarm::getSubParamID(int id)
         case CO2_LIMIT_ALARM_ETCO2_LOW:
         case CO2_LIMIT_ALARM_ETCO2_HIGH:
             return SUB_PARAM_ETCO2;
-
-        default:
+        case CO2_LIMIT_ALARM_FICO2_LOW:
+        case CO2_LIMIT_ALARM_FICO2_HIGH:
             return SUB_PARAM_FICO2;
+        case CO2_LIMIT_ALARM_AWRR_LOW:
+        case CO2_LIMIT_ALARM_AWRR_HIGH:
+            return SUB_PARAM_AWRR;
+        default:
+            return SUB_PARAM_NONE;
     }
 }
 
@@ -79,8 +84,14 @@ int CO2LimitAlarm::getValue(int id)
         case CO2_LIMIT_ALARM_ETCO2_HIGH:
             return co2Param.getEtCO2();
 
-        default:
+        case CO2_LIMIT_ALARM_FICO2_LOW:
+        case CO2_LIMIT_ALARM_FICO2_HIGH:
             return co2Param.getFiCO2();
+        case CO2_LIMIT_ALARM_AWRR_LOW:
+        case CO2_LIMIT_ALARM_AWRR_HIGH:
+            return co2Param.getAWRR();
+        default:
+            return InvData();
     }
 }
 
@@ -211,6 +222,15 @@ void CO2LimitAlarm::notifyAlarm(int id, bool flag)
         case CO2_LIMIT_ALARM_FICO2_LOW:
             _isFico2Alarm |= flag;
             break;
+        case CO2_LIMIT_ALARM_AWRR_HIGH:
+            _isAwrrAlarm |= flag;
+            co2Param.noticeLimitAlarm(subID, _isAwrrAlarm);
+            _isAwrrAlarm = false;
+            break;
+
+        case CO2_LIMIT_ALARM_AWRR_LOW:
+            _isAwrrAlarm |= flag;
+            break;
 
         default:
             break;
@@ -224,6 +244,7 @@ CO2LimitAlarm::CO2LimitAlarm()
 {
     _isEtco2Alarm = false;
     _isFico2Alarm = false;
+    _isAwrrAlarm = false;
 }
 
 /**************************************************************************************************

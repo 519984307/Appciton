@@ -654,6 +654,8 @@ CO2EtCO2Low,EtCO₂ 低,EtCO₂ Low
 CO2EtCO2High,EtCO₂ 高,EtCO₂ High
 CO2FiCO2Low,FiCO₂ 低,FiCO₂ Low
 CO2FiCO2High,FiCO₂ 高,FiCO₂ High
+CO2awRRLow,awRR 低,awRR Low
+CO2awRRHigh,awRR 高,awRR High
 CO2BRLow,BR 低,BR Low
 CO2BRHigh,BR 高,BR High
 CO2MotorError,CO₂电机转速超限,CO₂ Motor Speed Out of bounds

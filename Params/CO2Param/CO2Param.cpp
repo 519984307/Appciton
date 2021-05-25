@@ -322,7 +322,7 @@ short CO2Param::getSubParamValue(SubParamID id)
         return getFiCO2();
 
     case SUB_PARAM_AWRR:
-        return d_ptr->awRRValue;
+        return getAWRR();
     default:
         return InvData();
     }
@@ -562,6 +562,11 @@ void CO2Param::setRR(short rr)
     {
         d_ptr->trendWidget->setawRRValue(rr);
     }
+}
+
+short CO2Param::getAWRR()
+{
+    return d_ptr->awRRValue;
 }
 
 /**************************************************************************************************
