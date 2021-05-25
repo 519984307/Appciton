@@ -743,6 +743,14 @@
 		    <Scale>10</Scale>
 		</kPa>
 		</FICO2>
+		<AWRR Enable="1" Prio="1">
+		    <bpm>
+			<Low Min="2" Max="149">5</Low>
+			<High Min="3" Max="150">50</High>
+			<Step>1</Step>
+			<Scale>1</Scale>
+		    </bpm>
+		</AWRR>
 		<ETN2O Enable="0" Prio="1">
 		<percent>
 		    <Low Min="0" Max="114">1</Low>

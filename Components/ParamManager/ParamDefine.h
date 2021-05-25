@@ -91,9 +91,12 @@ enum SubParamID
     SUB_PARAM_CO_CI,
     SUB_PARAM_CO_TB,
 
-    // AG
+    // CO2
     SUB_PARAM_ETCO2,
     SUB_PARAM_FICO2,
+    SUB_PARAM_AWRR,
+
+    // AG
     SUB_PARAM_ETN2O,
     SUB_PARAM_FIN2O,
     SUB_PARAM_ETAA1,

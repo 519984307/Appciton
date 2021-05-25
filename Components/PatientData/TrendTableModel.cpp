@@ -808,6 +808,7 @@ TrendTableModelPrivate::TrendTableModelPrivate()
         case SUB_PARAM_AUXP2_MAP:
         case SUB_PARAM_AUXP2_PR:
         case SUB_PARAM_FICO2:
+        case SUB_PARAM_AWRR:
         case SUB_PARAM_FIN2O:
         case SUB_PARAM_FIAA1:
         case SUB_PARAM_FIAA2:

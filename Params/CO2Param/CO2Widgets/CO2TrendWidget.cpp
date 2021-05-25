@@ -276,7 +276,7 @@ CO2TrendWidget::CO2TrendWidget() : TrendWidget("CO2TrendWidget")
     layout->addWidget(_etco2Value);
     layout->addStretch();
 
-    _awRRName = new QLabel("awRR", this);
+    _awRRName = new QLabel(trs("AWRR"), this);
     _awRRName->setAlignment(Qt::AlignRight | Qt::AlignVCenter);
 
     _fico2Label = new QLabel("Fi", this);

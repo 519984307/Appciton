@@ -702,7 +702,8 @@ QStringList RecordPageGenerator::getTrendStringList(const TrendDataPackage &tren
             }
             else
             {
-                if (subparamID == SUB_PARAM_ETCO2 || subparamID == SUB_PARAM_FICO2)
+                if (subparamID == SUB_PARAM_ETCO2 || subparamID == SUB_PARAM_FICO2
+                                                  || subparamID == SUB_PARAM_AWRR)
                 {
                     // co2没有连外接模块时,不打印CO2趋势数据
                     if (!co2Param.isConnected())
