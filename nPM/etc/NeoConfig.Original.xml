@@ -256,7 +256,7 @@
 		</SPOC>
 		<SPMET Enable="0" Prio="1">
 		<percent>
-                    <Low Min="1" Max="994">0</Low>
+                    <Low Min="1" Max="994">1</Low>
                     <High Min="2" Max="995">30</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
@@ -292,8 +292,8 @@
 		    <Scale>1</Scale>
 		</mmHg>
 		<kPa>
-		    <Low Min="13" Max="145">40</Low>
-		    <High Min="14" Max="146">93</High>
+		    <Low Min="13" Max="146">40</Low>
+		    <High Min="14" Max="147">93</High>
 		    <Step>1</Step>
 		    <Scale>10</Scale>
 		</kPa>
