@@ -2091,10 +2091,22 @@ void ECGParam::setNotchFilter(ECGNotchFilter filter)
     _notchFilter = static_cast<ECGNotchFilter>(filter);
     if (_filterMode == ECG_FILTERMODE_SURGERY || _filterMode == ECG_FILTERMODE_MONITOR)
     {
-        // 监护or手术模式时，工频信号关闭，发送50&60Hz信号，临时版本
+        // 监护or手术模式时，工频信号关闭，发送50&60Hz信号，临时解决共模抑制比测试问题，后续需要分析
         if (_notchFilter == ECG_NOTCH_OFF)
         {
             _provider->setNotchFilter(ECG_NOTCH_50_AND_60HZ);
+        }
+        else
+        {
+            _provider->setNotchFilter(_notchFilter);
+        }
+    }
+    else if (_filterMode == ECG_FILTERMODE_DIAGNOSTIC && _curLeadMode == ECG_LEAD_MODE_3)
+    {
+        // 诊断模式并且是3导联模式时，工频信号关闭，发送50信号，临时解决共模抑制比测试问题，后续需要分析
+        if (_notchFilter == ECG_NOTCH_OFF)
+        {
+            _provider->setNotchFilter(ECG_NOTCH_50HZ);
         }
         else
         {
