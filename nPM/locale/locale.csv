@@ -1655,3 +1655,4 @@ LowConfigure,低配,Low Configuration
 HighConfigure,高配,High Configuration
 SystemBoardSendCommunicationStop,系统板发送通讯中断,System Board Send Communicaiton Stop
 NetworkDebug,网络调试,Network Debug
+TurnOffNotchFilter,支持关闭陷波滤波器,Support notch filter off

@@ -63,6 +63,7 @@ public:
         ITEM_CBO_SW_VERSION_LOGO,
         ITEM_CBO_SPO2_CONFIGURE,
         ITEM_CBO_NETWORK_DEBUG,
+        ITEM_CBO_TURN_OFF_FITER_MODE,  // 支持ECG监护和手术模式模式下，关闭陷波滤波器
         ITEM_CBO_MAX
     };
 
@@ -270,7 +271,11 @@ void MachineConfigModuleContentPrivte::loadOptions()
     combos[ITEM_CBO_NETWORK_DEBUG]->setCurrentIndex(index);
     itemChangedMap[ITEM_CBO_NETWORK_DEBUG] = index;
 
-
+    // 支持ECG监护和手术模式模式下，关闭陷波滤波器
+    index = 0;
+    machineConfig.getNumValue("TurnOffFilterMode", index);
+    combos[ITEM_CBO_TURN_OFF_FITER_MODE]->setCurrentIndex(index);
+    itemChangedMap[ITEM_CBO_TURN_OFF_FITER_MODE] = index;
 
 #ifdef HIDE_MACHINE_CONFIG_ITEMS
     combos[ITEM_CBO_ECG12]->setCurrentIndex(0);
@@ -730,6 +735,20 @@ void MachineConfigModuleContent::layoutExec()
     combo->setProperty("Item", qVariantFromValue(itemId));
     connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
+    // 支持ECG监护和手术模式模式下，关闭陷波滤波器
+    label = new QLabel(trs("TurnOffNotchFilter"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    combo = new ComboBox;
+    combo->blockSignals(true);
+    combo->addItems(QStringList()
+                    << trs("No")
+                    << trs("Yes"));
+    combo->blockSignals(false);
+    layout->addWidget(combo, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(MachineConfigModuleContentPrivte::ITEM_CBO_TURN_OFF_FITER_MODE, combo);
+    itemId = MachineConfigModuleContentPrivte::ITEM_CBO_TURN_OFF_FITER_MODE;
+    combo->setProperty("Item", qVariantFromValue(itemId));
+    connect(combo, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
 
     layout->setRowStretch(d_ptr->combos.count(), 1);
 }
@@ -909,7 +928,11 @@ void MachineConfigModuleContent::onComboBoxIndexChanged(int index)
             setNetworkLogin(index);
             break;
         }
-
+        case MachineConfigModuleContentPrivte::ITEM_CBO_TURN_OFF_FITER_MODE:
+        {
+            enablePath = "TurnOffFilterMode";
+            break;
+        }
         default:
             return;
     }

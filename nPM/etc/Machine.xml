@@ -54,6 +54,7 @@
     <SerialNumber>20180725222</SerialNumber>
     <!--机器软件版本号, 详细软件版本信息查看戴维产品技术要求-->
     <SoftwareVersion>DBA1.0.2.A.CN</SoftwareVersion>
+    <TurnOffFilterMode>0</TurnOffFilterMode>
     <!--参数信息-->
     <AllParams>ECG,SPO2,RESP,NIBP,CO2,IBP,AG,CO,TEMP,O2</AllParams>
     <!--数据记录使能选择-->

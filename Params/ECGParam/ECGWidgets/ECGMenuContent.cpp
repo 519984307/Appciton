@@ -59,8 +59,11 @@ public:
     #endif
          ecg1Label(NULL),
          ecg2Label(NULL),
-         leadModeTimerId(-1)
-    {}
+         leadModeTimerId(-1),
+         turnOffNotchFilter(false)
+    {
+        machineConfig.getNumValue("TurnOffFilterMode", turnOffNotchFilter);
+    }
 
     // load settings
     void loadOptions();
@@ -93,6 +96,7 @@ public:
     QLabel *ecg2Label;
     QList<int> ecgWaveIdList;
     int leadModeTimerId;
+    bool turnOffNotchFilter;  // true: ECG监护和手术模式模式下，支持关闭陷波滤波器; false: 不支持关闭陷波滤波器
 };
 
 void ECGMenuContentPrivate::loadOptions()
@@ -239,9 +243,11 @@ void ECGMenuContentPrivate::loadOptions()
     {
     case ECG_FILTERMODE_MONITOR:
     case ECG_FILTERMODE_SURGERY:
-#ifdef ECG_MONITOR_NOTIFY_FILTER_OFF
-        combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_OFF)), ECG_NOTCH_OFF);
-#endif
+        if (turnOffNotchFilter)
+        {
+            combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_OFF)), ECG_NOTCH_OFF);
+        }
+
         combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50HZ)), ECG_NOTCH_50HZ);
         combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_60HZ)), ECG_NOTCH_60HZ);
         combos[ITEM_CBO_NOTCH_FITER]->addItem(trs(ECGSymbol::convert(ECG_NOTCH_50_AND_60HZ)), ECG_NOTCH_50_AND_60HZ);
@@ -793,10 +799,12 @@ void ECGMenuContent::onComboBoxIndexChanged(int index)
             {
             case ECG_FILTERMODE_MONITOR:
             case ECG_FILTERMODE_SURGERY:
-#ifdef ECG_MONITOR_NOTIFY_FILTER_OFF
-                d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
-                        addItem(trs(ECGSymbol::convert(ECG_NOTCH_OFF)), ECG_NOTCH_OFF);
-#endif
+                if (d_ptr->turnOffNotchFilter)
+                {
+                    d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
+                            addItem(trs(ECGSymbol::convert(ECG_NOTCH_OFF)), ECG_NOTCH_OFF);
+                }
+
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
                         addItem(trs(ECGSymbol::convert(ECG_NOTCH_50HZ)), ECG_NOTCH_50HZ);
                 d_ptr->combos[ECGMenuContentPrivate::ITEM_CBO_NOTCH_FITER]->
