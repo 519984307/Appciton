@@ -394,6 +394,8 @@ public:
      */
     void showRainbowProgramMessage(SPO2RainbowProgramMessageType msg, bool isPlugin);
 
+    bool havePlugin();
+
 signals:
     void clearTrendData();
 

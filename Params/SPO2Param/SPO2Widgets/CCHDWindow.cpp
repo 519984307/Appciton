@@ -145,13 +145,14 @@ void CCHDWindow::onButtonReleased()
     }
     else if (btn == d_ptr->footButton)
     {
-        if (spo2Param.getSPO2(true) == InvData())
+        short footValue =  spo2Param.getSPO2(spo2Param.havePlugin());
+        if (footValue == InvData())
         {
             MessageBox msgBox(trs("Prompt"), trs("SPO2ValueInvaild"), false, true);
             msgBox.exec();
             return;
         }
-        d_ptr->footValue = spo2Param.getSPO2(true);
+        d_ptr->footValue = footValue;
         btn->setEnabled(false);
         spo2Param.setCCHDData(d_ptr->footValue, false);
         d_ptr->update();

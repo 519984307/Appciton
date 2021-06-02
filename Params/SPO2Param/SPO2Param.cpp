@@ -101,6 +101,7 @@ public:
     bool isShowSignalIQ;
 
     QPointer<MessageBox> curProgramMsgBox;    /* keep the current avaliabe message box window */
+    bool bPlugConnected;
 };
 
 void SPO2Param::setAverageTime(AverageTime index)
@@ -176,6 +177,7 @@ SPO2ParamPrivate::SPO2ParamPrivate()
     , plugInIsForceUpdating(false)
     , isT5ModuleUpgradeCompleted(false)
     , isShowSignalIQ(true)
+    , bPlugConnected(false)
 {
 }
 
@@ -1296,6 +1298,7 @@ void SPO2Param::setConnected(bool isConnected, bool isPlugin)
         d_ptr->connectedPluginProvider = isConnected;
 
         // Update plugin connection status
+        d_ptr->bPlugConnected = isConnected;
         emit updatePluginConnected(isConnected);
     }
     QString wave = getWaveWindow(isPlugin);
@@ -2159,4 +2162,9 @@ SPO2Param &SPO2Param::getInstance()
 SPO2Param::~SPO2Param()
 {
     delete d_ptr;
+}
+
+bool SPO2Param::havePlugin()
+{
+    return d_ptr->bPlugConnected;
 }
