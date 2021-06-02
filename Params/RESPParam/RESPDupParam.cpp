@@ -163,6 +163,11 @@ void RESPDupParam::updateRR(short rr)
 {
     _rrValue = rr;
 
+
+#ifdef ENABLE_O2_APNEASTIMULATION
+    setRespApneaStimulation((_rrValue < 7) && (_rrValue != InvData()));
+#endif
+
     if (_trendWidget == NULL)
     {
         return;

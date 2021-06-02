@@ -478,6 +478,12 @@ void CO2Param::setEtCO2(short etco2)
         etco2 = InvData();
     }
 
+#ifdef ENABLE_O2_APNEASTIMULATION
+    int mul = paramInfo.getMultiOfSubParam(SUB_PARAM_ETCO2);
+    int etco2mmhg = (etco2 * 1.0) / mul * d_ptr->baro / 1000 * 7.5 + 0.5;
+    setRespApneaStimulation((etco2 != InvData() && (etco2mmhg < 7)));
+#endif
+
     d_ptr->etco2Value = etco2;
     if (NULL != d_ptr->trendWidget)
     {

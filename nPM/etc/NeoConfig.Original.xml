@@ -167,8 +167,8 @@
     </RESP>
     <ApneaStimulation>
         <SelfTest>0</SelfTest>
-        <RESP>1</RESP>
-        <CO2>1</CO2>
+        <RESP>0</RESP>
+        <CO2>0</CO2>
         <HR>100</HR>
 	<SPO2>85</SPO2>
     </ApneaStimulation>
