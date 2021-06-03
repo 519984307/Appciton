@@ -102,9 +102,6 @@ void BLMCO2Provider::_unpacket(const unsigned char packet[])
     _status.sensorErr    = ((sts & BIT6) == BIT6) ? true : false;
     _status.o2Replace    = ((sts & BIT3) == BIT3) ? true : false;
 
-#ifdef ENABLE_O2_APNEASTIMULATION
-    co2Param.setRespApneaStimulation(_status.noBreath);
-#endif
     co2Param.setOneShotAlarm(CO2_ONESHOT_ALARM_APNEA, _status.noBreath);
 
     // 波形数据，每秒更新20次。

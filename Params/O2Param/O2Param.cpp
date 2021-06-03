@@ -278,6 +278,7 @@ void O2Param::setVibrationReason(ApneaStimulationReason reason, bool sta)
         {
             if ((reason == APNEASTIMULATION_REASON_RESP
                  || reason == APNEASTIMULATION_REASON_HR
+                 || reason == APNEASTIMULATION_REASON_ETCO2
                  || reason == APNEASTIMULATION_REASON_SPO2)
                     && (!d_ptr->updateApneaStimulationSta))
             {
