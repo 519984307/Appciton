@@ -2106,7 +2106,7 @@ void ECGParam::setNotchFilter(ECGNotchFilter filter)
         // 诊断模式并且是3导联模式时，工频信号关闭，发送50信号，临时解决共模抑制比测试问题，后续需要分析
         if (_notchFilter == ECG_NOTCH_OFF)
         {
-            _provider->setNotchFilter(ECG_NOTCH_50HZ);
+            _provider->setNotchFilter(ECG_NOTCH_50_AND_60HZ);
         }
         else
         {
