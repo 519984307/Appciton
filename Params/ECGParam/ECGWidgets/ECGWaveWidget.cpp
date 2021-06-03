@@ -145,31 +145,60 @@ double ECGWaveWidget::_calcRulerHeight(ECGGain gain)
 {
     // 避免切换自动增益时，标尺高度为0，导致波形绘制位置错位，设置默认增益高度1个像素。
     double rulerHeight = 1.0;
+    ECGLeadMode leadmode = ecgParam.getLeadMode();
     switch (gain)
     {
     case ECG_GAIN_X0125:
         rulerHeight = 1.25 / pixelHPitch();
+        if (leadmode == ECG_LEAD_MODE_3)
+        {
+            rulerHeight = rulerHeight * 1.08;
+        }
         break;
 
     case ECG_GAIN_X025:
         rulerHeight = 2.5 / pixelHPitch();
+        if (leadmode == ECG_LEAD_MODE_3)
+        {
+            rulerHeight = rulerHeight * 1.09;
+        }
         break;
 
     case ECG_GAIN_X05:
         rulerHeight = 5 / pixelHPitch();
+        if (leadmode == ECG_LEAD_MODE_3)
+        {
+            rulerHeight = rulerHeight * 1.096;
+        }
         break;
 
     case ECG_GAIN_X10:
-        rulerHeight = 10 / pixelHPitch() * 0.95;
+        rulerHeight = 10 / pixelHPitch();
+        if (leadmode == ECG_LEAD_MODE_3)
+        {
+            rulerHeight = rulerHeight * 1.13;
+        }
+        else
+        {
+            rulerHeight = rulerHeight * 0.95;
+        }
         break;
 
     case ECG_GAIN_X20:
         rulerHeight = 20 / pixelHPitch();
+        if (leadmode == ECG_LEAD_MODE_3)
+        {
+            rulerHeight = rulerHeight * 1.09;
+        }
         break;
 
     case ECG_GAIN_X40:
         rulerHeight = 40 / pixelHPitch();
-        break;
+        if (leadmode == ECG_LEAD_MODE_3)
+        {
+            rulerHeight = rulerHeight * 1.1;
+        }
+       break;
 
     default:
         break;

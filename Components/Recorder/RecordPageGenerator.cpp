@@ -1150,6 +1150,7 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo &waveInfo, short wave)
     qreal startY = waveInfo.startYOffset;
     qreal endY = waveInfo.endYOffset;
 
+    ECGLeadMode leadmode = ecgParam.getLeadMode();
     switch (waveInfo.id)
     {
     case WAVE_ECG_I:
@@ -1175,22 +1176,42 @@ static qreal mapWaveValue(const RecordWaveSegmentInfo &waveInfo, short wave)
         {
         case ECG_GAIN_X0125:
             scale = 0.125 * 10 * RECORDER_PIXEL_PER_MM / 2.0 * 0.95;
+            if (leadmode == ECG_LEAD_MODE_3)
+            {
+                scale = scale * 1.09;
+            }
             break;
 
         case ECG_GAIN_X025:
             scale = 0.25 * 10 * RECORDER_PIXEL_PER_MM / 2.0 * 0.95;
+            if (leadmode == ECG_LEAD_MODE_3)
+            {
+                scale = scale * 1.09;
+            }
             break;
 
         case ECG_GAIN_X05:
             scale = 0.5 * 10 * RECORDER_PIXEL_PER_MM / 2.0 * 0.95;
+            if (leadmode == ECG_LEAD_MODE_3)
+            {
+                scale = scale * 1.08;
+            }
             break;
 
         case ECG_GAIN_X10:
             scale = 1.0 * 10 * RECORDER_PIXEL_PER_MM / 2.0 * 0.95;
+            if (leadmode == ECG_LEAD_MODE_3)
+            {
+                scale = scale * 1.07;
+            }
             break;
 
         case ECG_GAIN_X20:
             scale = 2.0 * 10 * RECORDER_PIXEL_PER_MM / 2.0;
+            if (leadmode == ECG_LEAD_MODE_3)
+            {
+                scale = scale * 1.03;
+            }
             break;
 
         case ECG_GAIN_X40:
