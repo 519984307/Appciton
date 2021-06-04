@@ -822,6 +822,27 @@ void E5Provider::setNotchFilter(ECGNotchFilter notch)
     {
         data |= 0x10;
     }
+
+    static bool needResetToDag = false;
+    if (filter == ECG_FILTERMODE_DIAGNOSTIC)
+    {
+        if (notch == ECG_NOTCH_OFF)
+        {
+            setFilterMode(ECG_FILTERMODE_MONITOR);
+            data = 0x13;
+            needResetToDag = true;
+        }
+        else
+        {
+            if (needResetToDag)
+            {
+                setFilterMode(ECG_FILTERMODE_DIAGNOSTIC);
+                needResetToDag = false;
+            }
+        }
+    }
+
+    qDebug()<<"=============="<<QString("%1").arg(data, 2, 16,QLatin1Char('0'));
     sendCmd(TE3_CMD_SET_NOTCH_FILTER, &data, 1);
 }
 

@@ -2089,8 +2089,14 @@ void ECGParam::setNotchFilter(ECGNotchFilter filter)
     currentConfig.setNumValue("ECG|NotchFilter", static_cast<int>(filter));
 
     _notchFilter = static_cast<ECGNotchFilter>(filter);
-//    _provider->setNotchFilter(_notchFilter);
-    _provider->setNotchFilter(ECG_NOTCH_50_AND_60HZ);
+    if (_filterMode == ECG_FILTERMODE_DIAGNOSTIC)
+    {
+        _provider->setNotchFilter(_notchFilter);
+    }
+    else
+    {
+        _provider->setNotchFilter(ECG_NOTCH_50_AND_60HZ);
+    }
     emit updateNotchFilter();
 }
 
