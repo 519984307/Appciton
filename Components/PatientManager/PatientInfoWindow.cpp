@@ -212,6 +212,7 @@ void PatientInfoWindowPrivate::loadOptions()
     }
 
     combos[ITEM_CBO_PACER_MARKER]->setCurrentIndex(patientManager.getPacermaker());
+    patientManager.setPacermaker(patientManager.getPacermaker());
     combos[ITEM_CBO_PATIENT_SEX]->setCurrentIndex(patientManager.getSex());
     combos[ITEM_CBO_BLOOD_TYPE]->setCurrentIndex(patientManager.getBlood());
     buttons[ITEM_BTN_PATIENT_NAME]->setText(patientManager.getName());

@@ -174,7 +174,11 @@ QString PatientManager::getTypeStr(void)
 void PatientManager::setPacermaker(PatientPacer pacer)
 {
     d_ptr->patientInfo.pacer = pacer;
-    systemConfig.setNumValue("PrimaryCfg|PatientInfo|PatientPacer", static_cast<int>(pacer));
+    ECGParamInterface *ecgParam = ECGParamInterface::getECGParam();
+    if (ecgParam)
+    {
+        ecgParam->setPacermaker(static_cast<ECGPaceMode>(pacer));
+    }
 }
 
 /**************************************************************************************************
@@ -182,6 +186,10 @@ void PatientManager::setPacermaker(PatientPacer pacer)
  *************************************************************************************************/
 PatientPacer PatientManager::getPacermaker()
 {
+
+    int onoff = 0;
+    systemConfig.getNumValue("PrimaryCfg|PatientInfo|PatientPacer", onoff);
+    d_ptr->patientInfo.pacer = static_cast<PatientPacer>(onoff);
     return d_ptr->patientInfo.pacer;
 }
 
@@ -464,11 +472,6 @@ void PatientManager::newPatient()
         {
             spo2Param->clearTrendWaveData();
         }
-    }
-    ECGParamInterface *ecgParam = ECGParamInterface::getECGParam();
-    if (ecgParam)
-    {
-        ecgParam->setPacermaker(ECG_PACE_ON);
     }
 }
 

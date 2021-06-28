@@ -1731,7 +1731,8 @@ void ECGParam::setARRThreshold(ECGAlg::ARRPara parameter, short value)
  *************************************************************************************************/
 void ECGParam::setPacermaker(ECGPaceMode onoff)
 {
-    currentConfig.setNumValue("ECG|PacerMaker", static_cast<int>(onoff));
+//    currentConfig.setNumValue("ECG|PacerMaker", static_cast<int>(onoff));
+    systemConfig.setNumValue("PrimaryCfg|PatientInfo|PatientPacer", static_cast<int>(onoff));
 
     if (NULL != _provider)
     {
@@ -1752,14 +1753,16 @@ void ECGParam::setPacermaker(ECGPaceMode onoff)
 ECGPaceMode ECGParam::getPacermaker(void)
 {
     int onoff = 0;
-    currentConfig.getNumValue("ECG|PacerMaker", onoff);
+//    currentConfig.getNumValue("ECG|PacerMaker", onoff);
+    systemConfig.getNumValue("PrimaryCfg|PatientInfo|PatientPacer", onoff);
     return static_cast<ECGPaceMode>(onoff);
 }
 
 void ECGParam::updatePacermaker()
 {
     int index = 0;
-    currentConfig.getNumValue("ECG|PacerMaker", index);
+//    currentConfig.getNumValue("ECG|PacerMaker", index);
+    systemConfig.getNumValue("PrimaryCfg|PatientInfo|PatientPacer", index);
     if (NULL != _provider)
     {
         _provider->enablePacermaker(static_cast<ECGPaceMode>(index));
