@@ -125,7 +125,7 @@ Close,关闭,Close
 PatientID,病人ID,ID
 PatientType,病人类型,Type
 PatientSex,病人性别,Sex
-Pacemaker,起搏器,Pacemaker
+Pacemaker,起搏标记,Pacemaker
 Wear,佩戴,Wear
 NotWear,无佩戴,Not Wear
 PatientBloodType,血型,Blood
@@ -147,7 +147,7 @@ ArrhythmiaAnalysisMenuDesc,心律失常分析 ,Arrh. Analysis
 ArrhythmiaThresholdMenu,心律失常阈值,Arrh. Threshold
 ArrhythmiaThresholdMenuDesc,心律失常阈值,Arrh. Threshold
 Arrhythmia,心律失常 >>,Arrhythmia >>
-ECGPaceDetection,起搏检测,Pace Detection
+ECGPaceDetection,起搏标记,Pacemaker
 ECG12LPaceMarker,12导起搏标记,12L Pace maker
 Asystole,停搏时间,Asystole
 HeartPause,暂停时间,Heart Pause
