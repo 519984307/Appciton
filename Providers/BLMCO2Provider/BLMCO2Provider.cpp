@@ -711,6 +711,9 @@ void BLMCO2Provider::setApneaTimeout(ApneaAlarmTime t)
     cmd[3] = 20;
     switch (t)
     {
+    case APNEA_ALARM_TIME_0_SEC:
+        cmd[3] = 20;
+        break;
     case APNEA_ALARM_TIME_20_SEC:
         cmd[3] = 20;
         break;

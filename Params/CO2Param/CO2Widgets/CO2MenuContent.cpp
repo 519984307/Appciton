@@ -298,6 +298,7 @@ void CO2MenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
+                       << trs(CO2Symbol::convert(CO2_APNEA_TIME_0_SEC))
                        << trs(CO2Symbol::convert(CO2_APNEA_TIME_20_SEC))
                        << trs(CO2Symbol::convert(CO2_APNEA_TIME_25_SEC))
                        << trs(CO2Symbol::convert(CO2_APNEA_TIME_30_SEC))

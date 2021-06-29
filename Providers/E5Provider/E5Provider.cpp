@@ -908,6 +908,11 @@ void E5Provider::setApneaTime(ApneaAlarmTime t)
 {
     unsigned char data = t;
 
+    if (t > APNEA_ALARM_TIME_0_SEC)
+    {
+        t = static_cast<ApneaAlarmTime>(t - 1);
+    }
+
     sendCmd(TE3_CMD_SET_RESP_APNEA_INTERVAL, &data, 1);
 }
 

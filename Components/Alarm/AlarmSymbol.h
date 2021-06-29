@@ -42,6 +42,7 @@ public:
     {
         static const char *symbol[APNEA_ALARM_TIME_NR] =
         {
+            "Off",
             "_20sec", "_25sec",
             "_30sec", "_35sec", "_40sec", "_45sec",
             "_50sec", "_55sec", "_60sec"

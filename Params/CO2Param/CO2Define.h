@@ -32,6 +32,7 @@ enum CO2WorkMode
  *************************************************************************************************/
 enum CO2ApneaTime
 {
+    CO2_APNEA_TIME_0_SEC,
     CO2_APNEA_TIME_20_SEC,
     CO2_APNEA_TIME_25_SEC,
     CO2_APNEA_TIME_30_SEC,
