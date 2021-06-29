@@ -1305,7 +1305,7 @@ AlarmType,报警类型,Alarm Type
 Technology,技术,Technology
 Physiology,生理,Physiology
 UserMaintainPassword,用户维护系统密码,Monitor Maintain Password
-Department,科室,Department
+Department,部门,Department
 UserMaintain,用户维护系统,Monitor Maintain
 BedNumber,床号,Bed No.
 ModifyPassword,密码,Password
@@ -1351,10 +1351,10 @@ English,英文,English
 Chinese,中文,Chinese
 UnitSetup,单位,Unit Setup
 UnitSetupDesc,单位,Unit Setup
-HeightUnit,身高单位,Height Unit
-WeightUnit,体重单位,Weight Unit
+HeightUnit,高度单位,Height Unit
+WeightUnit,重量单位,Weight Unit
 STUnit,ST段单位,ST Unit
-NIBPUnit,NIBP单位,NIBP Unit
+NIBPUnit,压力单位,NIBP Unit
 IBPUnit,IBP单位,IBP Unit
 TemperatureUnit,温度单位,Temperature Unit
 CVPUnit,中心静脉压单位,CVP Unit
