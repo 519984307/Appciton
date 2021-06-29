@@ -434,6 +434,18 @@ RESPSweepSpeed RESPParam::getSweepSpeed(void)
     return (RESPSweepSpeed)speed;
 }
 
+void RESPParam::setApneaAlarm(int st)
+{
+    currentConfig.setNumValue("RESP|ApneaAlarm", st == 0 ? 0 : 1);
+}
+
+int RESPParam::getApneaAlarm(void)
+{
+    int speed = 1;
+    currentConfig.getNumValue("RESP|ApneaAlarm", speed);
+    return speed == 0 ? 0 : 1;
+}
+
 /**************************************************************************************************
  * 设置窒息选项。
  *************************************************************************************************/

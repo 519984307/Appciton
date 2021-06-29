@@ -117,6 +117,9 @@ public:
     RESPSweepMode getSweepMode(void);
 
 public:
+    void setApneaAlarm(int );
+    int getApneaAlarm(void);
+
     // 设置/获取波形速度。
     void setSweepSpeed(RESPSweepSpeed speed);
     RESPSweepSpeed getSweepSpeed(void);

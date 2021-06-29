@@ -227,8 +227,14 @@ const char *RESPOneShotAlarm::toString(int id)
  *************************************************************************************************/
 bool RESPOneShotAlarm::isAlarmEnable(int id)
 {
-    Q_UNUSED(id)
-    return (respParam.isEnabled());
+    if (id == RESP_ONESHOT_ALARM_APNEA)
+    {
+        return (respParam.isEnabled() && respParam.getApneaAlarm());
+    }
+    else
+    {
+        return (respParam.isEnabled());
+    }
 }
 
 /**************************************************************************************************

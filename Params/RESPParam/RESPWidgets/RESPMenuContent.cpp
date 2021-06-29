@@ -36,6 +36,8 @@ public:
         ITEM_CBO_RR_SOURCE,
         ITEM_CBO_WAVE_GAIN,
         ITEM_CBO_SWEEP_SPEED,
+        ITEM_CBO_APNEA_ALARM,
+        ITEM_CBO_NR,
     };
 
     RESPMenuContentPrivate()
@@ -58,6 +60,9 @@ public:
 
 void RESPMenuContentPrivate::loadOptions()
 {
+    // Apnea alarm
+    combos[ITEM_CBO_APNEA_ALARM]->setCurrentIndex(respParam.getApneaAlarm());
+
     // sweep speed
     combos[ITEM_CBO_SWEEP_SPEED]->setCurrentIndex(respParam.getSweepSpeed());
 
@@ -115,7 +120,7 @@ void RESPMenuContentPrivate::loadOptions()
 
 void RESPMenuContentPrivate::blockItemSignal(bool flag)
 {
-    for (int i = ITEM_CBO_APNEA_DELAY; i <= ITEM_CBO_SWEEP_SPEED; ++i)
+    for (int i = ITEM_CBO_APNEA_DELAY; i < ITEM_CBO_NR; ++i)
     {
         MenuItem index = static_cast<MenuItem>(i);
         combos[index]->blockSignals(flag);
@@ -234,6 +239,20 @@ void RESPMenuContent::layoutExec()
     itemID = RESPMenuContentPrivate::ITEM_CBO_SWEEP_SPEED;
     comboBox->setProperty("Item", qVariantFromValue(itemID));
 
+    //Apnea alarm switch
+    label = new QLabel(trs("ApneaAlarm"));
+    layout->addWidget(label, d_ptr->combos.count(), 0);
+    comboBox = new ComboBox;
+    comboBox->addItems(QStringList()
+                       << trs("Off")
+                       << trs("On"));
+    layout->addWidget(comboBox, d_ptr->combos.count(), 1);
+    d_ptr->combos.insert(RESPMenuContentPrivate
+                         ::ITEM_CBO_APNEA_ALARM, comboBox);
+    connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
+    itemID = RESPMenuContentPrivate::ITEM_CBO_APNEA_ALARM;
+    comboBox->setProperty("Item", qVariantFromValue(itemID));
+
     // 添加报警设置链接
     Button *btn = new Button(QString("%1%2").
                              arg(trs("AlarmSettingUp")).
@@ -255,6 +274,9 @@ void RESPMenuContent::onComboBoxIndexChanged(int index)
                   box->property("Item").toInt());
         switch (item)
         {
+        case RESPMenuContentPrivate::ITEM_CBO_APNEA_ALARM:
+            respParam.setApneaAlarm(index);
+            break;
         case RESPMenuContentPrivate::ITEM_CBO_SWEEP_SPEED:
             respParam.setSweepSpeed(static_cast<RESPSweepSpeed>(index));
             currentConfig.setNumValue("RESP|SweepSpeed", index);

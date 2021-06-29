@@ -164,6 +164,7 @@
         <Gain>2</Gain>
         <SweepSpeed>2</SweepSpeed>
 	<BrSource>0</BrSource>
+        <ApneaAlarm>1</ApneaAlarm>
     </RESP>
     <ApneaStimulation>
         <SelfTest>0</SelfTest>
