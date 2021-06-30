@@ -1065,7 +1065,7 @@
             <NIBPmap>-5000</NIBPmap>
             <MeasureTime>0</MeasureTime>
             <MeasureMode>0</MeasureMode>
-            <AutoInterval>5</AutoInterval>
+            <AutoInterval>8</AutoInterval>
             <StatFunction>1</StatFunction>
             <AutomaticRetry>0</AutomaticRetry>
 	    <CompleteTone>0</CompleteTone>
