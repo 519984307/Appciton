@@ -226,7 +226,7 @@ void SPO2TrendWidget::setTextSize()
     }
 
     // 字体。
-    int fontsize = fontManager.adjustNumFontSize(r, true, "9999");
+    int fontsize = fontManager.adjustNumFontSize(r, true, "999");
     QFont font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);
     _spo2Value1->setFont(font);
@@ -238,7 +238,7 @@ void SPO2TrendWidget::setTextSize()
     _spo2Value2->setFont(font);
     _spo2DeltaValue->setFont(font);
 
-    fontsize = fontManager.adjustNumFontSize(r, true, "99999");
+    fontsize = fontManager.adjustNumFontSize(r, true, "999999");
     font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);
     _piValue->setFont(font);
