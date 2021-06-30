@@ -164,7 +164,7 @@ STMenu,ST,ST
 AverageTime,平均时间,Average Time
 Normal,正常,Normal
 MaxSensitivity,高灵敏,High
-FastSat,快速SpO₂,Fast SAT
+FastSat,快速血氧,Fast SAT
 SpHbPrecisionMode,SpHb精度模式,SpHb Precision Mode
 SpHbVesselMode,SpHb动脉/静脉模式,SpHb Arterial/Venous Mode
 SpHbAveragingMode,SpHb平均模式,SpHb Averaging Mode
