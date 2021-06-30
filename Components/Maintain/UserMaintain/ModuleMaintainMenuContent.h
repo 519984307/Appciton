@@ -26,8 +26,13 @@ protected:
     /* reimplement */
     void layoutExec();
 
+    void timerEvent(QTimerEvent *ev);
 private slots:
     void onButtonReleased(void);
+
+    void percent21Released(void);
+
+    void percent100Released(void);
 
 private:
     ModuleMaintainMenuContentPrivate * const d_ptr;
