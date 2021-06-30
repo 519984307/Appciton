@@ -49,14 +49,14 @@ void SPO2TrendWidget::loadConfig()
     QPalette &palette = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
     setPalette(palette);
     _spo2Value1->setPalette(palette);
+    _piValue->setPalette(palette);
+    _piName->setPalette(palette);
 
     palette.setColor(QPalette::WindowText, Qt::white);
     _spo2Value2->setPalette(palette);
     _spo2Name2->setPalette(palette);
     _spo2DeltaValue->setPalette(palette);
     _spo2DeltaName->setPalette(palette);
-    _piValue->setPalette(palette);
-    _piName->setPalette(palette);
     TrendWidget::loadConfig();
 }
 
