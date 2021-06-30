@@ -226,7 +226,7 @@
 		    <Scale>1</Scale>
 		</percent>
 		</PVI>
-		<SPHB Enable="0" Prio="1">
+                <SPHB Enable="1" Prio="1">
 		<gdL>
 		    <Low Min="0" Max="249">70</Low>
 		    <High Min="1" Max="250">200</High>
