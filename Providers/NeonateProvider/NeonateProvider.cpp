@@ -144,6 +144,7 @@ void NeonateProvider::handlePacket(unsigned char *data, int len)
     }
     BLMProvider::handlePacket(data, len);
 
+    static bool onceConnected = false;
     sendACK(data[0]);
     switch (data[0])
     {
@@ -154,8 +155,12 @@ void NeonateProvider::handlePacket(unsigned char *data, int len)
         break;
     case NEONATE_RSP_PROBE_MOTOR:
     {
+        if (!onceConnected && data[2])
+        {
+            onceConnected = true;
+        }
         AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_O2);
-        if (alarmSource)
+        if (alarmSource && onceConnected)
         {
             alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_MOTOR_NOT_IN_POSITION, !data[1]);
             alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_SENSOR_OFF, !data[2]);
@@ -177,8 +182,12 @@ void NeonateProvider::handlePacket(unsigned char *data, int len)
     }
     case NEONATE_NOTIFY_PROBE_MOTOR:
     {
+        if (!onceConnected && data[2])
+        {
+            onceConnected = true;
+        }
         AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_O2);
-        if (alarmSource)
+        if (alarmSource && onceConnected)
         {
             alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_MOTOR_NOT_IN_POSITION, !data[1]);
             alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_SENSOR_OFF, !data[2]);
