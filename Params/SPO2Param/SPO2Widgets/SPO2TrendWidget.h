@@ -86,4 +86,5 @@ private:
     bool _isAlarmSPO2;
     bool _isAlarmSPO2_2;
     bool _isAlarmSPO2_D;
+    bool _havePlugin;
 };

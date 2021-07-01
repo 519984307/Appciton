@@ -214,7 +214,7 @@ void SPO2TrendWidget::showValue(void)
 void SPO2TrendWidget::setTextSize()
 {
     QRect r = this->rect();
-    if (_spo2Value2->isVisible() && _piValue->isVisible())
+    if (_havePlugin)
     {
         r.adjust(nameLabel->width() * 3 + _spo2Bar->width(), 0, 0, 0);
         r.setWidth(r.width() / 3);
@@ -260,6 +260,7 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     _isAlarmSPO2_D = false;
     _spo2String1 = InvStr();
     _spo2String2 = InvStr();
+    _havePlugin = false;
     setName(trs(paramInfo.getParamName(PARAM_SPO2)));
     setUnit(trs(Unit::getSymbol(UNIT_PERCENT)));
 
@@ -353,6 +354,7 @@ void SPO2TrendWidget::updateTrendWidget(bool isPluginConnected)
         _spo2DeltaName->setVisible(false);
         _spo2DeltaValue->setVisible(false);
     }
+    _havePlugin = isPluginConnected;
     setTextSize();
 }
 
