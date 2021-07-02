@@ -218,7 +218,7 @@
                     <Scale>1</Scale>
                 </percent>
                 </SPO2_D>
-		<PVI Enable="0" Prio="1">
+                <PVI Enable="1" Prio="1">
 		<percent>
 		    <Low Min="0" Max="99">5</Low>
 		    <High Min="1" Max="100">40</High>
@@ -240,7 +240,7 @@
                     <Scale>10</Scale>
                 </mmolL>
 		</SPHB>
-		<SPOC Enable="0" Prio="1">
+                <SPOC Enable="1" Prio="1">
 		<mLdL>
 		    <Low Min="0" Max="34">10</Low>
 		    <High Min="1" Max="35">25</High>
@@ -248,7 +248,7 @@
 		    <Scale>1</Scale>
 		</mLdL>
 		</SPOC>
-		<SPMET Enable="0" Prio="1">
+                <SPMET Enable="1" Prio="1">
 		<percent>
 		    <Low Min="0" Max="999">0</Low>
 		    <High Min="1" Max="1000">30</High>
@@ -256,7 +256,7 @@
 		    <Scale>10</Scale>
 		</percent>
 		</SPMET>
-		<SPCO Enable="0" Prio="1">
+                <SPCO Enable="1" Prio="1">
 		<percent>
 		    <Low Min="0" Max="99">0</Low>
 		    <High Min="1" Max="100">30</High>
