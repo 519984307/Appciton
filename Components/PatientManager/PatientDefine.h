@@ -143,7 +143,7 @@ public:
     {
         static const char *symbol[PATIENT_PACER_NR] =
         {
-            "NotWear", "Wear"
+            "close", "open"
         };
         return symbol[index];
     }

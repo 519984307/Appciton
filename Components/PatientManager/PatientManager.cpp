@@ -332,6 +332,7 @@ int PatientManager::getIDLength(void)
  *************************************************************************************************/
 const PatientInfo &PatientManager::getPatientInfo(void)
 {
+    getPacermaker();
     return d_ptr->patientInfo;
 }
 
