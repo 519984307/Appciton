@@ -31,8 +31,7 @@ public:
           layoutBtn(NULL),
           paraColorBtn(NULL)
     {
-        spo2Enable = systemManager.isSupport(CONFIG_SPO2) &&
-                     systemManager.isSupport(CONFIG_SPO2_HIGH_CONFIGURE);
+        spo2Enable = systemManager.isSupport(CONFIG_SPO2);
     }
 
     void loadOptions();
