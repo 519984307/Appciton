@@ -1432,6 +1432,7 @@ void SPO2Param::onPaletteChanged(ParamID id)
     d_ptr->waveWidget->updatePalette(pal);
     d_ptr->plugInWaveWidget->updatePalette(pal);
     d_ptr->trendWidget->updatePalette(pal);
+    d_ptr->piTrendWidget->updatePalette(pal);
 }
 
 void SPO2Param::handleRainbowProgram(int result)

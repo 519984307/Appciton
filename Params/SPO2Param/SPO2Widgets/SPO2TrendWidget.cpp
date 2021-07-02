@@ -380,3 +380,9 @@ void SPO2TrendWidget::doRestoreNormalStatus()
     showNormalStatus(_spo2Value1, psrc);
     showNormalStatus(_spo2Bar, psrc);
 }
+
+void SPO2TrendWidget::updatePalette(const QPalette &pal)
+{
+    loadConfig();
+    TrendWidget::updatePalette(pal);
+}

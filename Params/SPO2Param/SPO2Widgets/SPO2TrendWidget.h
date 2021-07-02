@@ -54,6 +54,7 @@ public:
 public:
     virtual void doRestoreNormalStatus();
 
+    virtual void updatePalette(const QPalette &pal);
 public slots:
     /**
      * @brief updateTrendWidget 更新控件

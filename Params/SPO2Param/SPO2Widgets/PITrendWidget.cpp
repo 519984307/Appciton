@@ -37,8 +37,7 @@ public:
     QString pluginPIString;
 };
 
-void PITrendWidget::setPIValue(short pi, bool isPlugin)
-{
+void PITrendWidget::setPIValue(short pi, bool isPlugin) {
     QString valueStr;
     if (0 <= pi && pi < 1000)
     {
@@ -83,8 +82,7 @@ void PITrendWidget::isPluginPIAlarm(bool flag)
 
 void PITrendWidget::showValue()
 {
-    QPalette psrc;
-    psrc.setColor(QPalette::WindowText, Qt::white);
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
     if (d_ptr->isAlarm && d_ptr->piString != InvStr())
     {
         showAlarmStatus(d_ptr->piValue);
@@ -178,8 +176,8 @@ void PITrendWidget::updateTrendWidget(bool isPluginConnected)
 
 void PITrendWidget::doRestoreNormalStatus()
 {
-    QPalette psrc;
-    psrc.setColor(QPalette::WindowText, Qt::white);
+    QPalette psrc = colorManager.getPalette(paramInfo.getParamName(PARAM_SPO2));
+//    psrc.setColor(QPalette::WindowText, Qt::white);
     showNormalStatus(psrc);
 }
 
