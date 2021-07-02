@@ -185,7 +185,8 @@ void ConfigEditCO2MenuContent::layoutExec()
     comboBox->addItems(QStringList()
                        << CO2Symbol::convert(CO2_SWEEP_SPEED_62_5)
                        << CO2Symbol::convert(CO2_SWEEP_SPEED_125)
-                       << CO2Symbol::convert(CO2_SWEEP_SPEED_250));
+                       << CO2Symbol::convert(CO2_SWEEP_SPEED_250)
+                       << CO2Symbol::convert(CO2_SWEEP_SPEED_500));
     connect(comboBox, SIGNAL(currentIndexChanged(int)), this, SLOT(onComboBoxIndexChanged(int)));
     layout->addWidget(comboBox, d_ptr->combos.count(), 1);
     itemID = ConfigEditCO2MenuContentPrivate::ITEM_CBO_WAVE_SPEED;
@@ -207,6 +208,7 @@ void ConfigEditCO2MenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox();
     comboBox->addItems(QStringList()
+                       << trs(CO2Symbol::convert(CO2_APNEA_TIME_0_SEC))
                        << trs(CO2Symbol::convert(CO2_APNEA_TIME_20_SEC))
                        << trs(CO2Symbol::convert(CO2_APNEA_TIME_25_SEC))
                        << trs(CO2Symbol::convert(CO2_APNEA_TIME_30_SEC))

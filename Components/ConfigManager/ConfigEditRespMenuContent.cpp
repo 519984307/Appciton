@@ -161,6 +161,7 @@ void ConfigEditRespMenuContent::layoutExec()
     layout->addWidget(label, d_ptr->combos.count(), 0);
     comboBox = new ComboBox;
     comboBox->addItems(QStringList()
+                       << trs(RESPSymbol::convert(RESP_APNEA_TIME_0_SEC))
                        << trs(RESPSymbol::convert(RESP_APNEA_TIME_20_SEC))
                        << trs(RESPSymbol::convert(RESP_APNEA_TIME_25_SEC))
                        << trs(RESPSymbol::convert(RESP_APNEA_TIME_30_SEC))
