@@ -894,6 +894,13 @@ void SPO2Param::setPR(short prValue)
     d_ptr->isForceUpdatingPR = false;
     d_ptr->prValue = prValue;
     ecgDupParam.updatePR(prValue);
+
+    qDebug() << "-------------PR: " << prValue;
+    if (NULL != d_ptr->piTrendWidget)
+    {
+        d_ptr->trendWidget->setPrValue(prValue);
+    }
+
 }
 
 void SPO2Param::setPluginPR(short prValue)

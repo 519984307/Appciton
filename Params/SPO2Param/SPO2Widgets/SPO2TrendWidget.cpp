@@ -51,6 +51,8 @@ void SPO2TrendWidget::loadConfig()
     _spo2Value1->setPalette(palette);
     _piValue->setPalette(palette);
     _piName->setPalette(palette);
+    _prName->setPalette(palette);
+    _prValue->setPalette(palette);
 
     palette.setColor(QPalette::WindowText, Qt::white);
     _spo2Value2->setPalette(palette);
@@ -127,6 +129,17 @@ void SPO2TrendWidget::setPIValue(qint16 pi)
         _piString = InvStr();
     }
     _piValue->setText(_piString);
+}
+
+void SPO2TrendWidget::setPrValue(qint16 pr)
+{
+    QString prstring = QString::number(pr);
+
+    if (pr < 0 || pr == InvData())
+    {
+        prstring = InvStr();
+    }
+    _prValue->setText(prstring);
 }
 
 void SPO2TrendWidget::updateLimit()
@@ -238,13 +251,15 @@ void SPO2TrendWidget::setTextSize()
     _spo2Value2->setFont(font);
     _spo2DeltaValue->setFont(font);
 
-    fontsize = fontManager.adjustNumFontSize(r, true, "999999");
+    fontsize = fontManager.adjustNumFontSize(r, true, "9999999");
     font = fontManager.numFont(fontsize, true);
     font.setWeight(QFont::Black);
     _piValue->setFont(font);
+    _prValue->setFont(font);
 
-    int fontSize = fontManager.getFontSize(3);
+    int fontSize = fontManager.getFontSize(2);
     font = fontManager.textFont(fontSize);
+    _prName->setFont(font);
     _spo2Name2->setFont(font);
     _spo2DeltaName->setFont(font);
     _piName->setFont(font);
@@ -272,6 +287,13 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
     // 棒图。
     _spo2Bar = new SPO2BarWidget(0, 15);
     _spo2Bar->setFixedWidth(20);
+
+    _prName = new QLabel;
+//    _prName->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    _prName->setText(trs("PR"));
+    _prValue = new QLabel;
+//    _prValue->setAlignment(Qt::AlignHCenter | Qt::AlignVCenter);
+    _prValue->setText(InvStr());
 
     QVBoxLayout *vLayout = new QVBoxLayout();
     QHBoxLayout *hLayout = new QHBoxLayout();
@@ -307,8 +329,10 @@ SPO2TrendWidget::SPO2TrendWidget() : TrendWidget("SPO2TrendWidget")
 
     QHBoxLayout *layout = new QHBoxLayout();
     layout->setMargin(10);
-    layout->addWidget(_spo2Value1, 3);
+    layout->addWidget(_spo2Value1, 4);
     layout->addWidget(_spo2Bar, 1);
+    layout->addWidget(_prName, 1, Qt::AlignCenter);
+    layout->addWidget(_prValue, 2, Qt::AlignBottom | Qt::AlignHCenter);
     layout->addLayout(vLayout, 3);
     layout->addWidget(_piName, 1, Qt::AlignCenter);
     layout->addWidget(_piValue, 2, Qt::AlignBottom | Qt::AlignHCenter);
@@ -379,6 +403,8 @@ void SPO2TrendWidget::doRestoreNormalStatus()
     showNormalStatus(_spo2DeltaValue, psrc2);
     showNormalStatus(_spo2Value1, psrc);
     showNormalStatus(_spo2Bar, psrc);
+    showNormalStatus(_prName, psrc);
+    showNormalStatus(_prValue, psrc);
 }
 
 void SPO2TrendWidget::updatePalette(const QPalette &pal)

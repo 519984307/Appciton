@@ -51,6 +51,8 @@ public:
      */
     void setBarValue(qint16 value);
 
+    void setPrValue(qint16 value);
+
 public:
     virtual void doRestoreNormalStatus();
 
@@ -80,6 +82,8 @@ private:
     QLabel *_piName;
     QLabel *_piValue;
     SPO2BarWidget *_spo2Bar;
+    QLabel *_prName;
+    QLabel *_prValue;
     QString _spo2String1;
     QString _spo2String2;
     QString _spo2StringD;
