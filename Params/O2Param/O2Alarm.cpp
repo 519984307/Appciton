@@ -170,7 +170,7 @@ const char *O2OneShotAlarm::toString(int id)
 bool O2OneShotAlarm::isRemoveAfterLatch(int id)
 {
     Q_UNUSED(id)
-    return true;
+    return false;
 }
 
 bool O2OneShotAlarm::isAlarmed(int id)

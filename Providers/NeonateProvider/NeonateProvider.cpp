@@ -182,6 +182,9 @@ void NeonateProvider::handlePacket(unsigned char *data, int len)
     }
     case NEONATE_NOTIFY_PROBE_MOTOR:
     {
+        static int d1 = data[1];
+        static int d2 = data[2];
+
         if (!onceConnected && data[2])
         {
             onceConnected = true;
@@ -189,8 +192,17 @@ void NeonateProvider::handlePacket(unsigned char *data, int len)
         AlarmOneShotIFace *alarmSource = alarmSourceManager.getOneShotAlarmSource(ONESHOT_ALARMSOURCE_O2);
         if (alarmSource && onceConnected)
         {
-            alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_MOTOR_NOT_IN_POSITION, !data[1]);
-            alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_SENSOR_OFF, !data[2]);
+            if (d1 != data[1])
+            {
+                d1 = data[1];
+                alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_MOTOR_NOT_IN_POSITION, !data[1]);
+            }
+
+            if (d2 != data[2])
+            {
+                d2 = data[2];
+                alarmSource->setOneShotAlarm(O2_ONESHOT_ALARM_SENSOR_OFF, !data[2]);
+            }
         }
         break;
     }
