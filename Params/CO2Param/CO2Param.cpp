@@ -55,7 +55,8 @@ public:
               calibrateReply(false),
               disableZero(0),
               o2CompensationEnable(false),
-              n2oCompensationEnable(false)
+              n2oCompensationEnable(false),
+              startCal(false)
     {
     }
 
@@ -95,6 +96,8 @@ public:
     int disableZero;
     bool o2CompensationEnable;
     bool n2oCompensationEnable;
+
+    bool startCal;
 };
 /**************************************************************************************************
  * 设置波形速度。
@@ -863,8 +866,9 @@ void CO2Param::setZeroStatus(CO2DisableZeroReason reason, bool status)
         bool curSta = d_ptr->disableZero;
         if (prvSta != curSta)
         {
-            softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_CALIBRATION, !curSta);
+//            softkeyManager.setKeyTypeAvailable(SOFT_BASE_KEY_CO2_CALIBRATION, !curSta);
             emit updateZeroSta(curSta);
+            d_ptr->startCal = false;
         }
     }
 }
@@ -924,6 +928,7 @@ void CO2Param::zeroCalibration(void)
     if (d_ptr->provider != NULL)
     {
         d_ptr->provider->zeroCalibration();
+        d_ptr->startCal = true;
     }
 }
 
@@ -1231,4 +1236,9 @@ CO2Param::CO2Param()
 CO2Param::~CO2Param()
 {
     delete d_ptr;
+}
+
+bool CO2Param::getStartCal()
+{
+    return d_ptr->startCal;
 }

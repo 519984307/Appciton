@@ -156,6 +156,8 @@ public:
     /* reimplement */
     CO2ModuleType getCo2ModuleType() const;
 
+    bool getStartCal();
+
 signals:
     void updateZeroSta(bool sta);
 

@@ -64,7 +64,7 @@ CO2MenuContent::CO2MenuContent():
     MenuContent(trs("CO2Menu") , trs("CO2MenuDesc")),
     d_ptr(new CO2MenuContentPrivate)
 {
-    connect(&co2Param, SIGNAL(updateZeroSta(bool)), this, SLOT(disableZero(bool)));
+//    connect(&co2Param, SIGNAL(updateZeroSta(bool)), this, SLOT(disableZero(bool)));
     connect(&co2Param, SIGNAL(updateCompensation(CO2Compensation, bool)), this,
             SLOT(onUpdateCompensation(CO2Compensation, bool)));
 }
@@ -135,7 +135,7 @@ void CO2MenuContentPrivate::loadOptions()
 
     if (co2Param.isConnected())
     {
-        btns[ITEM_BTN_ZERO_CALIB]->setEnabled(!co2Param.getDisableZeroStatus());
+//        btns[ITEM_BTN_ZERO_CALIB]->setEnabled(!co2Param.getDisableZeroStatus());
         combos[ITEM_CBO_WORK_MODE]->setEnabled(true);
     }
     else

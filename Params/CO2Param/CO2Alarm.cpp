@@ -362,6 +362,11 @@ bool CO2OneShotAlarm::isAlarmEnable(int id)
         return true;
     }
 
+    if (id == CO2_ONESHOT_ALARM_ZERO_AND_SPAN_DISABLE || id == CO2_ONESHOT_ALARM_ZERO_DISABLE)
+    {
+        return (co2Param.isEnabled() && co2Param.getCO2Switch() && co2Param.getStartCal());
+    }
+
     return (co2Param.isEnabled() && co2Param.getCO2Switch());
 }
 
