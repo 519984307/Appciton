@@ -569,6 +569,7 @@ NIBPDataTrendWidget::NIBPDataTrendWidget()
     _table->setShowGrid(false);                                           //显示表格线
     _table->setStyleSheet(Style);
     _table->horizontalHeader()->setStyleSheet(headStyle);
+    _table->hideColumn(2);
     QStringList titleList = QStringList() << trs("Time")
                                           << trs("NIBPList")
                                           << trs("PR");
